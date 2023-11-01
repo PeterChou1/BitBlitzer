@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="App\app.cpp">
+      <Filter>src\App</Filter>
+    </ClCompile>
+    <ClCompile Include="App\main.cpp">
+      <Filter>src\App</Filter>
+    </ClCompile>
+    <ClCompile Include="App\SimpleController.cpp">
+      <Filter>src\App</Filter>
+    </ClCompile>
+    <ClCompile Include="App\SimpleSound.cpp">
+      <Filter>src\App</Filter>
+    </ClCompile>
+    <ClCompile Include="App\SimpleSprite.cpp">
+      <Filter>src\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>src\App</Filter>
+    </ClCompile>
+    <ClCompile Include="App\TextureLoader.cpp">
+      <Filter>src\App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vec2.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mat2.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Quat.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vec3.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vec4.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mesh.cpp">
+      <Filter>src\Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mat3.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Mat4.cpp">
+      <Filter>src\Math</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Game.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameManager.cpp">
+      <Filter>src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utils.cpp">
+      <Filter>src\Utils</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App\app.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="App\main.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="App\SimpleController.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="App\AppSettings.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="App\SimpleSound.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\targetver.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="App\TextureLoader.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="App\SimpleSprite.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mat2.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vec3.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vec2.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vec4.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mat3.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mat4.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Quat.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{19e5bf67-3360-45e5-b97c-557c91e85473}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{71069bac-0b76-4803-a768-6cc95719bc2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\App">
+      <UniqueIdentifier>{2053fc19-7e4a-40ae-b070-e199c6c3ba67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Math">
+      <UniqueIdentifier>{0e20d3c2-2284-432d-9ce9-1128679c7076}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Geometry">
+      <UniqueIdentifier>{f0853b4a-1c3e-4886-b491-9677e53ec78f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Manager">
+      <UniqueIdentifier>{63e12452-ef8d-4307-9b96-e0da3dab4610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Renderer">
+      <UniqueIdentifier>{4f97ac51-32ed-4e03-a4ba-7b967f83e964}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Utils">
+      <UniqueIdentifier>{9a6dc7e8-5752-400b-907e-e14391272622}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\ReadMe.txt" />
+  </ItemGroup>
+</Project>
