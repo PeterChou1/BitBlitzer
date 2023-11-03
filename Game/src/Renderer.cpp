@@ -14,7 +14,7 @@ constexpr double ASPECT_RATIO = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
 
 void RendererCPU::Init()
 {
-	Mesh cube;
+	Mesh mesh_obj;
     //cube.tris = {
     //    // SOUTH
     //    Triangle(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(1.0f, 1.0f, 0.0f)),
@@ -40,10 +40,13 @@ void RendererCPU::Init()
     //    Triangle(Vec3(1.0f, 0.0f, 1.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 0.0f, 0.0f)),
     //    Triangle(Vec3(1.0f, 0.0f, 1.0f), Vec3(0.0f, 0.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f)),
     //};
-    Utils::LoadFromObjectFile("./Assets/ship.obj", cube);
-    meshes.push_back(cube);
+    Utils::LoadFromObjectFile("./Assets/ship.obj", mesh_obj);
+    // Transform transform;
+    // transform.rotation = Quat(Vec3(0, 1, 0), 0);
+    // transform.position = Vec3(0, 0, 8);
+    // mesh_obj.transform = transform;
+    meshes.push_back(mesh_obj);
     proj.PerspectiveOpenGL(90.0f, ASPECT_RATIO, 0.1, 1000);
-
 }
 
 void RendererCPU::Render()
@@ -53,34 +56,24 @@ void RendererCPU::Render()
 
     for (Mesh& mesh : meshes) {
 
+        Transform t = mesh.transform;
+
         for (Triangle& tri : mesh.tris) {
-            Quat quatY = Quat(Vec3(0, 1, 0), 1.0f * 3.141f / 180.0f);
-            tri.tri[0] = quatY.RotatePoint(tri.tri[0]);
-            tri.tri[1] = quatY.RotatePoint(tri.tri[1]);
-            tri.tri[2] = quatY.RotatePoint(tri.tri[2]);
-
-            Quat quatX = Quat(Vec3(1, 0, 0), 2.0f * 3.141f / 180.0f);
-            tri.tri[0] = quatX.RotatePoint(tri.tri[0]);
-            tri.tri[1] = quatX.RotatePoint(tri.tri[1]);
-            tri.tri[2] = quatX.RotatePoint(tri.tri[2]);
-
-            Triangle translation = tri;
-
-            translation.tri[0].z += 8.0f;
-            translation.tri[1].z += 8.0f;
-            translation.tri[2].z += 8.0f;
-
-            Vec3 lineA = translation.tri[1] - translation.tri[0];
-            Vec3 lineB = translation.tri[2] - translation.tri[0];
-            Vec3 camera = Vec3(0, 0, 0);
-            Vec3 normal = lineA.Cross(lineB);
-            normal.Normalize();
-            
-
-            if (normal.Dot(translation.tri[0] - camera) < 0) 
-            {
-                TrianglesToRaster.push_back(tri);
-            }
+            // t.rotation *= Quat(Vec3(0, 1, 0), 1.0f * 3.141f / 180.0f);
+            // t.rotation *= Quat(Vec3(1, 0, 0), 2.0f * 3.141f / 180.0f);
+            // Triangle translation = tri * t;
+            // 
+            // Vec3 lineA = translation.tri[1] - translation.tri[0];
+            // Vec3 lineB = translation.tri[2] - translation.tri[0];
+            // Vec3 camera = Vec3(0, 0, 0);
+            // Vec3 normal = lineA.Cross(lineB);
+            // normal.Normalize();
+            // 
+            // 
+            // if (normal.Dot(translation.tri[0] - camera) < 0) 
+            // {
+            //     TrianglesToRaster.push_back(tri);
+            // }
         }
     }
 

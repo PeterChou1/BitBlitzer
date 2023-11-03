@@ -105,6 +105,12 @@ Vec3 Vec3::operator * (const float rhs) const {
     return temp;
 }
 
+// Vec3 Vec3::operator*(const Transform& rhs) const
+// {
+//     Vec3 t = *this + rhs.position;
+//     return rhs.rotation.RotatePoint(t);
+// }
+
 Vec3 Vec3::operator / (const float rhs) const {
     Vec3 temp;
     temp.x = x / rhs;
@@ -119,6 +125,13 @@ const Vec3& Vec3::operator*=(const float rhs) {
     z *= rhs;
     return *this;
 }
+
+// const Vec3& Vec3::operator*=(const Transform& rhs)
+// {
+//     *this = *this + rhs.position;
+//     *this = rhs.rotation.RotatePoint(*this);
+//     return *this;
+// }
 
 const Vec3& Vec3::operator/=(const float rhs) {
     x /= rhs;

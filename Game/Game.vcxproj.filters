@@ -145,6 +145,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="src\ReadMe.txt" />
+    <Text Include="ReadMe.txt" />
   </ItemGroup>
 </Project>
