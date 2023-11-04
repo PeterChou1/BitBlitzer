@@ -184,6 +184,8 @@
     <ClInclude Include="App\SimpleSound.h" />
     <ClInclude Include="App\SimpleSprite.h" />
     <ClInclude Include="App\TextureLoader.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\Mat2.h" />
     <ClInclude Include="src\Mat3.h" />
     <ClInclude Include="src\Mat4.h" />
@@ -204,6 +206,8 @@
     <ClCompile Include="App\SimpleSound.cpp" />
     <ClCompile Include="App\SimpleSprite.cpp" />
     <ClCompile Include="App\TextureLoader.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\Mat2.cpp" />

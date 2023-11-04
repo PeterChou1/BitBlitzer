@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Quat.h"
 #include <math.h>
-
+#include <cmath>;
 Quat::Quat() : x(0), y(0), z(0), w(1) {}
 
 Quat::Quat(const Quat& rhs) : x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w) {}
@@ -120,4 +120,41 @@ Mat3 Quat::ToMat3() const {
     mat.rows[1] = RotatePoint(mat.rows[1]);
     mat.rows[2] = RotatePoint(mat.rows[2]);
     return mat;
+}
+
+Quat Quat::FromRotationMatrix(Mat3& m)
+{
+    double trace = m[0][0] + m[1][1] + m[2][2];
+    double k;
+    Quat q;
+
+    if (trace > 0.0) {
+        k = 0.5 / std::sqrt(trace + 1.0);
+        q.w = 0.25 / k;
+        q.x = k * (m[1][2] - m[2][1]);
+        q.y = k * (m[2][0] - m[0][2]);
+        q.z = k * (m[0][1] - m[1][0]);
+    }
+    else if ((m[0][0] > m[1][1]) && (m[0][0] > m[2][2])) {
+        k = 0.5 / std::sqrt(1.0 + m[0][0] - m[1][1] - m[2][2]);
+        q.w = 0.25 / k;
+        q.x = k * (m[0][1] + m[1][0]);
+        q.y = k * (m[0][2] + m[2][0]);
+        q.z = k * (m[2][1] - m[1][2]);
+    }
+    else if (m[1][1] > m[2][2]) {
+        k = 0.5 / std::sqrt(1.0 + m[1][1] - m[0][0] - m[2][2]);
+        q.w = 0.25 / k;
+        q.x = k * (m[0][1] + m[1][0]);
+        q.y = k * (m[2][1] + m[1][2]);
+        q.z = k * (m[2][0] - m[0][2]);
+    }
+    else {
+        k = 0.5 / std::sqrt(1.0 + m[2][2] - m[0][0] - m[1][1]);
+        q.w = 0.25 / k;
+        q.x = k * (m[2][0] + m[0][2]);
+        q.y = k * (m[2][1] + m[1][2]);
+        q.z = k * (m[1][0] - m[0][1]);
+    }
+    return q;
 }

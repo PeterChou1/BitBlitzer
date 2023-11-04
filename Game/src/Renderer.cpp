@@ -15,35 +15,8 @@ constexpr double ASPECT_RATIO = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
 void RendererCPU::Init()
 {
 	Mesh mesh_obj;
-    //cube.tris = {
-    //    // SOUTH
-    //    Triangle(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(1.0f, 1.0f, 0.0f)),
-    //    Triangle(Vec3(0.0f, 0.0f, 0.0f), Vec3(1.0f, 1.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f)),
-    //
-    //    // EAST
-    //    Triangle(Vec3(1.0f, 0.0f, 0.0f), Vec3(1.0f, 1.0f, 0.0f), Vec3(1.0f, 1.0f, 1.0f)),
-    //    Triangle(Vec3(1.0f, 0.0f, 0.0f), Vec3(1.0f, 1.0f, 1.0f), Vec3(1.0f, 0.0f, 1.0f)),
-    //
-    //    // NORTH
-    //    Triangle(Vec3(1.0f, 0.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f), Vec3(0.0f, 1.0f, 1.0f)),
-    //    Triangle(Vec3(1.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 1.0f), Vec3(0.0f, 0.0f, 1.0f)),
-    //
-    //    // WEST
-    //    Triangle(Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f)),
-    //    Triangle(Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f)),
-    //
-    //    // TOP
-    //    Triangle(Vec3(0.0f, 1.0f, 0.0f), Vec3(0.0f, 1.0f, 1.0f), Vec3(1.0f, 1.0f, 1.0f)),
-    //    Triangle(Vec3(0.0f, 1.0f, 0.0f), Vec3(1.0f, 1.0f, 1.0f), Vec3(1.0f, 1.0f, 0.0f)),
-    //
-    //    // BOTTOM
-    //    Triangle(Vec3(1.0f, 0.0f, 1.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 0.0f, 0.0f)),
-    //    Triangle(Vec3(1.0f, 0.0f, 1.0f), Vec3(0.0f, 0.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f)),
-    //};
-    Utils::LoadFromObjectFile("./Assets/ship.obj", mesh_obj);
-    Transform transform;
-    transform.rotation = Quat(Vec3(0, 1, 0), 1.0f * 3.141f / 180.0f);
-    transform.position = Vec3(0, 0, 8);
+    Utils::LoadFromObjectFile("./Assets/teapot.obj", mesh_obj);
+    Transform transform = Transform(Vec3(0, 3, 8), Quat(Vec3(1, 0, 0), 3.141f));;
     mesh_obj.transform = transform;
     meshes.push_back(mesh_obj);
     proj.PerspectiveOpenGL(90.0f, ASPECT_RATIO, 0.1, 1000);
@@ -58,11 +31,9 @@ void RendererCPU::Render()
 
         Transform* t = &mesh.transform;
 
-        std::cout << "Quaternion w:" << t->rotation.w << "xyz: " << t->rotation.xyz().toString() << "\n";
-
         for (Triangle& tri : mesh.tris) {
-            //t->rotation *= Quat(Vec3(0, 1, 0), 1.0f * 3.141f / 180.0f);
-            //t->rotation *= Quat(Vec3(1, 0, 0), 2.0f * 3.141f / 180.0f);
+            //t->rotation *= Quat(Vec3(0, 1, 0), 0.001f * 3.141f / 180.0f);
+            //t->rotation *= Quat(Vec3(1, 0, 0), 0.001f * 3.141f / 180.0f);
             Triangle translation = tri * *t;
             
             Vec3 lineA = translation.tri[1] - translation.tri[0];
@@ -72,7 +43,6 @@ void RendererCPU::Render()
             normal.Normalize();
 
             translation.normal = normal;
-            
             
             if (normal.Dot(translation.tri[0] - camera) < 0) 
             {
@@ -102,32 +72,28 @@ void RendererCPU::Render()
         projected.tri[1].x = (projected.tri[1].x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
         projected.tri[1].y = (projected.tri[1].y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
 
-
         projected.tri[2].x = (projected.tri[2].x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
         projected.tri[2].y = (projected.tri[2].y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
 
 
-        //std::cout << "original: " << tri.tri[0].toString() << ", " << tri.tri[1].toString() << ", " << tri.tri[2].toString() << "\n";
-        //std::cout << "projected: " << projected.tri[0].toString() << ", " << projected.tri[1].toString() << ", " << projected.tri[2].toString() << "\n";
-
-        App::DrawLine(
-            projected.tri[0].x, projected.tri[0].y,
-            projected.tri[1].x, projected.tri[1].y,
-            1, 0, 0
-        );
-
-        App::DrawLine(
-            projected.tri[0].x, projected.tri[0].y,
-            projected.tri[2].x, projected.tri[2].y,
-            1, 0, 0
-        );
-
-
-        App::DrawLine(
-            projected.tri[1].x, projected.tri[1].y,
-            projected.tri[2].x, projected.tri[2].y,
-            1, 0, 0
-        );
+        //App::DrawLine(
+        //    projected.tri[0].x, projected.tri[0].y,
+        //    projected.tri[1].x, projected.tri[1].y,
+        //    1, 0, 0
+        //);
+        //
+        //App::DrawLine(
+        //    projected.tri[0].x, projected.tri[0].y,
+        //    projected.tri[2].x, projected.tri[2].y,
+        //    1, 0, 0
+        //);
+        //
+        //
+        //App::DrawLine(
+        //    projected.tri[1].x, projected.tri[1].y,
+        //    projected.tri[2].x, projected.tri[2].y,
+        //    1, 0, 0
+        //);
 
         App::DrawTriangle(
             projected.tri[0].x, projected.tri[0].y,

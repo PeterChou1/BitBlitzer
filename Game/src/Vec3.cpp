@@ -129,8 +129,8 @@ const Vec3& Vec3::operator*=(const float rhs) {
 
 const Vec3& Vec3::operator*=(const Transform& rhs)
 {
-    *this = *this + rhs.position;
     *this = rhs.rotation.RotatePoint(*this);
+    *this = *this + rhs.position;
     return *this;
 }
 

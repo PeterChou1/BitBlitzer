@@ -24,7 +24,7 @@ public:
     bool IsValid() const;
     Mat3 ToMat3() const;
     Vec4 ToVec4() const { return Vec4(w, x, y, z); }
-
+    static Quat FromRotationMatrix(Mat3& m);
 public:
     float w;
     float x;

@@ -21,6 +21,7 @@ Mat3::Mat3(const Vec3& row0, const Vec3& row1, const Vec3& row2) {
     rows[2] = row2;
 }
 
+
 Mat3& Mat3::operator=(const Mat3& rhs) {
     rows[0] = rhs.rows[0];
     rows[1] = rhs.rows[1];
