@@ -2,25 +2,22 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="App\app.cpp">
-      <Filter>src\App</Filter>
+      <Filter>App</Filter>
     </ClCompile>
     <ClCompile Include="App\main.cpp">
-      <Filter>src\App</Filter>
+      <Filter>App</Filter>
     </ClCompile>
     <ClCompile Include="App\SimpleController.cpp">
-      <Filter>src\App</Filter>
+      <Filter>App</Filter>
     </ClCompile>
     <ClCompile Include="App\SimpleSound.cpp">
-      <Filter>src\App</Filter>
+      <Filter>App</Filter>
     </ClCompile>
     <ClCompile Include="App\SimpleSprite.cpp">
-      <Filter>src\App</Filter>
-    </ClCompile>
-    <ClCompile Include="src\stdafx.cpp">
-      <Filter>src\App</Filter>
+      <Filter>App</Filter>
     </ClCompile>
     <ClCompile Include="App\TextureLoader.cpp">
-      <Filter>src\App</Filter>
+      <Filter>App</Filter>
     </ClCompile>
     <ClCompile Include="src\Vec2.cpp">
       <Filter>src\Math</Filter>
@@ -58,33 +55,21 @@
     <ClCompile Include="src\Utils.cpp">
       <Filter>src\Utils</Filter>
     </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\stdafx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App\app.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="App\main.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="App\SimpleController.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="App\AppSettings.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="App\SimpleSound.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="src\stdafx.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\targetver.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="App\TextureLoader.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="App\SimpleSprite.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="src\Mat2.h">
@@ -117,6 +102,57 @@
     <ClInclude Include="src\Utils.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Transform.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="App\app.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\AppSettings.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\targetver.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\TextureLoader.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\SimpleSprite.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\SimpleSound.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="App\SimpleController.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SystemManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ComponentArray.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ComponentManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Coordinator.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -124,9 +160,6 @@
     </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{71069bac-0b76-4803-a768-6cc95719bc2b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\App">
-      <UniqueIdentifier>{2053fc19-7e4a-40ae-b070-e199c6c3ba67}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Math">
       <UniqueIdentifier>{0e20d3c2-2284-432d-9ce9-1128679c7076}</UniqueIdentifier>
@@ -143,8 +176,12 @@
     <Filter Include="src\Utils">
       <UniqueIdentifier>{9a6dc7e8-5752-400b-907e-e14391272622}</UniqueIdentifier>
     </Filter>
+    <Filter Include="App">
+      <UniqueIdentifier>{2053fc19-7e4a-40ae-b070-e199c6c3ba67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="src\scratch.txt" />
   </ItemGroup>
 </Project>

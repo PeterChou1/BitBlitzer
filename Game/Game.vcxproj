@@ -120,6 +120,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <LanguageStandard>Default</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -175,6 +176,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="src\scratch.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\app.h" />
@@ -184,7 +186,15 @@
     <ClInclude Include="App\SimpleSound.h" />
     <ClInclude Include="App\SimpleSprite.h" />
     <ClInclude Include="App\TextureLoader.h" />
+    <ClInclude Include="src\ComponentArray.h" />
+    <ClInclude Include="src\ComponentManager.h" />
+    <ClInclude Include="src\Coordinator.h" />
+    <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\EntityManager.h" />
+    <ClInclude Include="src\GameManager.h" />
+    <ClInclude Include="src\System.h" />
+    <ClInclude Include="src\SystemManager.h" />
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\Mat2.h" />
     <ClInclude Include="src\Mat3.h" />

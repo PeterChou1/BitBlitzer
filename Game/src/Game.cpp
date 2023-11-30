@@ -8,15 +8,21 @@
 //------------------------------------------------------------------------
 #include "../app/app.h"
 #include "Renderer.h"
+#include <iostream>
+#include "Coordinator.h"
+#include "System.h"
+#include <random>
 //------------------------------------------------------------------------
 
 RendererCPU renderer;
-
+Coordinator gCoordinator;
+Renderer rendererSys;
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.
 //------------------------------------------------------------------------
 void Init()
 {
+	gCoordinator.Init();
 	renderer.Init();
 }
 

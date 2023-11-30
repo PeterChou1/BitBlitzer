@@ -2,7 +2,9 @@
 #include "Utils.h"
 #include <fstream>
 #include <vector>
-#include <strstream>
+#include <sstream>
+
+
 
 bool Utils::LoadFromObjectFile(std::string filename, Mesh& mesh)
 {
@@ -22,7 +24,7 @@ bool Utils::LoadFromObjectFile(std::string filename, Mesh& mesh)
 		char line[128];
 		f.getline(line, 128);
 
-		std::strstream s;
+		std::stringstream s;
 		s << line;
 
 		char junk;

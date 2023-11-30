@@ -1,6 +1,7 @@
 #pragma once
-#include "../src/Vec3.h"
-#include "../src/Quat.h"
+#include "Vec3.h"
+#include "Quat.h"
+
 
 struct Transform {
 	Vec3 position;
@@ -13,3 +14,4 @@ struct Transform {
 	Transform(const Vec3& pos, const Vec3& target, const Vec3& up);
 
 	Transform Inverse();
+};

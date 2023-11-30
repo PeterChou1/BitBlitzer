@@ -2,6 +2,21 @@
 #include <vector>
 #include "Mesh.h"
 #include "Mat4.h"
+#include "System.h"
+
+/*
+* /brief CPU ECS
+*/
+
+class Renderer : public System {
+public:
+	Renderer() {};
+	//unused
+	void Update(float delta) {};
+	void Render();
+	std::vector<const char*> GetRequirements();
+};
+
 
 
 

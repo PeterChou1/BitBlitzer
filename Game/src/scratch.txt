@@ -1,0 +1,6 @@
+
+
+for (Entity e : Visitor<RigidBody, Transform> v(coordinator)) {
+	auto r = coordinator.GetComponent<RigidBody>(e);
+
+}

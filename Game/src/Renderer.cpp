@@ -34,7 +34,7 @@ void RendererCPU::Render()
         for (Triangle& tri : mesh.tris) {
             //t->rotation *= Quat(Vec3(0, 1, 0), 0.001f * 3.141f / 180.0f);
             //t->rotation *= Quat(Vec3(1, 0, 0), 0.001f * 3.141f / 180.0f);
-            Triangle translation = tri * *t;
+            Triangle translation = tri.transform(*t);
             
             Vec3 lineA = translation.tri[1] - translation.tri[0];
             Vec3 lineB = translation.tri[2] - translation.tri[0];
@@ -113,3 +113,24 @@ void RendererCPU::PainterSort(std::vector<Triangle>& sort)
         return z1 > z2;
     });
 }
+
+
+
+
+void Renderer::Render()
+{
+
+}
+
+// Template function to handle multiple types
+template <typename... Ts>
+std::vector<const char*> TypeNames() {
+    return { typeid(Ts).name()... };
+}
+
+std::vector<const char*> Renderer::GetRequirements()
+{
+    return TypeNames<Mesh, Transform>();
+}
+
+
