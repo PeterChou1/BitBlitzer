@@ -69,7 +69,8 @@ void Renderer::Render()
         Triangle view;
         Triangle projected;
 
-        view = translation.transform(cam.world_to_cam);
+        //view = translation.transform(cam.world_to_cam);
+        view = tri;
 
         projected.tri[0] = (cam.proj * Vec4(view.tri[0])).ToVec3();
         projected.tri[1] = (cam.proj * Vec4(view.tri[1])).ToVec3();
@@ -86,24 +87,24 @@ void Renderer::Render()
         projected.tri[2].y = (projected.tri[2].y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
 
 
-        App::DrawLine(
-            projected.tri[0].x, projected.tri[0].y,
-            projected.tri[1].x, projected.tri[1].y,
-            1, 0, 0
-        );
-            
-        App::DrawLine(
-            projected.tri[0].x, projected.tri[0].y,
-            projected.tri[2].x, projected.tri[2].y,
-            1, 0, 0
-        );
-            
-            
-        App::DrawLine(
-            projected.tri[1].x, projected.tri[1].y,
-            projected.tri[2].x, projected.tri[2].y,
-            1, 0, 0
-        );
+        // App::DrawLine(
+        //     projected.tri[0].x, projected.tri[0].y,
+        //     projected.tri[1].x, projected.tri[1].y,
+        //     1, 0, 0
+        // );
+        //     
+        // App::DrawLine(
+        //     projected.tri[0].x, projected.tri[0].y,
+        //     projected.tri[2].x, projected.tri[2].y,
+        //     1, 0, 0
+        // );
+        //     
+        //     
+        // App::DrawLine(
+        //     projected.tri[1].x, projected.tri[1].y,
+        //     projected.tri[2].x, projected.tri[2].y,
+        //     1, 0, 0
+        // );
 
         App::DrawTriangle(
             projected.tri[0].x, projected.tri[0].y,

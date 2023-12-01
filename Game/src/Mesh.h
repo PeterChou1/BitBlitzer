@@ -15,7 +15,6 @@ struct Triangle {
 
 
 struct Mesh {
-	Transform transform;
 	std::vector<Triangle> tris;
 	Mesh() {};
 };
