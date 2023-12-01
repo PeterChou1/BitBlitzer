@@ -22,5 +22,8 @@ Transform::Transform(const Vec3& pos, const Vec3& target, const Vec3& up)
 
 Transform Transform::Inverse()
 {
-	return Transform(position * -1.0, rotation.Inverse());
+
+	Quat rot = rotation.Inverse();
+	Vec3 point = rot.RotatePoint(position);
+	return Transform(point * -1.0, rot);
 }

@@ -11,27 +11,13 @@
 class Renderer : public System {
 public:
 	Renderer() {};
-	//unused
-	void Update(float delta) {};
+
+	void Setup();
+
 	void Render();
-	std::vector<const char*> GetRequirements();
-};
 
-
-
-
-/*
-* /brief CPU based Renderer
-*/
-class RendererCPU {
-public:
-	RendererCPU() {};
-	void Init();
-	void Render();
-private:
-	std::vector<Mesh> meshes;
-	Mat4 proj;
 	void PainterSort(std::vector<Triangle>& mesh);
+
 };
 
 /*

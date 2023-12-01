@@ -167,6 +167,17 @@ void Mat4::PerspectiveOpenGL(float fovy, float aspect_ratio, float near, float f
     rows[3] = Vec4(0, 0, -1, 0);
 }
 
+void Mat4::PerspectiveOLC(float fovy, float aspect_ratio, float far, float near)
+{
+    float fFovRad = 1.0f / tanf(fovy * 0.5f / 180.0f * 3.14159f);
+    (*this)[0][0] = aspect_ratio * fFovRad;
+    (*this)[1][1] = fFovRad;
+    (*this)[2][2] = far / (far - near);
+    (*this)[2][3] = (-far * near) / (far - near);
+    (*this)[3][2] = 1.0f;
+    (*this)[3][3] = 0.0f;
+}
+
 void Mat4::PerspectiveVulkan(float fovy, float aspect_ratio, float near, float far) {
     // Vulkan changed its NDC. It switched from a left-handed
     // coordinate system to a right-handed one.
@@ -223,7 +234,7 @@ Vec4 Mat4::operator[](const int i) const
     return rows[i];
 }
 
-Vec4 Mat4::operator[](const int i)
+Vec4& Mat4::operator[](const int i)
 {
     assert(i >= 0 && i < 4);
     return rows[i];

@@ -9,21 +9,25 @@
 #include "../app/app.h"
 #include "Renderer.h"
 #include <iostream>
-#include "Coordinator.h"
-#include "System.h"
-#include <random>
+#include "GameManager.h"
 //------------------------------------------------------------------------
 
-RendererCPU renderer;
+// RendererCPU renderer;
+// Coordinator gCoordinator;
+// Renderer rendererSys;
+
 Coordinator gCoordinator;
-Renderer rendererSys;
+GameManager manager;
+
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.
 //------------------------------------------------------------------------
 void Init()
 {
+	// gCoordinator.Init();
+	// renderer.Init();
 	gCoordinator.Init();
-	renderer.Init();
+	manager.Setup();
 }
 
 //------------------------------------------------------------------------
@@ -32,6 +36,8 @@ void Init()
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
+
+	manager.Update(deltaTime);
 }
 
 //------------------------------------------------------------------------
@@ -40,7 +46,7 @@ void Update(float deltaTime)
 //------------------------------------------------------------------------
 void Render()
 {	
-	renderer.Render();
+	manager.Render();
 }
 //------------------------------------------------------------------------
 // Add your shutdown code here. Called when the APP_QUIT_KEY is pressed.

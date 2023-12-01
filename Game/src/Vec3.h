@@ -33,6 +33,7 @@ public:
 
     const Vec3& operator*=(const float rhs);
     const Vec3& operator*=(const Transform& rhs);
+    const Vec3& inverseT(const Transform& rhs);
     const Vec3& operator/=(const float rhs);
 
     float operator[](const int idx) const;

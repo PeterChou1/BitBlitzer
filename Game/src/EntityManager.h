@@ -1,8 +1,8 @@
 #pragma once
-
 #include <array>
 #include <cassert>
 #include <queue>
+#include <set>
 #include "Entity.h"
 
 class EntityManager
@@ -48,6 +48,22 @@ public:
 		assert(entity < MAX_ENTITIES && "Entity out of range.");
 
 		return mSignatures[entity];
+	}
+
+	std::set<Entity> MatchSignature(Signature signature) 
+	{
+
+		std::set<Entity> entities;
+
+		for (Entity entity = 0; entity < MAX_ENTITIES; ++entity)
+		{
+			if ((mSignatures[entity] & signature) == signature)
+			{
+				entities.insert(entity);
+			}
+		}
+
+		return entities;
 	}
 
 private:

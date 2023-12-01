@@ -20,6 +20,7 @@ class ComponentArray : public IComponentArray
 public:
 	void InsertData(Entity entity, T component)
 	{
+
 		assert(mEntityToIndexMap.find(entity) == mEntityToIndexMap.end() && "Component added to same entity more than once.");
 
 		// Put new entry at end

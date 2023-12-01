@@ -1,9 +1,10 @@
 #pragma once
 #include "ComponentManager.h"
 #include "EntityManager.h"
-#include "SystemManager.h"
+#include "VisitorManager.h"
 #include "Entity.h"
 #include <memory>
+#include <set>
 
 class Coordinator
 {
@@ -11,9 +12,9 @@ public:
 	void Init()
 	{
 		// Create pointers to each manager
-		mComponentManager = std::make_unique<ComponentManager>();
-		mEntityManager = std::make_unique<EntityManager>();
-		mSystemManager = std::make_unique<SystemManager>();
+		mComponentManager = std::make_shared<ComponentManager>();
+		mEntityManager = std::make_shared<EntityManager>();
+		mVisitorManager = std::make_shared<VisitorManager>();
 	}
 
 
@@ -29,10 +30,20 @@ public:
 
 		mComponentManager->EntityDestroyed(entity);
 
-		mSystemManager->EntityDestroyed(entity);
+		mVisitorManager->EntityDestroyed(entity);
 	}
 
+	template<typename T>
+	bool IsVisitorRegistered()
+	{
+		return mVisitorManager->IsSystemRegistered<T>();
+	}
 
+	template<typename T>
+	std::shared_ptr<T> GetVisitor() 
+	{
+		return mVisitorManager->GetVisitor<T>();
+	}
 	// Component methods
 	template<typename T>
 	void RegisterComponent()
@@ -49,7 +60,7 @@ public:
 		signature.set(mComponentManager->GetComponentType<T>(), true);
 		mEntityManager->SetSignature(entity, signature);
 
-		mSystemManager->EntitySignatureChanged(entity, signature);
+		mVisitorManager->EntitySignatureChanged(entity, signature);
 	}
 
 	template<typename T>
@@ -61,7 +72,7 @@ public:
 		signature.set(mComponentManager->GetComponentType<T>(), false);
 		mEntityManager->SetSignature(entity, signature);
 
-		mSystemManager->EntitySignatureChanged(entity, signature);
+		mVisitorManager->EntitySignatureChanged(entity, signature);
 	}
 
 	template<typename T>
@@ -79,24 +90,24 @@ public:
 
 	// System methods
 	template<typename T>
-	std::shared_ptr<T> RegisterSystem()
+	std::shared_ptr<T> RegisterVisitor()
 	{
-		std::shared_ptr<T> system = mSystemManager->RegisterSystem<T>();
-		std::shared_ptr<System> up = system;
-		std::vector<const char*> typeNames = up->GetRequirements();
-		Signature s = mComponentManager->GetSignature(typeNames);
-		SetSystemSignature<T>(s);
-		return system;
+		std::shared_ptr<T> visitor = mVisitorManager->RegisterVisitor<T>();
+		std::shared_ptr<VisitorBase> visitorBase = visitor;
+		Signature s = visitorBase->GetRequirements(mComponentManager);
+		mVisitorManager->SetSignature<T>(s);
+		visitorBase->mEntities = mEntityManager->MatchSignature(s);
+		return visitor;
 	}
 
-	template<typename T>
-	void SetSystemSignature(Signature signature)
-	{
-		mSystemManager->SetSignature<T>(signature);
+	template<typename ...Ts>
+	Signature GetSignature() {
+		return mComponentManager->GetSignature<Ts>();
 	}
+
 
 private:
-	std::unique_ptr<ComponentManager> mComponentManager;
-	std::unique_ptr<EntityManager> mEntityManager;
-	std::unique_ptr<SystemManager> mSystemManager;
+	std::shared_ptr<ComponentManager> mComponentManager;
+	std::shared_ptr<EntityManager> mEntityManager;
+	std::shared_ptr<VisitorManager> mVisitorManager;
 };

@@ -64,6 +64,9 @@
     <ClCompile Include="src\stdafx.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\DebugCamera.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\main.h">
@@ -135,7 +138,7 @@
     <ClInclude Include="src\EntityManager.h">
       <Filter>include</Filter>
     </ClInclude>
-    <ClInclude Include="src\SystemManager.h">
+    <ClInclude Include="src\VisitorManager.h">
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="src\ComponentArray.h">
@@ -151,6 +154,12 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="src\GameManager.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Visitor.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DebugCamera.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,45 +6,50 @@
 #include "Quat.h"
 #include "Renderer.h"
 #include "Utils.h"
+#include "Coordinator.h"
+#include "Camera.h"
 
 
+
+extern Coordinator gCoordinator;
 
 constexpr double ASPECT_RATIO = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
 
 
-void RendererCPU::Init()
+
+void Renderer::Setup()
 {
-	Mesh mesh_obj;
-    Utils::LoadFromObjectFile("./Assets/teapot.obj", mesh_obj);
-    Transform transform = Transform(Vec3(0, 3, 8), Quat(Vec3(1, 0, 0), 3.141f));;
-    mesh_obj.transform = transform;
-    meshes.push_back(mesh_obj);
-    proj.PerspectiveOpenGL(90.0f, ASPECT_RATIO, 0.1, 1000);
 }
 
-void RendererCPU::Render()
+void Renderer::Render()
 {
+
+    std::set<Entity> cams = Visit<Camera>(gCoordinator);
+    assert(cams.size() == 1, "no camera registered");
+    Entity const& e = *cams.begin();
+    Camera& cam = gCoordinator.GetComponent<Camera>(e);
+
 
     std::vector<Triangle> TrianglesToRaster;
 
-    for (Mesh& mesh : meshes) {
+    // Geometric pipeline
+    for (Entity const& e : Visit<Mesh, Transform>(gCoordinator)) {
 
-        Transform* t = &mesh.transform;
+        // std::cout << "Entity ID found: " << e << std::endl;
+        Mesh& mesh = gCoordinator.GetComponent<Mesh>(e);
+        Transform& t = gCoordinator.GetComponent<Transform>(e);
 
         for (Triangle& tri : mesh.tris) {
-            //t->rotation *= Quat(Vec3(0, 1, 0), 0.001f * 3.141f / 180.0f);
-            //t->rotation *= Quat(Vec3(1, 0, 0), 0.001f * 3.141f / 180.0f);
-            Triangle translation = tri.transform(*t);
-            
+            Triangle translation = tri.transform(t);
+
             Vec3 lineA = translation.tri[1] - translation.tri[0];
             Vec3 lineB = translation.tri[2] - translation.tri[0];
-            Vec3 camera = Vec3(0, 0, 0);
             Vec3 normal = lineA.Cross(lineB);
             normal.Normalize();
 
             translation.normal = normal;
-            
-            if (normal.Dot(translation.tri[0] - camera) < 0) 
+
+            if (normal.Dot(translation.tri[0] - cam.pos) < 0)
             {
                 TrianglesToRaster.push_back(translation);
             }
@@ -60,10 +65,15 @@ void RendererCPU::Render()
         float dp = tri.normal.Dot(light_direction);
 
         Triangle translation = tri;
+
+        Triangle view;
         Triangle projected;
-        projected.tri[0] = (proj * Vec4(translation.tri[0])).ToVec3();
-        projected.tri[1] = (proj * Vec4(translation.tri[1])).ToVec3();
-        projected.tri[2] = (proj * Vec4(translation.tri[2])).ToVec3();
+
+        view = translation.transform(cam.world_to_cam);
+
+        projected.tri[0] = (cam.proj * Vec4(view.tri[0])).ToVec3();
+        projected.tri[1] = (cam.proj * Vec4(view.tri[1])).ToVec3();
+        projected.tri[2] = (cam.proj * Vec4(view.tri[2])).ToVec3();
 
         projected.tri[0].x = (projected.tri[0].x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
         projected.tri[0].y = (projected.tri[0].y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
@@ -76,24 +86,24 @@ void RendererCPU::Render()
         projected.tri[2].y = (projected.tri[2].y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
 
 
-        //App::DrawLine(
-        //    projected.tri[0].x, projected.tri[0].y,
-        //    projected.tri[1].x, projected.tri[1].y,
-        //    1, 0, 0
-        //);
-        //
-        //App::DrawLine(
-        //    projected.tri[0].x, projected.tri[0].y,
-        //    projected.tri[2].x, projected.tri[2].y,
-        //    1, 0, 0
-        //);
-        //
-        //
-        //App::DrawLine(
-        //    projected.tri[1].x, projected.tri[1].y,
-        //    projected.tri[2].x, projected.tri[2].y,
-        //    1, 0, 0
-        //);
+        App::DrawLine(
+            projected.tri[0].x, projected.tri[0].y,
+            projected.tri[1].x, projected.tri[1].y,
+            1, 0, 0
+        );
+            
+        App::DrawLine(
+            projected.tri[0].x, projected.tri[0].y,
+            projected.tri[2].x, projected.tri[2].y,
+            1, 0, 0
+        );
+            
+            
+        App::DrawLine(
+            projected.tri[1].x, projected.tri[1].y,
+            projected.tri[2].x, projected.tri[2].y,
+            1, 0, 0
+        );
 
         App::DrawTriangle(
             projected.tri[0].x, projected.tri[0].y,
@@ -102,11 +112,13 @@ void RendererCPU::Render()
             dp, dp, dp
         );
     }
+    
+
 }
 
-void RendererCPU::PainterSort(std::vector<Triangle>& sort)
+void Renderer::PainterSort(std::vector<Triangle>& sort)
 {
-    std::sort(sort.begin(), sort.end(), 
+    std::sort(sort.begin(), sort.end(),
     [](Triangle& t1, Triangle& t2) {
         float z1 = (t1.tri[0].z + t1.tri[1].z + t1.tri[2].z) / 3;
         float z2 = (t2.tri[0].z + t2.tri[1].z + t2.tri[2].z) / 3;
@@ -114,23 +126,5 @@ void RendererCPU::PainterSort(std::vector<Triangle>& sort)
     });
 }
 
-
-
-
-void Renderer::Render()
-{
-
-}
-
-// Template function to handle multiple types
-template <typename... Ts>
-std::vector<const char*> TypeNames() {
-    return { typeid(Ts).name()... };
-}
-
-std::vector<const char*> Renderer::GetRequirements()
-{
-    return TypeNames<Mesh, Transform>();
-}
 
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "Coordinator.h"
 #include "Renderer.h"
+#include "DebugCamera.h"
 
 class GameManager {
 public:
@@ -15,5 +16,6 @@ public:
 private:
 	Coordinator coordinator;
 	std::shared_ptr<Renderer> renderer;
+	std::shared_ptr<DebugCamera> debugCam;
 
 };

@@ -22,6 +22,7 @@ public:
     void Orient(Vec3 pos, Vec3 fwd, Vec3 up);
     void LookAt(Vec3 pos, Vec3 lookAt, Vec3 up);
     void PerspectiveOpenGL(float fovy, float aspect_ratio, float near, float far);
+    void PerspectiveOLC(float, float aspect_ratio, float near, float far);
     void PerspectiveVulkan(float fovy, float aspect_ratio, float near, float far);
     const float* ToPtr() const { return rows[0].ToPtr(); }
     float* ToPtr() { return rows[0].ToPtr(); }
@@ -29,7 +30,7 @@ public:
     Mat4 operator*(const float rhs) const;
     Mat4 operator*(const Mat4& rhs) const;
     Vec4 operator[](const int i) const;
-    Vec4 operator[](const int i);
+    Vec4& operator[](const int i);
 
     const Mat4& operator*=(const float rhs);
 

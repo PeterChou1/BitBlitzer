@@ -189,12 +189,13 @@
     <ClInclude Include="src\ComponentArray.h" />
     <ClInclude Include="src\ComponentManager.h" />
     <ClInclude Include="src\Coordinator.h" />
+    <ClInclude Include="src\DebugCamera.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\EntityManager.h" />
     <ClInclude Include="src\GameManager.h" />
     <ClInclude Include="src\System.h" />
-    <ClInclude Include="src\SystemManager.h" />
+    <ClInclude Include="src\VisitorManager.h" />
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\Mat2.h" />
     <ClInclude Include="src\Mat3.h" />
@@ -208,6 +209,7 @@
     <ClInclude Include="src\Vec2.h" />
     <ClInclude Include="src\Vec3.h" />
     <ClInclude Include="src\Vec4.h" />
+    <ClInclude Include="src\Visitor.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App\app.cpp" />
@@ -217,6 +219,7 @@
     <ClCompile Include="App\SimpleSprite.cpp" />
     <ClCompile Include="App\TextureLoader.cpp" />
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\DebugCamera.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameManager.cpp" />

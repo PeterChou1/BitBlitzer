@@ -1,22 +1,25 @@
 #pragma once
-#include "Entity.h"
-#include "ComponentManager.h"
 #include <set>
-#include <vector>
-#include <memory>
+#include "Visitor.h"
+#include "Coordinator.h"
 
 
-
-class System
-{
+class System {
 public:
-	std::set<Entity> mEntities;
+	template<typename ...Ts>
+	std::set<Entity> Visit(Coordinator c) 
+	{
 
-	virtual void Update(float delta) = 0;
+		std::shared_ptr<Visitor<Ts...>> v;
 
-	virtual void Render() = 0;
+		if (c.IsVisitorRegistered<Visitor<Ts...>>()) {
+			v = c.GetVisitor<Visitor<Ts...>>();
+		}
+		else {
+			v = c.RegisterVisitor<Visitor<Ts...>>();
+		}
 
-	virtual std::vector<const char*> GetRequirements() = 0;
+		return v->mEntities;
+	}
+
 };
-
-
