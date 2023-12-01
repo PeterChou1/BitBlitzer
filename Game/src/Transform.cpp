@@ -34,7 +34,7 @@ Transform::Transform(const Vec3& pos, const Vec3& target, const Vec3& up)
 
 	affine.rows[0] = { right.x, camUp.x, forward.x, pos.x };
 	affine.rows[1] = { right.y, camUp.y, forward.y, pos.y };
-	affine.rows[2] = { right.y, camUp.y, forward.y, pos.z };
+	affine.rows[2] = { right.z, camUp.z, forward.z, pos.z };
 	affine.rows[3] = { 0.0, 0.0, 0.0, 1.0 };
 }
 

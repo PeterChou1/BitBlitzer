@@ -20,5 +20,4 @@ void Camera::UpdatePos(const Vec3& newpos)
 	pos = newpos;
 	cam_to_world = Transform(newpos, target, up);
 	world_to_cam = cam_to_world.Inverse();
-
 }

@@ -69,8 +69,7 @@ void Renderer::Render()
         Triangle view;
         Triangle projected;
 
-        //view = translation.transform(cam.world_to_cam);
-        view = tri;
+        view = translation.transform(cam.world_to_cam);
 
         projected.tri[0] = (cam.proj * Vec4(view.tri[0])).ToVec3();
         projected.tri[1] = (cam.proj * Vec4(view.tri[1])).ToVec3();
