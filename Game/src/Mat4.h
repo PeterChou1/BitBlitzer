@@ -17,6 +17,8 @@ public:
     float Determinant() const;
     Mat4 Transpose() const;
     Mat4 Inverse() const;
+    // fast inverse specifically for affine matrix
+    Mat4 AffineInverse() const;
     Mat3 Minor(const int i, const int j) const;
     float Cofactor(const int i, const int j) const;
     void Orient(Vec3 pos, Vec3 fwd, Vec3 up);

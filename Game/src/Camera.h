@@ -10,7 +10,10 @@ public:
 	Transform world_to_cam;
 	Vec3 pos;
 	Vec3 target;
+	Vec3 forward;
 	Vec3 up;
+	float nearplane;
+	float farplane;
 
 
 
@@ -18,7 +21,7 @@ public:
 	Camera(Vec3& pos, 
 		   Vec3& target, 
 		   Vec3& up, 
-		   float fov, float aspect_ratio, float near, float far);
+		   float fov, float aspect_ratio, float nearplane, float farplane);
 
-	void UpdatePos(const Vec3& pos);
+	void UpdatePos(const Vec3& pos, const Quat& rot);
 };

@@ -4,20 +4,21 @@
 
 
 
-Camera::Camera(Vec3& position, Vec3& camTarget, Vec3& camUp, 
-	           float fov, float aspect_ratio, float near, float far)
+Camera::Camera(Vec3& pos, Vec3& target, Vec3& up, 
+	           float fov, float aspect_ratio, float nearplane, float farplane) : pos(pos), target(target), up(up), nearplane(nearplane), farplane(farplane)
 {
-	pos = position;
-	target = camTarget;
-	up = camUp;
-	cam_to_world = Transform(position, camTarget, camUp);
+	forward = (pos - target).Normalize();
+	cam_to_world = Transform(pos, target, up);
 	world_to_cam = cam_to_world.Inverse();
-	proj.PerspectiveOpenGL(fov, aspect_ratio, near, far);
+	proj.PerspectiveOpenGL(fov, aspect_ratio, nearplane, farplane);
 }
 
-void Camera::UpdatePos(const Vec3& newpos)
+void Camera::UpdatePos(const Vec3& delta, const Quat& rot)
 {
-	pos = newpos;
-	cam_to_world = Transform(newpos, target, up);
+
+	forward = rot.RotatePoint(forward);
+	pos += delta;
+	target = pos + forward;
+	cam_to_world = Transform(pos, target, up);
 	world_to_cam = cam_to_world.Inverse();
 }

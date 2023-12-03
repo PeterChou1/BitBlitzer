@@ -12,7 +12,14 @@ class Renderer : public System {
 public:
 	Renderer() {};
 
-	void Setup();
+
+
+	std::vector<Triangle> ClipTriangle(Vec3& planePoint, Vec3& planeNormal, Triangle& clip);
+
+	std::vector<Triangle> Clip(std::vector<Triangle>& mesh);
+
+
+	void DebugDraw(const Triangle& tri);
 
 	void Render();
 

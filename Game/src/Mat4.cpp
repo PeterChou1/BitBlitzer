@@ -96,6 +96,19 @@ Mat4 Mat4::Inverse() const {
     return inv;
 }
 
+Mat4 Mat4::AffineInverse() const
+{
+    Mat4 matrix;
+    matrix[0][0] = (*this)[0][0]; matrix[1][0] = (*this)[0][1]; matrix[2][0] = (*this)[0][2]; matrix[3][0] = 0.0f;
+    matrix[0][1] = (*this)[1][0]; matrix[1][1] = (*this)[1][1]; matrix[2][1] = (*this)[1][2]; matrix[3][1] = 0.0f;
+    matrix[0][2] = (*this)[2][0]; matrix[1][2] = (*this)[2][1]; matrix[2][2] = (*this)[2][2]; matrix[3][2] = 0.0f;
+    matrix[0][3] = -((*this)[0][3] * matrix[0][0] + (*this)[1][3] * matrix[0][1] + (*this)[2][3] * matrix[0][2]);
+    matrix[1][3] = -((*this)[0][3] * matrix[1][0] + (*this)[1][3] * matrix[1][1] + (*this)[2][3] * matrix[1][2]);
+    matrix[2][3] = -((*this)[0][3] * matrix[2][0] + (*this)[1][3] * matrix[2][1] + (*this)[2][3] * matrix[2][2]);
+    matrix[3][3] = 1.0f;
+    return matrix;
+}
+
 Mat3 Mat4::Minor(const int i, const int j) const {
     Mat3 minor;
     int yy = 0;

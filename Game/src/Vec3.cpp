@@ -163,7 +163,7 @@ float Vec3::Dot(const Vec3& rhs) const {
     return temp;
 }
 
-const Vec3& Vec3::Normalize() {
+Vec3& Vec3::Normalize() {
     float mag = GetMagnitude();
     float invMag = 1.0f / mag;
     if (0.0f * invMag == 0.0f * invMag) {
@@ -209,4 +209,28 @@ void Vec3::GetOrtho(Vec3& u, Vec3& v) const {
 std::string Vec3::toString() const
 {
     return "{" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + "}";
+}
+
+Vec3 IntersectPlane(Vec3& point, Vec3& normal, Vec3& start, Vec3& end)
+{
+    normal.Normalize();
+    const float planeDot = -normal.Dot(point);
+    const float ad = start.Dot(normal);
+    const float bd = end.Dot(normal);
+    const float t = (-planeDot - ad) / (bd - ad);
+    assert(bd - ad != 0, "line parallel to line");
+    const Vec3 start2End = (end - start) * t;
+    return start + start2End;   
+}
+
+float Dist(Vec3& point, Vec3& planeN, Vec3& planeP)
+{
+    // Compute the vector from the plane point to the point
+    const Vec3 planeToPoint = point - planeP;
+    // Compute the dot product of the vector with the plane normal
+    const float dotProduct = planeToPoint.Dot(planeN);
+    // Compute the magnitude of the plane normal
+    const float normal_mag = planeN.GetMagnitude();
+    // Compute the distance as the absolute value of the dot product divided by the normal magnitude
+    return dotProduct / normal_mag;
 }

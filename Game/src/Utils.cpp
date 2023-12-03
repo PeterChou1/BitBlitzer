@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <sstream>
+#include <iostream>
 
 
 
@@ -44,5 +45,9 @@ bool Utils::LoadFromObjectFile(std::string filename, Mesh& mesh)
 			mesh.tris.push_back({ verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] });
 		}
 	}
+
+	std::cout << "loaded vertex count: " << verts.size() << std::endl;
+	std::cout << "triangles count: " << mesh.tris.size() << std::endl;
+
     return true;
 }

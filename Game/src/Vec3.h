@@ -33,7 +33,6 @@ public:
 
     const Vec3& operator*=(const float rhs);
     const Vec3& operator*=(const Transform& rhs);
-    const Vec3& inverseT(const Transform& rhs);
     const Vec3& operator/=(const float rhs);
 
     float operator[](const int idx) const;
@@ -47,8 +46,7 @@ public:
 
     Vec3 Cross(const Vec3& rhs) const;
     float Dot(const Vec3& rhs) const;
-
-    const Vec3& Normalize();
+    Vec3& Normalize();
     float GetMagnitude() const;
     float GetLengthSqr() const {
         return Dot(*this);
@@ -69,3 +67,9 @@ public:
     float y;
     float z;
 };
+
+
+// return a vector from line start to a point on the plane
+Vec3 IntersectPlane(Vec3& point, Vec3& normal, Vec3& lineStart, Vec3& lineEnd);
+
+float Dist(Vec3& point, Vec3& planeN, Vec3& planeP);

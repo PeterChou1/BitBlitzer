@@ -11,6 +11,8 @@ struct Transform {
 
 	Transform();
 
+	Transform(const Mat4& affine);
+
 	Transform(const Vec3& pos);
 
 	Transform(const Vec3& pos, const Quat& rot);
