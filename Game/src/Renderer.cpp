@@ -178,23 +178,36 @@ void Renderer::RenderTriangle(
         float delta = 1;
         float invslope1 = (vx2 - vx1) / (vy2 - vy1);
         float invslope2 = (vx3 - vx1) / (vy3 - vy1);
+        float uvslope1_u = (u2 - u1) / (vy2 - vy1);
+        float uvslope1_v = (v2 - v1) / (vy2 - vy1);
+        float uvslope2_u = (u3 - u1) / (vy3 - vy1);
+        float uvslope2_v = (v3 - v1) / (vy3 - vy1);
 
         invslope1 *= delta;
         invslope2 *= delta;
 
         float curx1 = vx1;
         float curx2 = vx1;
+        float curu1 = u1, curv1 = v1;
+        float curu2 = u1, curv2 = v1;
+
+        if (invslope1 > invslope2) {
+            std::swap(invslope1, invslope2);
+        }
+
 
         for (float scanlineY = vy1; scanlineY <= vy2; scanlineY += delta)
         {
-
             for (float x = curx1; x <= curx2; x += delta) {
-
-
+                App::DrawPoint(x, scanlineY);
             }
-            App::DrawLine(curx1, scanlineY, curx2, scanlineY);
+            // App::DrawLine(curx1, scanlineY, curx2, scanlineY);
             curx1 += invslope1;
             curx2 += invslope2;
+            curu1 += uvslope1_u;
+            curv1 += uvslope1_v;
+            curu2 += uvslope2_u;
+            curv2 += uvslope2_v;
         }
     };
 
@@ -216,9 +229,17 @@ void Renderer::RenderTriangle(
         float curx1 = vx3;
         float curx2 = vx3;
 
+        if (invslope1 < invslope2) {
+            std::swap(invslope1, invslope2);
+        }
+
         for (float scanlineY = vy3; scanlineY > vy1; scanlineY -= delta)
         {
-            App::DrawLine(curx1, scanlineY, curx2, scanlineY);
+
+            for (float x = curx1; x <= curx2; x += delta) {
+                App::DrawPoint(x, scanlineY);
+            }
+            // App::DrawLine(curx1, scanlineY, curx2, scanlineY);
             curx1 -= invslope1;
             curx2 -= invslope2;
         }

@@ -19,6 +19,8 @@
 //---------------------------------------------------------------------------------
 namespace App
 {
+
+	void DrawPoint(float sx, float sy, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 	//
 	//
 	void DrawTriangle(float ax, float ay, float bx, float by, float cx, float cy, float r = 1.0f, float g = 1.0f, float b = 1.0f);

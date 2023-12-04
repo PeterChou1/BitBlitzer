@@ -30,6 +30,17 @@ namespace App
 		glEnd();
 	}
 
+	void DrawPoint(float sx, float sy, float r, float g, float b) 
+	{
+#if APP_USE_VIRTUAL_RES		
+		APP_VIRTUAL_TO_NATIVE_COORDS(sx, sy);
+#endif
+		glBegin(GL_POINTS);
+		glColor3f(r, g, b); // Yellow
+		glVertex2f(sx, sy);
+		glEnd();
+	}
+
 
 	void DrawLine(float sx, float sy, float ex, float ey, float r, float g, float b)
 	{
