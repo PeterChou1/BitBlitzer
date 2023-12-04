@@ -70,6 +70,6 @@ public:
 
 
 // return a vector from line start to a point on the plane
-Vec3 IntersectPlane(Vec3& point, Vec3& normal, Vec3& lineStart, Vec3& lineEnd);
+Vec3 IntersectPlane(Vec3& point, Vec3& normal, Vec3& start, Vec3& end, float& scale);
 
 float Dist(Vec3& point, Vec3& planeN, Vec3& planeP);

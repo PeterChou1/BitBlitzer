@@ -112,6 +112,11 @@ bool Vec2::IsValid() const {
     return true;
 }
 
+std::string Vec2::toString() const
+{
+    return "{" + std::to_string(x) + "," + std::to_string(y) + "}";
+}
+
 
 
 

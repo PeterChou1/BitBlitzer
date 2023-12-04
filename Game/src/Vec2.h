@@ -1,4 +1,6 @@
 #pragma once
+#include <string>
+
 /*
 ================================
 Vec2
@@ -35,6 +37,9 @@ public:
     const Vec2& Normalize();
     float GetMagnitude() const;
     bool IsValid() const;
+
+    std::string toString() const;
+
     float Dot(const Vec2& rhs) const {
         return x * rhs.x + y * rhs.y;
     }

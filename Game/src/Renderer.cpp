@@ -19,8 +19,9 @@ constexpr double ASPECT_RATIO = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
 std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal, Triangle& clip)
 {
 
-    Vec3* insidePts[3]; int insidePtCount = 0;
-    Vec3* outsidePts[3]; int outsidePtCount = 0;
+    Vec3* insidePts[3]; Vec2* insideTex[3]; int insidePtCount = 0;
+    Vec3* outsidePts[3]; Vec2* outsideTex[3]; int outsidePtCount = 0;
+
     std::vector<Triangle> clippedTriangle;
 
 
@@ -29,14 +30,44 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
     float d2 = Dist(clip.tri[2], planeNormal, planePoint);
 
     
-    if (d0 >= 0) { insidePts[insidePtCount++] = &clip.tri[0]; }
-    else { outsidePts[outsidePtCount++] = &clip.tri[0]; };
+    if (d0 >= 0) 
+    { 
+        insidePts[insidePtCount] = &clip.tri[0];
+        insideTex[insidePtCount]  = &clip.tex[0];
+        insidePtCount++;
+    }
+    else 
+    { 
+        outsidePts[outsidePtCount] = &clip.tri[0];
+        outsideTex[outsidePtCount] = &clip.tex[0];
+        outsidePtCount++;
+    };
 
-    if (d1 >= 0) { insidePts[insidePtCount++] = &clip.tri[1]; }
-    else { outsidePts[outsidePtCount++] = &clip.tri[1]; };
+    if (d1 >= 0) 
+    { 
+        insidePts[insidePtCount] = &clip.tri[1];
+        insideTex[insidePtCount] = &clip.tex[1];
+        insidePtCount++;
+    }
+    else 
+    { 
+        outsidePts[outsidePtCount] = &clip.tri[1]; 
+        outsideTex[outsidePtCount] = &clip.tex[1];
+        outsidePtCount++;
+    };
 
-    if (d2 >= 0) { insidePts[insidePtCount++] = &clip.tri[2]; }
-    else { outsidePts[outsidePtCount++] = &clip.tri[2]; };
+    if (d2 >= 0) 
+    { 
+        insidePts[insidePtCount] = &clip.tri[2]; 
+        insideTex[insidePtCount] = &clip.tex[2];
+        insidePtCount++;
+    }
+    else 
+    { 
+        outsidePts[outsidePtCount] = &clip.tri[2];
+        outsideTex[outsidePtCount] = &clip.tex[2];
+        outsidePtCount++;
+    };
 
 
     if (insidePtCount == 0) 
@@ -53,16 +84,18 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
 
     if (insidePtCount == 1 && outsidePtCount == 2) 
     {
-        Triangle newTri;
+        Triangle newTri = clip;
+
+        float t = 0;
         newTri.tri[0] = *insidePts[0];
-        newTri.tri[1] = IntersectPlane(planePoint, planeNormal, newTri.tri[0], *outsidePts[0]);
-        newTri.tri[2] = IntersectPlane(planePoint, planeNormal, newTri.tri[0], *outsidePts[1]);
-        newTri.r = clip.r;
-        newTri.g = clip.g;
-        newTri.b = clip.b;
-        // newTri.r = 1;
-        // newTri.g = 0;
-        // newTri.b = 0;
+        newTri.tex[0] = *insideTex[0];
+
+        newTri.tri[1] = IntersectPlane(planePoint, planeNormal, newTri.tri[0], *outsidePts[0], t);
+        newTri.tex[1] = *insideTex[0] + (*outsideTex[0] - *insideTex[0]) * t;
+
+        newTri.tri[2] = IntersectPlane(planePoint, planeNormal, newTri.tri[0], *outsidePts[1], t);
+        newTri.tex[2] = *insideTex[0] + (*outsideTex[1] - *insideTex[0]) * t;
+
         clippedTriangle.emplace_back(newTri);
 
         return clippedTriangle;
@@ -70,25 +103,27 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
 
     if (insidePtCount == 2 && outsidePtCount == 1) 
     {
-        Triangle tri1, tri2;
+        Triangle tri1 = clip, tri2 = clip;
+        float t = 0;
         tri1.tri[0] = *insidePts[0];
+        tri1.tex[0] = *insideTex[0];
+
         tri1.tri[1] = *insidePts[1];
-        tri1.tri[2] = IntersectPlane(planePoint, planeNormal, *insidePts[0], *outsidePts[0]);
+        tri1.tex[1] = *insideTex[1];
+
+
+        tri1.tri[2] = IntersectPlane(planePoint, planeNormal, *insidePts[0], *outsidePts[0], t);
+        tri1.tex[2] = *insideTex[0] + (*outsideTex[0] - *insideTex[0]) * t;
+
+
         tri2.tri[0] = *insidePts[1];
+        tri2.tex[0] = *insideTex[1];
+
         tri2.tri[1] = tri1.tri[2];
-        tri2.tri[2] = IntersectPlane(planePoint, planeNormal, *insidePts[1], *outsidePts[0]);
-        tri1.r = clip.r;
-        tri1.g = clip.g;
-        tri1.b = clip.b;
-        tri2.r = clip.r;
-        tri2.g = clip.g;
-        tri2.b = clip.b;
-        //tri1.r = 0;
-        //tri1.g = 1;
-        //tri1.b = 0;        
-        //tri2.r = 0;
-        //tri2.b = 0;
-        //tri2.g = 1;
+        tri2.tex[1] = tri1.tex[2];
+
+        tri2.tri[2] = IntersectPlane(planePoint, planeNormal, *insidePts[1], *outsidePts[0], t);
+        tri1.tex[2] = *insideTex[1] + (*outsideTex[0] - *insideTex[1]) * t;
 
         clippedTriangle.emplace_back(tri1);
         clippedTriangle.emplace_back(tri2);
@@ -98,11 +133,136 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
     assert(false, "unreachable code");
 }
 
-std::vector<Triangle> Renderer::Clip(std::vector<Triangle>& mesh)
-{
-    return mesh;
-}
 
+
+
+void Renderer::RenderTriangle(
+    float x1, float y1, float u1, float v1, 
+    float x2, float y2, float u2, float v2, 
+    float x3, float y3, float u3, float v3
+)
+{
+    if (y2 < y1)
+    {
+        std::swap(y1, y2);
+        std::swap(x1, x2);
+        std::swap(u1, u2);
+        std::swap(v1, v2);
+
+    }
+
+    if (y3 < y1)
+    {
+        std::swap(y1, y3);
+        std::swap(x1, x3);
+        std::swap(u1, u3);
+        std::swap(v1, v3);
+
+    }
+
+    if (y3 < y2)
+    {
+        std::swap(y2, y3);
+        std::swap(x2, x3);
+        std::swap(u2, u3);
+        std::swap(v2, v3);
+    }
+
+
+    auto FillBottom = [](
+        float vx1, float vy1, float u1, float v1,
+        float vx2, float vy2, float u2, float v2,
+        float vx3, float vy3, float u3, float v3
+    ) {
+
+        float delta = 1;
+        float invslope1 = (vx2 - vx1) / (vy2 - vy1);
+        float invslope2 = (vx3 - vx1) / (vy3 - vy1);
+
+        invslope1 *= delta;
+        invslope2 *= delta;
+
+        float curx1 = vx1;
+        float curx2 = vx1;
+
+        for (float scanlineY = vy1; scanlineY <= vy2; scanlineY += delta)
+        {
+
+            for (float x = curx1; x <= curx2; x += delta) {
+
+
+            }
+            App::DrawLine(curx1, scanlineY, curx2, scanlineY);
+            curx1 += invslope1;
+            curx2 += invslope2;
+        }
+    };
+
+    auto FillTop = [](
+        float vx1, float vy1, float u1, float v1,
+        float vx2, float vy2, float u2, float v2,
+        float vx3, float vy3, float u3, float v3
+    ) {
+
+        float delta = 1;
+        float invslope1 = (vx3 - vx1) / (vy3 - vy1);
+        float invslope2 = (vx3 - vx2) / (vy3 - vy2);
+        float uvslope1 = (u3 - u1) / (v3 - v1);
+        float uvslope2 = (u3 - u2) / (v3 - v2);
+
+        invslope1 *= delta;
+        invslope2 *= delta;
+
+        float curx1 = vx3;
+        float curx2 = vx3;
+
+        for (float scanlineY = vy3; scanlineY > vy1; scanlineY -= delta)
+        {
+            App::DrawLine(curx1, scanlineY, curx2, scanlineY);
+            curx1 -= invslope1;
+            curx2 -= invslope2;
+        }
+    };
+
+    // trivial reject 
+    if ((y1 == y2 && y2 == y3) ||  y3 - y1 <= 1) {
+        return;
+    }
+
+    // top triangle exist
+    if (y2 == y3) {
+        FillBottom(
+            x1, y1, u1, v1,
+            x2, y2, u2, v2,
+            x3, y3, u3, v3
+        );
+    }
+    // bottom triangle exist
+    else if (y1 == y2) {
+        FillTop(
+            x1, y1, u1, v1,
+            x2, y2, u2, v2,
+            x3, y3, u3, v3
+        );
+    }
+    else {
+        float x4 = x3 + (((y2 - y3) / (y1 - y3)) * (x1 - x3));
+        float y4 = y2;
+        float u4 = 0.0;
+        float v4 = v2;
+
+        FillBottom(
+            x1, y1, u1, v1,
+            x2, y2, u2, v2,
+            x3, y3, u3, v3
+        );
+        FillTop(
+            x2, y2, u2, v2,
+            x4, y4, u4, v4,
+            x3, y3, u3, v3
+        );
+    }
+}
 
 
 void Renderer::DebugDraw(const Triangle& tri)
@@ -167,7 +327,6 @@ void Renderer::Render()
             }
         }
     }
-
     PainterSort(TrianglesToRaster);
 
 
@@ -211,18 +370,24 @@ void Renderer::Render()
                 clipped.insert(clipped.end(), boxClipped.begin(), boxClipped.end());
             }
             clipcount = clipped.size();
-
         }
 
         for (const Triangle& clip : clipped) {
-            // DebugDraw(clip);
-        
-            App::DrawTriangle(
-                clip.tri[0].x, clip.tri[0].y,
-                clip.tri[1].x, clip.tri[1].y,
-                clip.tri[2].x, clip.tri[2].y,
-                clip.r, clip.g, clip.b
+            
+            RenderTriangle(
+                clip.tri[0].x, clip.tri[0].y, clip.tex[0].x, clip.tex[0].y,
+                clip.tri[1].x, clip.tri[1].y, clip.tex[1].x, clip.tex[1].y,
+                clip.tri[2].x, clip.tri[2].y, clip.tex[2].x, clip.tex[2].y
             );
+
+            DebugDraw(clip);
+        
+            //App::DrawTriangle(
+            //    clip.tri[0].x, clip.tri[0].y,
+            //    clip.tri[1].x, clip.tri[1].y,
+            //    clip.tri[2].x, clip.tri[2].y,
+            //    1, 1, 1
+            //);
         }        
     }
     
