@@ -3,50 +3,58 @@
 #include "Camera.h"
 #include "../App/app.h"
 #include <iostream>
+#include <sstream>
 
 extern Coordinator gCoordinator;
 
+
 void DebugCamera::Move(float deltaTime)
 {
+	Camera& cam = GetFirstComponent<Camera>(gCoordinator);
 
-
-	for (Entity const& e : Visit<Camera>(gCoordinator)) {
-		
-		Camera& cam = gCoordinator.GetComponent<Camera>(e);
-		Vec3& delta = Vec3(0, 0, 0);
-		Vec3& target = cam.forward;
-		Quat r = Quat(cam.up, 0);
-
-		float speed = 10 * (deltaTime / 1000);
-		float rotation = 3.141 / 2 * (deltaTime / 1000);
-		// 
-		if (App::GetController().GetLeftThumbStickX() > 0.5f)
-		{
-			r *= Quat(cam.up, -rotation);
-		}
-		if (App::GetController().GetLeftThumbStickX() < -0.5f)
-		{
-			r *= Quat(cam.up, rotation);
-		}
-
-		if (App::GetController().GetLeftThumbStickY() > 0.5f)
-		{
-			delta += cam.forward * speed;
-		}
-		if (App::GetController().GetLeftThumbStickY() < -0.5f)
-		{
-			delta -= cam.forward * speed;
-		}
-
-		if (App::IsKeyPressed('Q')) {
-			delta += cam.up * speed;
-		}
-
-		if (App::IsKeyPressed('E')) {
-			delta -= cam.up * speed;
-		}
-
-		
-		cam.UpdatePos(delta, r);
+	Vec3& delta = Vec3(0, 0, 0);
+	const Vec3& target = cam.forward;
+	Quat r = Quat(cam.up, 0);
+	
+	float speed = 10 * (deltaTime / 1000);
+	float rotation = 3.141 / 2 * (deltaTime / 1000);
+	// 
+	if (App::GetController().GetLeftThumbStickX() > 0.5f)
+	{
+		r *= Quat(cam.up, -rotation);
 	}
+	if (App::GetController().GetLeftThumbStickX() < -0.5f)
+	{
+		r *= Quat(cam.up, rotation);
+	}
+	
+	if (App::GetController().GetLeftThumbStickY() > 0.5f)
+	{
+		delta += cam.forward * speed;
+	}
+	if (App::GetController().GetLeftThumbStickY() < -0.5f)
+	{
+		delta -= cam.forward * speed;
+	}
+	
+	if (App::IsKeyPressed('Q')) {
+		delta += cam.up * speed;
+	}
+	
+	if (App::IsKeyPressed('E')) {
+		delta -= cam.up * speed;
+	}
+		
+	cam.UpdatePos(delta, r);
 }
+
+void DebugCamera::Render()
+{
+	Camera& cam = GetFirstComponent<Camera>(gCoordinator);
+	std::string pos = "Position x:" + std::to_string(cam.pos.x) + " y: " + std::to_string(cam.pos.y) + " z: " + std::to_string(cam.pos.z);
+	std::string lookat = "Target at x:" + std::to_string(cam.target.x) + " y: " + std::to_string(cam.target.y) + " z: " + std::to_string(cam.target.z);
+	App::Print(100, 100, pos.c_str());
+	App::Print(100, 150, lookat.c_str());
+
+}
+

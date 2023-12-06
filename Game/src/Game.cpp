@@ -2,13 +2,15 @@
 // GameTest.cpp
 //------------------------------------------------------------------------
 #include "stdafx.h"
+#define STB_IMAGE_IMPLEMENTATION
 //------------------------------------------------------------------------
 #include <windows.h> 
 #include <math.h>  
+#include <iostream>
+#include <fstream>
 //------------------------------------------------------------------------
 #include "../app/app.h"
 #include "Renderer.h"
-#include <iostream>
 #include "GameManager.h"
 //------------------------------------------------------------------------
 
@@ -24,8 +26,6 @@ GameManager manager;
 //------------------------------------------------------------------------
 void Init()
 {
-	// gCoordinator.Init();
-	// renderer.Init();
 	gCoordinator.Init();
 	manager.Setup();
 }

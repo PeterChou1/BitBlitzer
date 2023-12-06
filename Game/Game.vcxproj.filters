@@ -2,22 +2,19 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="App\app.cpp">
-      <Filter>App</Filter>
+      <Filter>NextAPI</Filter>
     </ClCompile>
     <ClCompile Include="App\main.cpp">
-      <Filter>App</Filter>
+      <Filter>NextAPI</Filter>
     </ClCompile>
     <ClCompile Include="App\SimpleController.cpp">
-      <Filter>App</Filter>
+      <Filter>NextAPI</Filter>
     </ClCompile>
     <ClCompile Include="App\SimpleSound.cpp">
-      <Filter>App</Filter>
+      <Filter>NextAPI</Filter>
     </ClCompile>
     <ClCompile Include="App\SimpleSprite.cpp">
-      <Filter>App</Filter>
-    </ClCompile>
-    <ClCompile Include="App\TextureLoader.cpp">
-      <Filter>App</Filter>
+      <Filter>NextAPI</Filter>
     </ClCompile>
     <ClCompile Include="src\Vec2.cpp">
       <Filter>src\Math</Filter>
@@ -67,6 +64,12 @@
     <ClCompile Include="src\DebugCamera.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\SimpleTexture.cpp">
+      <Filter>src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="stb_image\stb_image.cpp">
+      <Filter>stb_image</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\main.h">
@@ -115,25 +118,22 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="App\app.h">
-      <Filter>App</Filter>
+      <Filter>NextAPI</Filter>
     </ClInclude>
     <ClInclude Include="App\AppSettings.h">
-      <Filter>App</Filter>
+      <Filter>NextAPI</Filter>
     </ClInclude>
     <ClInclude Include="src\targetver.h">
-      <Filter>App</Filter>
-    </ClInclude>
-    <ClInclude Include="App\TextureLoader.h">
-      <Filter>App</Filter>
+      <Filter>NextAPI</Filter>
     </ClInclude>
     <ClInclude Include="App\SimpleSprite.h">
-      <Filter>App</Filter>
+      <Filter>NextAPI</Filter>
     </ClInclude>
     <ClInclude Include="App\SimpleSound.h">
-      <Filter>App</Filter>
+      <Filter>NextAPI</Filter>
     </ClInclude>
     <ClInclude Include="App\SimpleController.h">
-      <Filter>App</Filter>
+      <Filter>NextAPI</Filter>
     </ClInclude>
     <ClInclude Include="src\EntityManager.h">
       <Filter>include</Filter>
@@ -162,6 +162,12 @@
     <ClInclude Include="src\DebugCamera.h">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="src\SimpleTexture.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image\stb_image.h">
+      <Filter>stb_image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="include">
@@ -185,7 +191,13 @@
     <Filter Include="src\Utils">
       <UniqueIdentifier>{9a6dc7e8-5752-400b-907e-e14391272622}</UniqueIdentifier>
     </Filter>
-    <Filter Include="App">
+    <Filter Include="src\Graphics">
+      <UniqueIdentifier>{13e8acbb-f2a3-4216-af2f-6e2b5d414b8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stb_image">
+      <UniqueIdentifier>{7cf93cb0-a47c-42d4-8e13-6e35e67cab17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NextAPI">
       <UniqueIdentifier>{2053fc19-7e4a-40ae-b070-e199c6c3ba67}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

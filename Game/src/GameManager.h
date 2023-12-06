@@ -14,7 +14,6 @@ public:
 	void Update(float deltaTime);
 
 private:
-	Coordinator coordinator;
 	std::shared_ptr<Renderer> renderer;
 	std::shared_ptr<DebugCamera> debugCam;
 

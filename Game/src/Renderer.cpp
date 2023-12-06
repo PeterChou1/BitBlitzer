@@ -101,20 +101,18 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
         return clippedTriangle;
     }
 
-    if (insidePtCount == 2 && outsidePtCount == 1) 
+    if (insidePtCount == 2 && outsidePtCount == 1)
     {
         Triangle tri1 = clip, tri2 = clip;
-        float t = 0;
+        float t1 = 0, t2 = 0;
         tri1.tri[0] = *insidePts[0];
         tri1.tex[0] = *insideTex[0];
 
         tri1.tri[1] = *insidePts[1];
         tri1.tex[1] = *insideTex[1];
 
-
-        tri1.tri[2] = IntersectPlane(planePoint, planeNormal, *insidePts[0], *outsidePts[0], t);
-        tri1.tex[2] = *insideTex[0] + (*outsideTex[0] - *insideTex[0]) * t;
-
+        tri1.tri[2] = IntersectPlane(planePoint, planeNormal, *insidePts[0], *outsidePts[0], t1);
+        tri1.tex[2] = *insideTex[0] + (*outsideTex[0] - *insideTex[0]) * t1;
 
         tri2.tri[0] = *insidePts[1];
         tri2.tex[0] = *insideTex[1];
@@ -122,8 +120,8 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
         tri2.tri[1] = tri1.tri[2];
         tri2.tex[1] = tri1.tex[2];
 
-        tri2.tri[2] = IntersectPlane(planePoint, planeNormal, *insidePts[1], *outsidePts[0], t);
-        tri1.tex[2] = *insideTex[1] + (*outsideTex[0] - *insideTex[1]) * t;
+        tri2.tri[2] = IntersectPlane(planePoint, planeNormal, *insidePts[1], *outsidePts[0], t2);
+        tri2.tex[2] = *insideTex[1] + (*outsideTex[0] - *insideTex[1]) * t2;
 
         clippedTriangle.emplace_back(tri1);
         clippedTriangle.emplace_back(tri2);
@@ -139,7 +137,8 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
 void Renderer::RenderTriangle(
     float x1, float y1, float u1, float v1, 
     float x2, float y2, float u2, float v2, 
-    float x3, float y3, float u3, float v3
+    float x3, float y3, float u3, float v3,
+    SimpleTexture tex
 )
 {
     if (y2 < y1)
@@ -172,24 +171,19 @@ void Renderer::RenderTriangle(
     auto FillBottom = [](
         float vx1, float vy1, float u1, float v1,
         float vx2, float vy2, float u2, float v2,
-        float vx3, float vy3, float u3, float v3
+        float vx3, float vy3, float u3, float v3,
+        SimpleTexture& tex
     ) {
-
         float delta = 1;
         float invslope1 = (vx2 - vx1) / (vy2 - vy1);
         float invslope2 = (vx3 - vx1) / (vy3 - vy1);
-        float uvslope1_u = (u2 - u1) / (vy2 - vy1);
-        float uvslope1_v = (v2 - v1) / (vy2 - vy1);
-        float uvslope2_u = (u3 - u1) / (vy3 - vy1);
-        float uvslope2_v = (v3 - v1) / (vy3 - vy1);
 
         invslope1 *= delta;
         invslope2 *= delta;
 
         float curx1 = vx1;
         float curx2 = vx1;
-        float curu1 = u1, curv1 = v1;
-        float curu2 = u1, curv2 = v1;
+
 
         if (invslope1 > invslope2) {
             std::swap(invslope1, invslope2);
@@ -198,36 +192,41 @@ void Renderer::RenderTriangle(
 
         for (float scanlineY = vy1; scanlineY <= vy2; scanlineY += delta)
         {
-            for (float x = curx1; x <= curx2; x += delta) {
-                App::DrawPoint(x, scanlineY);
+            for (float x = curx1; x < curx2; x += delta) {
+                // Linearly interpolate u and v for the current pixel
+                // float alpha;
+                float det = (vy2 - vy3) * (vx1 - vx3) + (vx3 - vx2) * (vy1 - vy3);
+                assert(abs(det) > std::numeric_limits<float>::epsilon(), "not possible");
+                float u = ((vy2 - vy3) * (x - vx3) + (vx3 - vx2) * (scanlineY - vy3)) / det;
+                float v = ((vy3 - vy1) * (x - vx3) + (vx1 - vx3) * (scanlineY - vy3)) / det;
+                float w = 1 - u - v;
+                float trueU = u * u1 + v * u2 + w * u3;
+                float trueV = u * v1 + v * v2 + w * v3;
+                float r, g, b;
+                tex.Sample(trueU, trueV, r, g, b);
+                App::DrawPoint(x, scanlineY, r, g, b);
             }
             // App::DrawLine(curx1, scanlineY, curx2, scanlineY);
             curx1 += invslope1;
             curx2 += invslope2;
-            curu1 += uvslope1_u;
-            curv1 += uvslope1_v;
-            curu2 += uvslope2_u;
-            curv2 += uvslope2_v;
         }
     };
 
     auto FillTop = [](
         float vx1, float vy1, float u1, float v1,
         float vx2, float vy2, float u2, float v2,
-        float vx3, float vy3, float u3, float v3
+        float vx3, float vy3, float u3, float v3,
+        SimpleTexture& tex
     ) {
-
+        
         float delta = 1;
         float invslope1 = (vx3 - vx1) / (vy3 - vy1);
         float invslope2 = (vx3 - vx2) / (vy3 - vy2);
-        float uvslope1 = (u3 - u1) / (v3 - v1);
-        float uvslope2 = (u3 - u2) / (v3 - v2);
-
         invslope1 *= delta;
         invslope2 *= delta;
-
         float curx1 = vx3;
         float curx2 = vx3;
+
 
         if (invslope1 < invslope2) {
             std::swap(invslope1, invslope2);
@@ -235,18 +234,30 @@ void Renderer::RenderTriangle(
 
         for (float scanlineY = vy3; scanlineY > vy1; scanlineY -= delta)
         {
+            for (float x = curx1; x < curx2; x += delta) {
 
-            for (float x = curx1; x <= curx2; x += delta) {
-                App::DrawPoint(x, scanlineY);
+                float det = (vy2 - vy3) * (vx1 - vx3) + (vx3 - vx2) * (vy1 - vy3);
+                assert(abs(det) > std::numeric_limits<float>::epsilon(), "not possible");
+                float u = ((vy2 - vy3) * (x - vx3) + (vx3 - vx2) * (scanlineY - vy3)) / det;
+                float v = ((vy3 - vy1) * (x - vx3) + (vx1 - vx3) * (scanlineY - vy3)) / det;
+                float w = 1 - u - v;
+                float trueU = u * u1 + v * u2 + w * u3;
+                float trueV = u * v1 + v * v2 + w * v3;
+
+                float r, g, b;
+                tex.Sample(trueU, trueV, r, g, b);
+                App::DrawPoint(x, scanlineY, r, g, b);
             }
             // App::DrawLine(curx1, scanlineY, curx2, scanlineY);
             curx1 -= invslope1;
             curx2 -= invslope2;
         }
+
+
     };
 
     // trivial reject 
-    if ((y1 == y2 && y2 == y3) ||  y3 - y1 <= 1) {
+    if ((y1 == y2 && y2 == y3) ||  y3 - y1 <= 1.0) {
         return;
     }
 
@@ -255,7 +266,8 @@ void Renderer::RenderTriangle(
         FillBottom(
             x1, y1, u1, v1,
             x2, y2, u2, v2,
-            x3, y3, u3, v3
+            x3, y3, u3, v3,
+            tex
         );
     }
     // bottom triangle exist
@@ -263,24 +275,28 @@ void Renderer::RenderTriangle(
         FillTop(
             x1, y1, u1, v1,
             x2, y2, u2, v2,
-            x3, y3, u3, v3
+            x3, y3, u3, v3,
+            tex
         );
     }
     else {
-        float x4 = x3 + (((y2 - y3) / (y1 - y3)) * (x1 - x3));
+        float t = (y2 - y3) / (y1 - y3);
+        float x4 = x3 + t * (x1 - x3);
         float y4 = y2;
-        float u4 = 0.0;
-        float v4 = v2;
+        float u4 = u3 + t * (u1 - u3);
+        float v4 = v3 + t * (v1 - v3);
 
         FillBottom(
             x1, y1, u1, v1,
             x2, y2, u2, v2,
-            x3, y3, u3, v3
+            x3, y3, u3, v3,
+            tex
         );
         FillTop(
             x2, y2, u2, v2,
             x4, y4, u4, v4,
-            x3, y3, u3, v3
+            x3, y3, u3, v3,
+            tex
         );
     }
 }
@@ -317,15 +333,19 @@ void Renderer::Render()
     Camera& cam = gCoordinator.GetComponent<Camera>(e);
     Vec3 light_direction = Vec3(0, -1.0, 0.0f);
     std::vector<Triangle> TrianglesToRaster;
+    //TODO Refactor texture system
+    SimpleTexture tex;
    
     // Geometric pipeline
-    for (Entity const& e : Visit<Mesh, Transform>(gCoordinator)) {
+    for (Entity const& e : Visit<Mesh, Transform, SimpleTexture>(gCoordinator)) {
 
         // std::cout << "Entity ID found: " << e << std::endl;
         Mesh& mesh = gCoordinator.GetComponent<Mesh>(e);
         Transform& t = gCoordinator.GetComponent<Transform>(e);
+        tex = gCoordinator.GetComponent<SimpleTexture>(e);
 
         for (Triangle& tri : mesh.tris) {
+            // transform triangle by model matrix
             Triangle translation = tri.transform(t);
 
             Vec3 lineA = translation.tri[1] - translation.tri[0];
@@ -338,9 +358,11 @@ void Renderer::Render()
             translation.r = dp;
             translation.g = dp;
             translation.b = dp;
-            
+
+            // back face culling
             if (normal.Dot(translation.tri[0] - cam.pos) < 0)
             {
+                // transform triangle into camera space
                 Triangle view = translation.transform(cam.world_to_cam);
                 // clip against the near plane
                 auto clipped = ClipTriangle(Vec3(0, 0, cam.nearplane), Vec3(0, 0, 1), view);
@@ -348,6 +370,9 @@ void Renderer::Render()
             }
         }
     }
+
+    float r, g, b;
+    tex.Sample(0.0, 0.0, r, g, b);
     PainterSort(TrianglesToRaster);
 
 
@@ -398,7 +423,8 @@ void Renderer::Render()
             RenderTriangle(
                 clip.tri[0].x, clip.tri[0].y, clip.tex[0].x, clip.tex[0].y,
                 clip.tri[1].x, clip.tri[1].y, clip.tex[1].x, clip.tex[1].y,
-                clip.tri[2].x, clip.tri[2].y, clip.tex[2].x, clip.tex[2].y
+                clip.tri[2].x, clip.tri[2].y, clip.tex[2].x, clip.tex[2].y,
+                tex
             );
 
             DebugDraw(clip);

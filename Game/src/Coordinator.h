@@ -36,7 +36,7 @@ public:
 	template<typename T>
 	bool IsVisitorRegistered()
 	{
-		return mVisitorManager->IsSystemRegistered<T>();
+		return mVisitorManager->IsVisitorRegistered<T>();
 	}
 
 	template<typename T>

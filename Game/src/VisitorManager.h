@@ -10,7 +10,7 @@ class VisitorManager
 {
 public:
 	template<typename T>
-	bool IsSystemRegistered() 
+	bool IsVisitorRegistered() 
 	{
 		const char* typeName = typeid(T).name();
 		return mVisitor.find(typeName) != mVisitor.end();
@@ -19,6 +19,7 @@ public:
 	template<typename T>
 	std::shared_ptr<T> GetVisitor() 
 	{
+		static_assert(std::is_base_of<VisitorBase, T>::value, "T must derive from visitor");
 		const char* typeName = typeid(T).name();
 		assert(mVisitor.find(typeName) != mVisitor.end() && "Getting System that does not exist");
 		return std::dynamic_pointer_cast<T>(mVisitor[typeName]);
@@ -27,7 +28,7 @@ public:
 	template<typename T>
 	std::shared_ptr<T> RegisterVisitor()
 	{
-		static_assert(std::is_base_of<VisitorBase, T>::value, "T must derive from system");
+		static_assert(std::is_base_of<VisitorBase, T>::value, "T must derive from visitor");
 
 		const char* typeName = typeid(T).name();
 
