@@ -7,8 +7,12 @@
 
 struct Vertex {
 	Vec2 tex;
+	Vec3 normal;
 	Vec3 pos;
+	Vertex() {}
+	Vertex(Vec3& pos) : pos(pos), normal(Vec3(0, 0, 0)), tex(Vec2(0,0)) {}
 };
+
 struct Triangle {
 
 	Vertex vert[3];
@@ -34,7 +38,9 @@ struct Triangle {
 
 struct Mesh {
 	std::vector<Triangle> tris;
-	Mesh() {};
+	// flag to tell if we should load normal or generate them automatically while rendering
+	bool hasNormal;
+	Mesh() : hasNormal(false) {};
 };
 
 
