@@ -25,47 +25,47 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
     std::vector<Triangle> clippedTriangle;
 
 
-    float d0 = Dist(clip.tri[0], planeNormal, planePoint);
-    float d1 = Dist(clip.tri[1], planeNormal, planePoint);
-    float d2 = Dist(clip.tri[2], planeNormal, planePoint);
+    float d0 = Dist(clip.verts[0].pos, planeNormal, planePoint);
+    float d1 = Dist(clip.verts[1].pos, planeNormal, planePoint);
+    float d2 = Dist(clip.verts[2].pos, planeNormal, planePoint);
 
     
     if (d0 >= 0) 
     { 
-        insidePts[insidePtCount] = &clip.tri[0];
-        insideTex[insidePtCount]  = &clip.tex[0];
+        insidePts[insidePtCount] = &clip.verts[0].pos;
+        insideTex[insidePtCount]  = &clip.verts[0].tex;
         insidePtCount++;
     }
     else 
     { 
-        outsidePts[outsidePtCount] = &clip.tri[0];
-        outsideTex[outsidePtCount] = &clip.tex[0];
+        outsidePts[outsidePtCount] = &clip.verts[0].pos;
+        outsideTex[outsidePtCount] = &clip.verts[0].tex;
         outsidePtCount++;
     };
 
     if (d1 >= 0) 
     { 
-        insidePts[insidePtCount] = &clip.tri[1];
-        insideTex[insidePtCount] = &clip.tex[1];
+        insidePts[insidePtCount] = &clip.verts[1].pos;
+        insideTex[insidePtCount] = &clip.verts[1].tex;
         insidePtCount++;
     }
     else 
     { 
-        outsidePts[outsidePtCount] = &clip.tri[1]; 
-        outsideTex[outsidePtCount] = &clip.tex[1];
+        outsidePts[outsidePtCount] = &clip.verts[1].pos;
+        outsideTex[outsidePtCount] = &clip.verts[1].tex;
         outsidePtCount++;
     };
 
     if (d2 >= 0) 
     { 
-        insidePts[insidePtCount] = &clip.tri[2]; 
-        insideTex[insidePtCount] = &clip.tex[2];
+        insidePts[insidePtCount] = &clip.verts[2].pos;
+        insideTex[insidePtCount] = &clip.verts[2].tex;
         insidePtCount++;
     }
     else 
     { 
-        outsidePts[outsidePtCount] = &clip.tri[2];
-        outsideTex[outsidePtCount] = &clip.tex[2];
+        outsidePts[outsidePtCount] = &clip.verts[2].pos;
+        outsideTex[outsidePtCount] = &clip.verts[2].tex;
         outsidePtCount++;
     };
 
@@ -87,14 +87,14 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
         Triangle newTri = clip;
 
         float t = 0;
-        newTri.tri[0] = *insidePts[0];
-        newTri.tex[0] = *insideTex[0];
+        newTri.verts[0].pos = *insidePts[0];
+        newTri.verts[0].tex = *insideTex[0];
 
-        newTri.tri[1] = IntersectPlane(planePoint, planeNormal, newTri.tri[0], *outsidePts[0], t);
-        newTri.tex[1] = *insideTex[0] + (*outsideTex[0] - *insideTex[0]) * t;
+        newTri.verts[1].pos = IntersectPlane(planePoint, planeNormal, newTri.verts[0].pos, *outsidePts[0], t);
+        newTri.verts[1].tex = *insideTex[0] + (*outsideTex[0] - *insideTex[0]) * t;
 
-        newTri.tri[2] = IntersectPlane(planePoint, planeNormal, newTri.tri[0], *outsidePts[1], t);
-        newTri.tex[2] = *insideTex[0] + (*outsideTex[1] - *insideTex[0]) * t;
+        newTri.verts[2].pos = IntersectPlane(planePoint, planeNormal, newTri.verts[0].pos, *outsidePts[1], t);
+        newTri.verts[2].tex = *insideTex[0] + (*outsideTex[1] - *insideTex[0]) * t;
 
         clippedTriangle.emplace_back(newTri);
 
@@ -105,23 +105,23 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
     {
         Triangle tri1 = clip, tri2 = clip;
         float t1 = 0, t2 = 0;
-        tri1.tri[0] = *insidePts[0];
-        tri1.tex[0] = *insideTex[0];
+        tri1.verts[0].pos = *insidePts[0];
+        tri1.verts[0].tex = *insideTex[0];
 
-        tri1.tri[1] = *insidePts[1];
-        tri1.tex[1] = *insideTex[1];
+        tri1.verts[1].pos = *insidePts[1];
+        tri1.verts[1].tex = *insideTex[1];
 
-        tri1.tri[2] = IntersectPlane(planePoint, planeNormal, *insidePts[0], *outsidePts[0], t1);
-        tri1.tex[2] = *insideTex[0] + (*outsideTex[0] - *insideTex[0]) * t1;
+        tri1.verts[2].pos = IntersectPlane(planePoint, planeNormal, *insidePts[0], *outsidePts[0], t1);
+        tri1.verts[2].tex = *insideTex[0] + (*outsideTex[0] - *insideTex[0]) * t1;
 
-        tri2.tri[0] = *insidePts[1];
-        tri2.tex[0] = *insideTex[1];
+        tri2.verts[0].pos = *insidePts[1];
+        tri2.verts[0].tex = *insideTex[1];
 
-        tri2.tri[1] = tri1.tri[2];
-        tri2.tex[1] = tri1.tex[2];
+        tri2.verts[1].pos = tri1.verts[2].pos;
+        tri2.verts[1].tex = tri1.verts[2].tex;
 
-        tri2.tri[2] = IntersectPlane(planePoint, planeNormal, *insidePts[1], *outsidePts[0], t2);
-        tri2.tex[2] = *insideTex[1] + (*outsideTex[0] - *insideTex[1]) * t2;
+        tri2.verts[2].pos = IntersectPlane(planePoint, planeNormal, *insidePts[1], *outsidePts[0], t2);
+        tri2.verts[2].tex = *insideTex[1] + (*outsideTex[0] - *insideTex[1]) * t2;
 
         clippedTriangle.emplace_back(tri1);
         clippedTriangle.emplace_back(tri2);
@@ -304,33 +304,18 @@ void Renderer::RenderTriangle(
 
 void Renderer::DebugDraw(const Triangle& tri)
 {
-    App::DrawLine(
-        tri.tri[0].x, tri.tri[0].y,
-        tri.tri[1].x, tri.tri[1].y,
-        1, 0, 0
-    );
-        
-    App::DrawLine(
-        tri.tri[0].x, tri.tri[0].y,
-        tri.tri[2].x, tri.tri[2].y,
-        1, 0, 0
-    );
-        
-        
-    App::DrawLine(
-        tri.tri[1].x, tri.tri[1].y,
-        tri.tri[2].x, tri.tri[2].y,
-        1, 0, 0
-    );
+    Vec3 v1 = tri.verts[0].pos;
+    Vec3 v2 = tri.verts[1].pos;
+    Vec3 v3 = tri.verts[2].pos;
+
+    App::DrawLine(v1.x, v1.y, v2.x, v2.y, 1, 0, 0);
+    App::DrawLine(v1.x, v1.y, v3.x, v3.y, 1, 0, 0);    
+    App::DrawLine(v2.x, v2.y, v3.x, v3.y, 1, 0, 0);
 }
 
 void Renderer::Render()
 {
-
-    std::set<Entity> cams = Visit<Camera>(gCoordinator);
-    assert(cams.size() == 1, "no camera registered");
-    Entity const& e = *cams.begin();
-    Camera& cam = gCoordinator.GetComponent<Camera>(e);
+    Camera& cam = GetFirstComponent<Camera>(gCoordinator);
     Vec3 light_direction = Vec3(0, -1.0, 0.0f);
     std::vector<Triangle> TrianglesToRaster;
     //TODO Refactor texture system
@@ -347,20 +332,22 @@ void Renderer::Render()
         for (Triangle& tri : mesh.tris) {
             // transform triangle by model matrix
             Triangle translation = tri.transform(t);
+            Vec3 normal;
 
-            Vec3 lineA = translation.tri[1] - translation.tri[0];
-            Vec3 lineB = translation.tri[2] - translation.tri[0];
-            Vec3 normal = lineA.Cross(lineB);
-            normal.Normalize();
-            translation.normal = normal;
-
-            float dp = translation.normal.Dot(light_direction);
-            translation.r = dp;
-            translation.g = dp;
-            translation.b = dp;
-
+            if (!mesh.hasNormal) {
+                Vec3 lineA = translation.verts[1].pos - translation.verts[0].pos;
+                Vec3 lineB = translation.verts[2].pos - translation.verts[0].pos;
+                normal = lineA.Cross(lineB);
+                normal.Normalize();
+                translation.verts[0].normal = normal;
+                translation.verts[1].normal = normal;
+                translation.verts[2].normal = normal;
+            }
+            else {
+                normal = (translation.verts[0].normal + translation.verts[1].normal + translation.verts[2].normal) * (1 / 3);
+            }
             // back face culling
-            if (normal.Dot(translation.tri[0] - cam.pos) < 0)
+            if (normal.Dot(translation.verts[0].pos - cam.pos) < 0)
             {
                 // transform triangle into camera space
                 Triangle view = translation.transform(cam.world_to_cam);
@@ -371,26 +358,26 @@ void Renderer::Render()
         }
     }
 
-    float r, g, b;
-    tex.Sample(0.0, 0.0, r, g, b);
+
     PainterSort(TrianglesToRaster);
 
+    std::cout << "Triangle To Raster Size " << TrianglesToRaster.size() << std::endl;
 
     for (Triangle& triangle : TrianglesToRaster) {
 
-        triangle.tri[0] = (cam.proj * Vec4(triangle.tri[0])).ToVec3();
-        triangle.tri[1] = (cam.proj * Vec4(triangle.tri[1])).ToVec3();
-        triangle.tri[2] = (cam.proj * Vec4(triangle.tri[2])).ToVec3();
+        triangle.verts[0].pos = (cam.proj * Vec4(triangle.verts[0].pos)).ToVec3();
+        triangle.verts[1].pos = (cam.proj * Vec4(triangle.verts[1].pos)).ToVec3();
+        triangle.verts[2].pos = (cam.proj * Vec4(triangle.verts[2].pos)).ToVec3();
 
-        triangle.tri[0].x = (triangle.tri[0].x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
-        triangle.tri[0].y = (triangle.tri[0].y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
+        triangle.verts[0].pos.x = (triangle.verts[0].pos.x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
+        triangle.verts[0].pos.y = (triangle.verts[0].pos.y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
 
 
-        triangle.tri[1].x = (triangle.tri[1].x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
-        triangle.tri[1].y = (triangle.tri[1].y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
+        triangle.verts[1].pos.x = (triangle.verts[1].pos.x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
+        triangle.verts[1].pos.y = (triangle.verts[1].pos.y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
 
-        triangle.tri[2].x = (triangle.tri[2].x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
-        triangle.tri[2].y = (triangle.tri[2].y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
+        triangle.verts[1].pos.x = (triangle.verts[2].pos.x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
+        triangle.verts[1].pos.y = (triangle.verts[2].pos.y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
 
 
         // clip against 4 planes
@@ -420,19 +407,19 @@ void Renderer::Render()
 
         for (const Triangle& clip : clipped) {
             
-            RenderTriangle(
-                clip.tri[0].x, clip.tri[0].y, clip.tex[0].x, clip.tex[0].y,
-                clip.tri[1].x, clip.tri[1].y, clip.tex[1].x, clip.tex[1].y,
-                clip.tri[2].x, clip.tri[2].y, clip.tex[2].x, clip.tex[2].y,
-                tex
-            );
+            // RenderTriangle(
+            //     clip.verts[0].pos.x, clip.verts[0].pos.y, clip.verts[0].tex.x, clip.verts[0].tex.y,
+            //     clip.verts[1].pos.x, clip.verts[1].pos.y, clip.verts[1].tex.x, clip.verts[1].tex.y,
+            //     clip.verts[2].pos.x, clip.verts[2].pos.y, clip.verts[2].tex.x, clip.verts[2].tex.y,
+            //     tex
+            // );
 
             DebugDraw(clip);
         
             //App::DrawTriangle(
-            //    clip.tri[0].x, clip.tri[0].y,
-            //    clip.tri[1].x, clip.tri[1].y,
-            //    clip.tri[2].x, clip.tri[2].y,
+            //    clip.verts[0].pos[0].x, clip.verts[0].pos[0].y,
+            //    clip.verts[0].pos[1].x, clip.verts[0].pos[1].y,
+            //    clip.verts[0].pos[2].x, clip.verts[0].pos[2].y,
             //    1, 1, 1
             //);
         }        
@@ -445,8 +432,8 @@ void Renderer::PainterSort(std::vector<Triangle>& sort)
 {
     std::sort(sort.begin(), sort.end(),
     [](Triangle& t1, Triangle& t2) {
-        float z1 = (t1.tri[0].z + t1.tri[1].z + t1.tri[2].z) / 3;
-        float z2 = (t2.tri[0].z + t2.tri[1].z + t2.tri[2].z) / 3;
+        float z1 = (t1.verts[0].pos.z + t1.verts[1].pos.z + t1.verts[2].pos.z) / 3;
+        float z2 = (t2.verts[0].pos.z + t2.verts[1].pos.z + t2.verts[2].pos.z) / 3;
         return z1 > z2;
     });
 }
