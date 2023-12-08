@@ -4,6 +4,7 @@
 #include "Mat4.h"
 #include "System.h"
 #include "SimpleTexture.h"
+#include "DepthBuffer.h"
 
 /*
 * /brief CPU ECS
@@ -15,7 +16,7 @@ public:
 
 	std::vector<Triangle> ClipTriangle(Vec3& planePoint, Vec3& planeNormal, Triangle& clip);
 
-	void RenderTriangle(Triangle& tri, SimpleTexture& tex);
+	void RenderTriangle(Triangle& tri, SimpleTexture& tex, DepthBuffer& depth);
 
 	void DebugDraw(const Triangle& tri);
 

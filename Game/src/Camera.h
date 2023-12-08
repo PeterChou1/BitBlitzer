@@ -16,8 +16,8 @@ public:
 	float farplane;
 
 
-
 	Camera() {};
+
 	Camera(Vec3& pos, 
 		   Vec3& target, 
 		   Vec3& up, 

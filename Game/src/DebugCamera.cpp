@@ -21,11 +21,11 @@ void DebugCamera::Move(float deltaTime)
 	// 
 	if (App::GetController().GetLeftThumbStickX() > 0.5f)
 	{
-		r *= Quat(cam.up, -rotation);
+		r *= Quat(cam.up, rotation);
 	}
 	if (App::GetController().GetLeftThumbStickX() < -0.5f)
 	{
-		r *= Quat(cam.up, rotation);
+		r *= Quat(cam.up, -rotation);
 	}
 	
 	if (App::GetController().GetLeftThumbStickY() > 0.5f)

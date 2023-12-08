@@ -184,6 +184,7 @@
     <ClInclude Include="App\SimpleController.h" />
     <ClInclude Include="App\SimpleSound.h" />
     <ClInclude Include="App\SimpleSprite.h" />
+    <ClInclude Include="DepthBuffer.h" />
     <ClInclude Include="src\ComponentArray.h" />
     <ClInclude Include="src\ComponentManager.h" />
     <ClInclude Include="src\Coordinator.h" />

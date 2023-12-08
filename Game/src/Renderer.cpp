@@ -104,9 +104,9 @@ void ComputeBarycentricCoordinates(const Vertex& v1, const Vertex& v2, const Ver
     gamma = 1.0f - alpha - beta;
 }
 
-void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex) {
+void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuffer& depth) {
 
-    float delta = 0.33;
+    float delta = 1;
     float invslope1 = (v2.pos.x - v1.pos.x) / (v2.pos.y - v1.pos.y);
     float invslope2 = (v3.pos.x - v1.pos.x) / (v3.pos.y - v1.pos.y);
     invslope1 *= delta;
@@ -130,18 +130,22 @@ void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex) {
             float z = alpha * v1.invW + beta * v2.invW + gamma * v3.invW;
             u /= z;
             v /= z;
-            float r, g, b;
-            tex.Sample(u, v, r, g, b);
-            App::DrawPoint(x, scanlineY, r, g, b);
+
+            if (z < depth.GetBuffer(x, scanlineY)) {
+                float r, g, b;
+                tex.Sample(u, v, r, g, b);
+                App::DrawPoint(x, scanlineY, r, g, b);
+                depth.SetBuffer(static_cast<int>(x), static_cast<int>(scanlineY), z);
+            }
         }
         curx1 += invslope1;
         curx2 += invslope2;
     }
 }
 
-void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex) {
+void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuffer& depth) {
 
-    float delta = 0.33;
+    float delta = 1;
     float invslope1 = (v3.pos.x - v1.pos.x) / (v3.pos.y - v1.pos.y);
     float invslope2 = (v3.pos.x - v2.pos.x) / (v3.pos.y - v2.pos.y);
     invslope1 *= delta;
@@ -162,11 +166,16 @@ void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex) {
             float u = alpha * v1.tex.x + beta * v2.tex.x + gamma * v3.tex.x;
             float v = alpha * v1.tex.y + beta * v2.tex.y + gamma * v3.tex.y;
             float z = alpha * v1.invW + beta * v2.invW + gamma * v3.invW;
+            //assert(z < 0.0);
             u /= z;
             v /= z;
-            float r, g, b;
-            tex.Sample(u, v, r, g, b);
-            App::DrawPoint(x, scanlineY, r, g, b);
+
+            if (z < depth.GetBuffer(x, scanlineY)) {
+                float r, g, b;
+                tex.Sample(u, v, r, g, b);
+                App::DrawPoint(x, scanlineY, r, g, b);
+                depth.SetBuffer(static_cast<int>(x), static_cast<int>(scanlineY), z);
+            }
         }
         curx1 -= invslope1;
         curx2 -= invslope2;
@@ -176,7 +185,7 @@ void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex) {
 
 
 
-void Renderer::RenderTriangle(Triangle& tri, SimpleTexture& tex) {
+void Renderer::RenderTriangle(Triangle& tri, SimpleTexture& tex, DepthBuffer& depth) {
     // Sort vertices by y-coordinate
     std::sort(std::begin(tri.verts), std::end(tri.verts),
         [](const Vertex& a, const Vertex& b) {
@@ -194,10 +203,10 @@ void Renderer::RenderTriangle(Triangle& tri, SimpleTexture& tex) {
     }
 
     if (v2.pos.y == v3.pos.y) {
-        FillBottom(v1, v2, v3, tex);
+        FillBottom(v1, v2, v3, tex, depth);
     }
     else if (v1.pos.y == v2.pos.y) {
-        FillTop(v1, v2, v3, tex);
+        FillTop(v1, v2, v3, tex, depth);
     }
     else {
         // Interpolate to find the fourth vertex
@@ -208,8 +217,8 @@ void Renderer::RenderTriangle(Triangle& tri, SimpleTexture& tex) {
         Vertex v4(pos4, tex4);
         v4.invW = w;
 
-        FillBottom(v1, v2, v3, tex);
-        FillTop(v2, v4, v3, tex);
+        FillBottom(v1, v2, v3, tex, depth);
+        FillTop(v2, v4, v3, tex, depth);
     }
 }
 
@@ -227,6 +236,10 @@ void Renderer::DebugDraw(const Triangle& tri)
 void Renderer::Render()
 {
     Camera& cam = GetFirstComponent<Camera>(gCoordinator);
+    DepthBuffer& depth = GetFirstComponent<DepthBuffer>(gCoordinator);
+
+    depth.ClearBuffer();
+
     Vec3 light_direction = Vec3(0, -1.0, 0.0f);
     std::vector<Triangle> TrianglesToRaster;
     //TODO Refactor texture system
@@ -253,8 +266,7 @@ void Renderer::Render()
                 translation.verts[0].normal = normal;
                 translation.verts[1].normal = normal;
                 translation.verts[2].normal = normal;
-            }
-            else {
+            } else {
                 normal = (translation.verts[0].normal + translation.verts[1].normal + translation.verts[2].normal) * (1 / 3);
             }
             // back face culling
@@ -270,7 +282,7 @@ void Renderer::Render()
     }
 
 
-    PainterSort(TrianglesToRaster);
+    // PainterSort(TrianglesToRaster);
 
 
     for (Triangle& triangle : TrianglesToRaster) {
@@ -292,6 +304,11 @@ void Renderer::Render()
         triangle.verts[0].invW = 1.0f / v1.w;
         triangle.verts[1].invW = 1.0f / v2.w;
         triangle.verts[2].invW = 1.0f / v3.w;
+
+        triangle.verts[0].pos *= -1;
+        triangle.verts[1].pos *= -1;
+        triangle.verts[2].pos *= -1;
+
 
         triangle.verts[0].pos.x = (triangle.verts[0].pos.x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
         triangle.verts[0].pos.y = (triangle.verts[0].pos.y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
@@ -331,9 +348,9 @@ void Renderer::Render()
 
         for (Triangle& clip : clipped) {
             
-            RenderTriangle(clip, tex);
+            RenderTriangle(clip, tex, depth);
 
-            //DebugDraw(clip);
+            DebugDraw(clip);
         
             //App::DrawTriangle(
             //    clip.verts[0].pos.x, clip.verts[0].pos.y,
