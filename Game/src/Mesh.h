@@ -9,10 +9,12 @@ struct Vertex {
 	Vec2 tex;
 	Vec3 normal;
 	Vec3 pos;
-	Vertex() {}
-	Vertex(Vec3& pos) : pos(pos), normal(Vec3(0, 0, 0)), tex(Vec2(0,0)) {}
-	Vertex(Vec3& pos, Vec2& tex) : pos(pos), tex(tex) {}
-	Vertex(Vec3& pos, Vec3& normal, Vec2& tex) : pos(pos), normal(normal), tex(tex) {}
+	float invW;
+
+	Vertex() : invW(0) {}
+	Vertex(Vec3& pos) : pos(pos), normal(Vec3(0, 0, 0)), tex(Vec2(0,0)), invW(0) {}
+	Vertex(Vec3& pos, Vec2& tex) : pos(pos), tex(tex), invW(0) {}
+	Vertex(Vec3& pos, Vec3& normal, Vec2& tex) : pos(pos), normal(normal), tex(tex), invW(0) {}
 };
 
 struct Triangle {

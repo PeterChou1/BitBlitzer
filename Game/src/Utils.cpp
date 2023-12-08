@@ -7,7 +7,7 @@
 
 
 
-bool Utils::LoadFromObjectFile(std::string filename, Mesh& mesh)
+bool Utils::LoadFromObjectFile(std::string filename, Mesh& mesh, bool UVAndNormal)
 {
 
 	std::ifstream f(filename);
@@ -37,12 +37,13 @@ bool Utils::LoadFromObjectFile(std::string filename, Mesh& mesh)
 			verts.push_back(v);
 		}
 
-		if (line[0] == 'f')
-		{
+
+		if (!UVAndNormal && line[0] == 'f') {
 			int f[3];
 			s >> junk >> f[0] >> f[1] >> f[2];
-
 			mesh.tris.push_back({ verts[f[0] - 1], verts[f[1] - 1], verts[f[2] - 1] });
+		} else if (line[0] == 'f') {
+
 		}
 	}
 

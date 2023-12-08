@@ -27,24 +27,24 @@ void GameManager::Setup()
         Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
     
         // EAST face
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 0))),
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
+        Triangle(Vertex(Vec3(1, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 1), Vec2(1, 0))),
+        Triangle(Vertex(Vec3(1, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(1, 0)), Vertex(Vec3(1, 0, 1), Vec2(1, 1))),
     
         // NORTH face
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 0))),
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
+        Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(0, 0)), Vertex(Vec3(0, 1, 1), Vec2(1, 0))),
+        Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(1, 0)), Vertex(Vec3(0, 0, 1), Vec2(1, 1))),
     
         // WEST face
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 0))),
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
+        Triangle(Vertex(Vec3(0, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(0, 0)), Vertex(Vec3(0, 1, 0), Vec2(1, 0))),
+        Triangle(Vertex(Vec3(0, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(1, 0)), Vertex(Vec3(0, 0, 0), Vec2(1, 1))),
     
         // TOP face
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 0))),
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
+        Triangle(Vertex(Vec3(0, 1, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(0, 0)), Vertex(Vec3(1, 1, 1), Vec2(1, 0))),
+        Triangle(Vertex(Vec3(0, 1, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(1, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 1))),
     
         // BOTTOM face
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 0))),
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
+        Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 0, 1), Vec2(0, 0)), Vertex(Vec3(0, 0, 0), Vec2(1, 0))),
+        Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 0, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
     };
 	// Utils::LoadFromObjectFile("./Assets/teapot.obj", mesh_obj);
 	Transform transform = Transform(Vec3(0, 0, 3), Quat(Vec3(1, 0, 0), 0));

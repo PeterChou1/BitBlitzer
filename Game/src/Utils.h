@@ -1,8 +1,13 @@
 #pragma once
 #include <string>
 #include "Mesh.h"
-#define _SILENCE_CXX17_STRSTREAM_DEPRECATION_WARNING
+
 
 namespace Utils {
-	bool LoadFromObjectFile(std::string, Mesh& mesh);
+	bool LoadFromObjectFile(std::string, Mesh& mesh, bool UVAndNormal);
+	
+
+	template<typename T>
+	T Lerp(T start, T stop, float t);
+
 }
