@@ -20,35 +20,34 @@ void GameManager::Setup()
 	*/
 	Entity e = gCoordinator.CreateEntity();
 	Mesh mesh_obj;
-
-    mesh_obj.tris = {
-        // SOUTH face
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 0))),
-        Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
-    
-        // EAST face
-        Triangle(Vertex(Vec3(1, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 1), Vec2(1, 0))),
-        Triangle(Vertex(Vec3(1, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(1, 0)), Vertex(Vec3(1, 0, 1), Vec2(1, 1))),
-    
-        // NORTH face
-        Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(0, 0)), Vertex(Vec3(0, 1, 1), Vec2(1, 0))),
-        Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(1, 0)), Vertex(Vec3(0, 0, 1), Vec2(1, 1))),
-    
-        // WEST face
-        Triangle(Vertex(Vec3(0, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(0, 0)), Vertex(Vec3(0, 1, 0), Vec2(1, 0))),
-        Triangle(Vertex(Vec3(0, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(1, 0)), Vertex(Vec3(0, 0, 0), Vec2(1, 1))),
-    
-        // TOP face
-        Triangle(Vertex(Vec3(0, 1, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(0, 0)), Vertex(Vec3(1, 1, 1), Vec2(1, 0))),
-        Triangle(Vertex(Vec3(0, 1, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(1, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 1))),
-    
-        // BOTTOM face
-        Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 0, 1), Vec2(0, 0)), Vertex(Vec3(0, 0, 0), Vec2(1, 0))),
-        Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 0, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
-    };
-	// Utils::LoadFromObjectFile("./Assets/teapot.obj", mesh_obj);
-	Transform transform = Transform(Vec3(0, 0, 3), Quat(Vec3(1, 0, 0), 0));
-    SimpleTexture texture = SimpleTexture("./Assets/mario.png");
+    // mesh_obj.tris = {
+    //     // SOUTH face
+    //     Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
+    // 
+    //     // EAST face
+    //     Triangle(Vertex(Vec3(1, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 1), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(1, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(1, 0)), Vertex(Vec3(1, 0, 1), Vec2(1, 1))),
+    // 
+    //     // NORTH face
+    //     Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(0, 0)), Vertex(Vec3(0, 1, 1), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(1, 0)), Vertex(Vec3(0, 0, 1), Vec2(1, 1))),
+    // 
+    //     // WEST face
+    //     Triangle(Vertex(Vec3(0, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(0, 0)), Vertex(Vec3(0, 1, 0), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(0, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(1, 0)), Vertex(Vec3(0, 0, 0), Vec2(1, 1))),
+    // 
+    //     // TOP face
+    //     Triangle(Vertex(Vec3(0, 1, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(0, 0)), Vertex(Vec3(1, 1, 1), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(0, 1, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(1, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 1))),
+    // 
+    //     // BOTTOM face
+    //     Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 0, 1), Vec2(0, 0)), Vertex(Vec3(0, 0, 0), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 0, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
+    // };
+	Utils::LoadFromObjectFile("./Assets/spot.obj", mesh_obj, true, false);
+	Transform transform = Transform(Vec3(0, 0, 15), Quat(Vec3(1, 0, 0), 0));
+    SimpleTexture texture = SimpleTexture("./Assets/spot_texture.png");
 
 	gCoordinator.AddComponent<Mesh>(e, mesh_obj);
 	gCoordinator.AddComponent<Transform>(e, transform);

@@ -105,8 +105,13 @@ void ComputeBarycentricCoordinates(const Vertex& v1, const Vertex& v2, const Ver
 }
 
 void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex) {
+
+    float delta = 0.33;
     float invslope1 = (v2.pos.x - v1.pos.x) / (v2.pos.y - v1.pos.y);
     float invslope2 = (v3.pos.x - v1.pos.x) / (v3.pos.y - v1.pos.y);
+    invslope1 *= delta;
+    invslope2 *= delta;
+
 
     float curx1 = v1.pos.x;
     float curx2 = v1.pos.x;
@@ -115,8 +120,8 @@ void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex) {
         std::swap(invslope1, invslope2);
     }
 
-    for (float scanlineY = v1.pos.y; scanlineY <= v2.pos.y; scanlineY++) {
-        for (float x = curx1; x < curx2; x++) {
+    for (float scanlineY = v1.pos.y; scanlineY <= v2.pos.y; scanlineY += delta) {
+        for (float x = curx1; x < curx2; x += delta) {
             // ... interpolate u and v (texture coordinates) and draw point
             float alpha, beta, gamma;
             ComputeBarycentricCoordinates(v1, v2, v3, x, scanlineY, alpha, beta, gamma);
@@ -135,8 +140,12 @@ void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex) {
 }
 
 void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex) {
+
+    float delta = 0.33;
     float invslope1 = (v3.pos.x - v1.pos.x) / (v3.pos.y - v1.pos.y);
     float invslope2 = (v3.pos.x - v2.pos.x) / (v3.pos.y - v2.pos.y);
+    invslope1 *= delta;
+    invslope2 *= delta;
 
     float curx1 = v3.pos.x;
     float curx2 = v3.pos.x;
@@ -145,8 +154,8 @@ void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex) {
         std::swap(invslope1, invslope2);
     }
 
-    for (float scanlineY = v3.pos.y; scanlineY > v1.pos.y; scanlineY--) {
-        for (float x = curx1; x < curx2; x++) {
+    for (float scanlineY = v3.pos.y; scanlineY > v1.pos.y; scanlineY -= delta) {
+        for (float x = curx1; x < curx2; x += delta) {
             // ... interpolate u and v (texture coordinates) and draw point
             float alpha, beta, gamma;
             ComputeBarycentricCoordinates(v1, v2, v3, x, scanlineY, alpha, beta, gamma);
@@ -324,7 +333,7 @@ void Renderer::Render()
             
             RenderTriangle(clip, tex);
 
-            DebugDraw(clip);
+            //DebugDraw(clip);
         
             //App::DrawTriangle(
             //    clip.verts[0].pos.x, clip.verts[0].pos.y,

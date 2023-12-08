@@ -176,7 +176,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
-    <Text Include="src\scratch.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\app.h" />
@@ -241,6 +240,9 @@
     <ClCompile Include="src\Vec3.cpp" />
     <ClCompile Include="src\Vec4.cpp" />
     <ClCompile Include="stb_image\stb_image.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Readme.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

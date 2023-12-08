@@ -4,7 +4,7 @@
 
 
 namespace Utils {
-	bool LoadFromObjectFile(std::string, Mesh& mesh, bool UVAndNormal);
+	bool LoadFromObjectFile(std::string, Mesh& mesh, bool UV, bool Normal);
 	
 
 	template<typename T>

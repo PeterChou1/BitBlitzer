@@ -39,6 +39,7 @@ struct Mesh {
 	std::vector<Triangle> tris;
 	// flag to tell if we should load normal or generate them automatically while rendering
 	bool hasNormal;
+	// 
 	Mesh() : hasNormal(false) {};
 };
 
