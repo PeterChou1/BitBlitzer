@@ -1,0 +1,273 @@
+	/* 
+	 setup tests meshes
+	*/
+	Entity e = gCoordinator.CreateEntity();
+	Mesh mesh_obj;
+    // mesh_obj.tris = {
+    //     // SOUTH face
+    //     Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(0, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
+    // 
+    //     // EAST face
+    //     Triangle(Vertex(Vec3(1, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 0), Vec2(0, 0)), Vertex(Vec3(1, 1, 1), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(1, 0, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(1, 0)), Vertex(Vec3(1, 0, 1), Vec2(1, 1))),
+    // 
+    //     // NORTH face
+    //     Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(0, 0)), Vertex(Vec3(0, 1, 1), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(1, 0)), Vertex(Vec3(0, 0, 1), Vec2(1, 1))),
+    // 
+    //     // WEST face
+    //     Triangle(Vertex(Vec3(0, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(0, 0)), Vertex(Vec3(0, 1, 0), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(0, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 1, 0), Vec2(1, 0)), Vertex(Vec3(0, 0, 0), Vec2(1, 1))),
+    // 
+    //     // TOP face
+    //     Triangle(Vertex(Vec3(0, 1, 0), Vec2(0, 1)), Vertex(Vec3(0, 1, 1), Vec2(0, 0)), Vertex(Vec3(1, 1, 1), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(0, 1, 0), Vec2(0, 1)), Vertex(Vec3(1, 1, 1), Vec2(1, 0)), Vertex(Vec3(1, 1, 0), Vec2(1, 1))),
+    // 
+    //     // BOTTOM face
+    //     Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 0, 1), Vec2(0, 0)), Vertex(Vec3(0, 0, 0), Vec2(1, 0))),
+    //     Triangle(Vertex(Vec3(1, 0, 1), Vec2(0, 1)), Vertex(Vec3(0, 0, 0), Vec2(1, 0)), Vertex(Vec3(1, 0, 0), Vec2(1, 1))),
+    // };
+	Utils::LoadFromObjectFile("./Assets/furina.obj", mesh_obj, true, false);
+	Transform transform = Transform(Vec3(0, 0, 15), Quat(Vec3(1, 0, 0), 3.141));
+    SimpleTexture texture = SimpleTexture("./Assets/spot_texture.png");
+	gCoordinator.AddComponent<Mesh>(e, mesh_obj);
+	gCoordinator.AddComponent<Transform>(e, transform);
+    gCoordinator.AddComponent<SimpleTexture>(e, texture);
+
+
+
+    using std::chrono::high_resolution_clock;
+	using std::chrono::duration_cast;
+	using std::chrono::duration;
+	using std::chrono::milliseconds;
+
+
+    // test speed code
+    /* Getting number of milliseconds as an integer. */
+	// concurrent execution time
+	auto t1 = high_resolution_clock::now();
+
+    auto t2 = high_resolution_clock::now();
+	
+	duration<double, std::milli> ms_double_concurrent = t2 - t1;
+	double concurrent = ms_double_concurrent.count();
+
+	
+	std::cout << "concurrent: " << concurrent << "ms\n";
+	std::cout << "non concurrent: " << non_concurrent << "ms\n";
+
+
+std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal, Triangle& clip)
+{
+
+    int insidePtCount = 0;
+    int outsidePtCount = 0;
+    
+    Vertex* insideVtx[3];
+    Vertex* outsideVtx[3];
+    std::vector<Triangle> clippedTriangle;
+
+    for (int i = 0; i < 3; i++) {
+        float dist = Dist(clip.verts[i].pos, planeNormal, planePoint);
+        if (dist >= 0) 
+        {
+            insideVtx[insidePtCount] = &clip.verts[i];
+            insidePtCount++;
+        }
+        else 
+        {
+            outsideVtx[outsidePtCount] = &clip.verts[i];
+            outsidePtCount++;
+        }
+    }
+    
+
+    if (insidePtCount == 0) 
+    {
+        // no triangle inside
+        return clippedTriangle;
+    }
+
+    if (insidePtCount == 3) 
+    {
+        clippedTriangle.emplace_back(clip);
+        return clippedTriangle;
+    }
+
+    if (insidePtCount == 1 && outsidePtCount == 2) 
+    {
+        Triangle newTri = clip;
+
+        float t = 0;
+
+        newTri.verts[0] = *insideVtx[0];
+        newTri.verts[1].pos = IntersectPlane(planePoint, planeNormal, newTri.verts[0].pos, (*outsideVtx[0]).pos, t);
+        newTri.verts[1].tex = (*insideVtx[0]).tex + ((*outsideVtx[0]).tex - (*insideVtx[0]).tex) * t;
+        newTri.verts[1].invW = (*insideVtx[0]).invW + ((*outsideVtx[0]).invW - (*insideVtx[0]).invW) * t;
+        newTri.verts[2].pos = IntersectPlane(planePoint, planeNormal, newTri.verts[0].pos, (*outsideVtx[1]).pos, t);
+        newTri.verts[2].tex = (*insideVtx[0]).tex + ((*outsideVtx[1]).tex - (*insideVtx[0]).tex) * t;
+        newTri.verts[2].invW = (*insideVtx[0]).invW + ((*outsideVtx[1]).invW - (*insideVtx[0]).invW) * t;
+
+        clippedTriangle.emplace_back(newTri);
+
+        return clippedTriangle;
+    }
+
+    if (insidePtCount == 2 && outsidePtCount == 1)
+    {
+        Triangle tri1 = clip, tri2 = clip;
+        float t1 = 0, t2 = 0;
+
+        tri1.verts[0] = *insideVtx[0];
+        tri1.verts[1] = *insideVtx[1];
+        tri1.verts[2].pos = IntersectPlane(planePoint, planeNormal, (*insideVtx[0]).pos, (*outsideVtx[0]).pos, t1);
+        tri1.verts[2].tex = (*insideVtx[0]).tex + ((*outsideVtx[0]).tex - (*insideVtx[0]).tex) * t1;
+        tri1.verts[2].invW = (*insideVtx[0]).invW + ((*outsideVtx[0]).invW - (*insideVtx[0]).invW) * t1;
+
+        tri2.verts[0] = *insideVtx[1];
+        tri2.verts[1] = tri1.verts[2];
+        tri2.verts[2].pos = IntersectPlane(planePoint, planeNormal, (*insideVtx[1]).pos, (*outsideVtx[0]).pos, t2);
+        tri2.verts[2].tex = (*insideVtx[1]).tex + ((*outsideVtx[0]).tex - (*insideVtx[1]).tex) * t2;
+        tri2.verts[2].invW = (*insideVtx[1]).invW + ((*outsideVtx[0]).invW - (*insideVtx[1]).invW) * t2;
+
+        clippedTriangle.emplace_back(tri1);
+        clippedTriangle.emplace_back(tri2);
+        return clippedTriangle;
+    }
+
+    assert(false, "unreachable code");
+}
+
+
+        // uint8_t outcodev1 = OutCode(v1);
+        // uint8_t outcodev2 = OutCode(v2);
+        // uint8_t outcodev3 = OutCode(v3);
+        // 
+        // uint8_t combineMask = outcodev1 | outcodev2 | outcodev3;
+        // 
+        // 
+        // std::string s = "";
+        // 
+        // if (combineMask & RIGHT_PLANE) {
+        //     s += "RIGHT: 1";
+        // }
+        // else {
+        //     s += "RIGHT: 0";
+        // }
+        // 
+        // s += ", "; // Separator between items
+        // 
+        // if (combineMask & LEFT_PLANE) {
+        //     s += "LEFT: 1";
+        // }
+        // else {
+        //     s += "LEFT: 0";
+        // }
+        // 
+        // s += ", ";
+        // 
+        // if (combineMask & UP_PLANE) {
+        //     s += "UP: 1";
+        // }
+        // else {
+        //     s += "UP: 0";
+        // }
+        // 
+        // s += ", ";
+        // 
+        // if (combineMask & DOWN_PLANE) {
+        //     s += "DOWN: 1";
+        // }
+        // else {
+        //     s += "DOWN: 0";
+        // }
+        // 
+        // s += ", ";
+        // 
+        // if (combineMask & FAR_PLANE) {
+        //     s += "FAR: 1";
+        // }
+        // else {
+        //     s += "FAR: 0";
+        // }
+        // 
+        // s += ", ";
+        // 
+        // if (combineMask & NEAR_PLANE) {
+        //     s += "NEAR: 1";
+        // }
+        // else {
+        //     s += "NEAR: 0";
+        // }
+
+
+         Vec4 v1 = cam.proj * Vec4(triangle.verts[0].pos);
+        Vec4 v2 = cam.proj * Vec4(triangle.verts[1].pos);
+        Vec4 v3 = cam.proj * Vec4(triangle.verts[2].pos);
+        
+        // Perspective division
+        triangle.verts[0].pos = v1.ToVec3();
+        triangle.verts[1].pos = v2.ToVec3();
+        triangle.verts[2].pos = v3.ToVec3();
+        
+        triangle.verts[0].tex /= v1.w;
+        triangle.verts[1].tex /= v2.w;
+        triangle.verts[2].tex /= v3.w;
+        
+        
+        triangle.verts[0].invW = 1.0f / v1.w;
+        triangle.verts[1].invW = 1.0f / v2.w;
+        triangle.verts[2].invW = 1.0f / v3.w;
+        
+        
+        
+        triangle.verts[0].pos.x = static_cast<int>((triangle.verts[0].pos.x + 1) * 0.5 * APP_VIRTUAL_WIDTH);
+        triangle.verts[0].pos.y = static_cast<int>((triangle.verts[0].pos.y + 1) * 0.5 * APP_VIRTUAL_HEIGHT);
+                                                 
+        triangle.verts[1].pos.x = static_cast<int>((triangle.verts[1].pos.x + 1) * 0.5 * APP_VIRTUAL_WIDTH);
+        triangle.verts[1].pos.y = static_cast<int>((triangle.verts[1].pos.y + 1) * 0.5 * APP_VIRTUAL_HEIGHT);
+                   
+        triangle.verts[2].pos.x = static_cast<int>((triangle.verts[2].pos.x + 1) * 0.5 * APP_VIRTUAL_WIDTH);
+        triangle.verts[2].pos.y = static_cast<int>((triangle.verts[2].pos.y + 1) * 0.5 * APP_VIRTUAL_HEIGHT);
+        
+        // clip against 4 planes
+        std::list<Triangle> clipped;
+        clipped.push_back(triangle);
+        int clipcount = 1;
+        
+        for (int sideID = 0; sideID < 4; sideID++) {
+            while (clipcount > 0)
+            {
+                Triangle test = clipped.front();
+                clipped.pop_front();
+                clipcount--;
+                std::vector<Triangle> boxClipped;
+        
+                switch (sideID) 
+                {
+                    case 0: boxClipped = ClipTriangle(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f), test); break;
+                    case 1: boxClipped = ClipTriangle(Vec3(0.0f, APP_VIRTUAL_HEIGHT - 1, 0.0f), Vec3(0.0f, -1.0f, 0.0f), test); break;
+                    case 2: boxClipped = ClipTriangle(Vec3(0.0f, 0.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f), test); break;
+                    case 3: boxClipped = ClipTriangle(Vec3(APP_VIRTUAL_WIDTH - 1, 0.0f, 0.0f), Vec3(-1.0f, 0.0f, 0.0f), test); break;
+                }
+                clipped.insert(clipped.end(), boxClipped.begin(), boxClipped.end());
+            }
+            clipcount = clipped.size();
+        }
+        
+        for (Triangle& clip : clipped) {
+          
+          RenderTriangle(clip, tex, depth);
+        
+          // DebugDraw(clip);
+        
+          //App::DrawTriangle(
+          //    clip.verts[0].pos.x, clip.verts[0].pos.y,
+          //    clip.verts[1].pos.x, clip.verts[1].pos.y,
+          //    clip.verts[2].pos.x, clip.verts[2].pos.y,
+          //    1, 1, 1
+          //);
+        }        
+        // 
+        // //App::Print(100, 150, s.c_str(), 1, 0, 0);

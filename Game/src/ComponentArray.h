@@ -18,6 +18,8 @@ template<typename T>
 class ComponentArray : public IComponentArray
 {
 public:
+	ComponentArray() {}
+	
 	void InsertData(Entity entity, T component)
 	{
 

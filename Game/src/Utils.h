@@ -1,13 +1,13 @@
 #pragma once
 #include <string>
 #include "Mesh.h"
-
+#include "Entity.h"
 
 namespace Utils {
-	bool LoadFromObjectFile(std::string, Mesh& mesh, bool UV, bool Normal);
-	
 
-	template<typename T>
-	T Lerp(T start, T stop, float t);
+	// load mesh -- old api --
+	bool LoadFromObjectFile(std::string filename, Mesh& mesh, bool UV, bool Normal);
+	// load mesh new
+	bool LoadInstance(std::string filename, MeshInstance& mesh, bool UV, bool Normal, Entity id);
 
 }

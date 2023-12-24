@@ -211,9 +211,9 @@ std::string Vec3::toString() const
     return "{" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + "}";
 }
 
-Vec3 IntersectPlane(Vec3& point, Vec3& normal, Vec3& start, Vec3& end, float& scale)
+Vec3 IntersectPlane(const Vec3& point, const Vec3& normal, Vec3& start, Vec3& end, float& scale)
 {
-    normal.Normalize();
+    assert(normal.GetMagnitude() == 1.0);
     const float planeDot = -normal.Dot(point);
     const float ad = start.Dot(normal);
     const float bd = end.Dot(normal);
@@ -224,7 +224,7 @@ Vec3 IntersectPlane(Vec3& point, Vec3& normal, Vec3& start, Vec3& end, float& sc
     return start + start2End;
 }
 
-float Dist(Vec3& point, Vec3& planeN, Vec3& planeP)
+float Dist(const Vec3& point, const Vec3& planeN,const Vec3& planeP)
 {
     // Compute the vector from the plane point to the point
     const Vec3 planeToPoint = point - planeP;

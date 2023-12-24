@@ -168,7 +168,7 @@ void Mat4::LookAt(Vec3 pos, Vec3 lookAt, Vec3 up) {
 
 void Mat4::PerspectiveOpenGL(float fovy, float aspect_ratio, float near, float far) {
     const float pi = acosf(-1.0f);
-    const double scale = tanf(fovy * 0.5 * pi / 180.0) * near;
+    const double scale = tan(fovy * 0.5 * pi / 180.0) * near;
     double right = aspect_ratio * scale;
     double left = -right;
     double top = scale;

@@ -2,6 +2,7 @@
 #include "Coordinator.h"
 #include "Renderer.h"
 #include "DebugCamera.h"
+#include "RendererM.h"
 
 class GameManager {
 public:
@@ -15,6 +16,7 @@ public:
 
 private:
 	std::shared_ptr<Renderer> renderer;
+	std::shared_ptr<RendererM> rendererM;
 	std::shared_ptr<DebugCamera> debugCam;
 
 };

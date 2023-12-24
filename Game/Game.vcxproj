@@ -162,6 +162,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -176,6 +177,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="scratch.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\app.h" />
@@ -184,17 +186,21 @@
     <ClInclude Include="App\SimpleController.h" />
     <ClInclude Include="App\SimpleSound.h" />
     <ClInclude Include="App\SimpleSprite.h" />
-    <ClInclude Include="DepthBuffer.h" />
     <ClInclude Include="src\ComponentArray.h" />
     <ClInclude Include="src\ComponentManager.h" />
+    <ClInclude Include="src\Concurrency.h" />
     <ClInclude Include="src\Coordinator.h" />
     <ClInclude Include="src\DebugCamera.h" />
+    <ClInclude Include="src\DepthBuffer.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\EntityManager.h" />
     <ClInclude Include="src\GameManager.h" />
+    <ClInclude Include="src\RendererM.h" />
     <ClInclude Include="src\System.h" />
     <ClInclude Include="src\SimpleTexture.h" />
+    <ClInclude Include="src\GraphicsBuffer.h" />
+    <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\VisitorManager.h" />
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\Mat2.h" />
@@ -220,7 +226,9 @@
     <ClCompile Include="App\SimpleSprite.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\DebugCamera.cpp" />
+    <ClCompile Include="src\RendererM.cpp" />
     <ClCompile Include="src\SimpleTexture.cpp" />
+    <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\GameManager.cpp" />

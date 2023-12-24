@@ -12,3 +12,11 @@ Triangle Triangle::transform(const Transform& rhs)
 	tri.verts[2].normal = rhs.rotation.RotatePoint(tri.verts[2].normal);
 	return tri;
 }
+
+Vertex Vertex::transform(const Transform& rhs)
+{
+	Vertex v = *this;
+	v.pos *= rhs;
+	v.normal = rhs.rotation.RotatePoint(normal);
+	return v;
+}

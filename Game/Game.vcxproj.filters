@@ -70,6 +70,12 @@
     <ClCompile Include="stb_image\stb_image.cpp">
       <Filter>stb_image</Filter>
     </ClCompile>
+    <ClCompile Include="src\RendererM.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tile.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\main.h">
@@ -168,7 +174,19 @@
     <ClInclude Include="stb_image\stb_image.h">
       <Filter>stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="DepthBuffer.h">
+    <ClInclude Include="src\Concurrency.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GraphicsBuffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RendererM.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DepthBuffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tile.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -203,9 +221,16 @@
     <Filter Include="NextAPI">
       <UniqueIdentifier>{2053fc19-7e4a-40ae-b070-e199c6c3ba67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\SIMD">
+      <UniqueIdentifier>{d30c747d-20eb-4f5f-b566-65ffdf911c62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Shader">
+      <UniqueIdentifier>{32223a4c-7084-47ba-9a00-0b80c4245c9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+    <Text Include="scratch.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Readme.md" />

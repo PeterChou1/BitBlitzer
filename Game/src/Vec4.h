@@ -31,6 +31,8 @@ public:
     void Zero() { x = 0; y = 0; z = 0; w = 0; }
     const float* ToPtr() const { return &x; }
     float* ToPtr() { return &x; }
+
+    std::string toString() const;
     
 
 public:

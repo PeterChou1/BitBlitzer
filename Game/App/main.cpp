@@ -87,7 +87,7 @@ private:
 CProfiler	gUserRenderProfiler;
 CProfiler	gUserUpdateProfiler;
 CProfiler	gUpdateDeltaTime;
-bool		gRenderUpdateTimes = APP_RENDER_UPDATE_TIMES;
+bool		gRenderUpdateTimes = true;// APP_RENDER_UPDATE_TIMES;
 
 /* Initialize OpenGL Graphics */
 void InitGL()

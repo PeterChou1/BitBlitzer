@@ -16,85 +16,177 @@ extern Coordinator gCoordinator;
 constexpr double ASPECT_RATIO = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
 
 
-std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal, Triangle& clip)
+inline void InterpolateVertexAttributes(const Vertex& insideVtx, const Vertex& outsideVtx, Vertex& newVtx, float t) {
+    newVtx.tex = insideVtx.tex + (outsideVtx.tex - insideVtx.tex) * t;
+    newVtx.invW = insideVtx.invW + (outsideVtx.invW - insideVtx.invW) * t;
+}
+
+constexpr uint8_t LEFT_PLANE = 1 << 0, RIGHT_PLANE = 1 << 1, DOWN_PLANE = 1 << 2, UP_PLANE = 1 << 3, NEAR_PLANE = 1 << 4, FAR_PLANE = 1 << 5;
+
+float Dot(uint8_t planeId, const Vec4& v)
+{
+    switch (planeId) {
+    case LEFT_PLANE:
+        return v.x + v.w;        /* v * (1 0 0 1) left */
+    case RIGHT_PLANE:
+        return -v.x + v.w;       /* v * (-1 0 0 1) right */
+    case DOWN_PLANE:
+        return v.y + v.w;        /* v * (0 1 0 1) down*/
+    case UP_PLANE:
+        return -v.y + v.w;       /* v * (0 -1 0 1) up*/
+    case FAR_PLANE:
+        return v.z + v.w;        /* v * (0 0 1 1) far */
+    case NEAR_PLANE:
+        return -v.z + v.w;       /* v * (0 0 -1 1) near */
+    default:
+        assert(false && "unreachable code");
+    }
+}
+
+float PointToPlane(uint8_t planeId, const Vec4& a, const Vec4& b) 
+{
+    float alpha = Dot(planeId, a);
+    float beta = Dot(planeId, b);
+    return alpha / (alpha - beta);
+}
+
+
+void Lerp(const Point& a, const Point& b, float alpha, Point& out)
+{
+    float a1 = 1.0f - alpha;
+    out.position = a.position * a1 + b.position * alpha;
+    out.weights = a.weights * a1 + b.weights * alpha;
+}
+
+
+uint8_t OutCode(const Vec4& v) {
+
+    uint8_t outcode = 0;
+
+    if (Dot(LEFT_PLANE, v) < 0) outcode |= LEFT_PLANE;
+    if (Dot(RIGHT_PLANE, v) < 0) outcode |= RIGHT_PLANE;
+    if (Dot(DOWN_PLANE, v) < 0) outcode |= DOWN_PLANE;
+    if (Dot(UP_PLANE, v) < 0) outcode |= UP_PLANE;
+    if (Dot(FAR_PLANE, v) < 0) outcode |= FAR_PLANE;
+    if (Dot(NEAR_PLANE, v) < 0) outcode |= NEAR_PLANE;
+
+    return outcode;
+}
+
+std::vector<Point> ClipPlane(uint32_t planeid, std::vector<Point>& points) 
 {
 
-    int insidePtCount = 0;
-    int outsidePtCount = 0;
-    
-    Vertex* insideVtx[3];
-    Vertex* outsideVtx[3];
-    std::vector<Triangle> clippedTriangle;
+    std::vector<Point> outPoints;
 
-    for (int i = 0; i < 3; i++) {
-        float dist = Dist(clip.verts[i].pos, planeNormal, planePoint);
-        if (dist >= 0) 
-        {
-            insideVtx[insidePtCount] = &clip.verts[i];
-            insidePtCount++;
+    for (int i = 0, j = 1; i < points.size(); i++, j++) 
+    {
+        if (i == points.size() - 1) j = 0;
+
+        const auto& Apoint = points[i];
+        const auto& Bpoint = points[j];
+
+
+        float t = PointToPlane(planeid, Apoint.position, Bpoint.position);
+        Point newpoint{};
+        Lerp(points[i], points[j], t, newpoint);
+
+        // is inside
+
+        const auto isInsideA = Dot(planeid, Apoint.position) > 0;
+        const auto isInsideB = Dot(planeid, Bpoint.position) > 0;
+
+
+        if (isInsideA) {
+            if (isInsideB) {
+                outPoints.push_back(Bpoint);
+            }
+            else {
+                outPoints.push_back(newpoint);
+            }
+        } else if (isInsideB) {
+            outPoints.push_back(newpoint);
+            outPoints.push_back(Bpoint);
         }
-        else 
+    }
+
+    return outPoints;
+}
+
+
+std::vector<Triangle> Renderer::Clip(Triangle& clip)
+{
+    
+    uint8_t clipcode1 = OutCode(clip.verts[0].projectedPosition);
+    uint8_t clipcode2 = OutCode(clip.verts[1].projectedPosition);
+    uint8_t clipcode3 = OutCode(clip.verts[2].projectedPosition);
+
+    std::vector<Triangle> clipped;
+
+
+    if (!(clipcode1 | clipcode2 | clipcode3)) {
+        // trivial accept
+        clip.PerspectiveDivision();
+        clipped.push_back(clip);
+    } else if (!(clipcode1 & clipcode2 & clipcode3)) {
+
+        Vertex v0 = clip.verts[0];
+        Vertex v1 = clip.verts[1];
+        Vertex v2 = clip.verts[2];
+
+
+        std::vector<Point> points = {
+            Point(clip.verts[0].projectedPosition, {1, 0, 0}),
+            Point(clip.verts[1].projectedPosition, {0, 1, 0}),
+            Point(clip.verts[2].projectedPosition, {0, 0, 1})
+        };
+        uint32_t mask = clipcode1 | clipcode2 | clipcode3;
+        if (mask & LEFT_PLANE) {
+            points = ClipPlane(LEFT_PLANE, points);
+        }
+
+        if (mask & RIGHT_PLANE) {
+            points = ClipPlane(RIGHT_PLANE, points);
+        }
+
+        if (mask & DOWN_PLANE) {
+            points = ClipPlane(DOWN_PLANE, points);
+        }
+
+        if (mask & UP_PLANE) {
+            points = ClipPlane(UP_PLANE, points);
+        }
+
+        if (mask & NEAR_PLANE) {
+            points = ClipPlane(NEAR_PLANE, points);
+        }
+
+        if (mask & FAR_PLANE) {
+            points = ClipPlane(FAR_PLANE, points);
+        }
+
+        // triangulate the points
+        for (int j = 2; j < points.size(); j++)
         {
-            outsideVtx[outsidePtCount] = &clip.verts[i];
-            outsidePtCount++;
+            Point& p1 = points[0];
+            Point& p2 = points[j - 1];
+            Point& p3 = points[j];
+
+            Vertex n1 = v0 * p1.weights.x + v1 * p1.weights.y + v2 * p1.weights.z;
+            n1.projectedPosition = p1.position;
+            Vertex n2 = v0 * p2.weights.x + v1 * p2.weights.y + v2 * p2.weights.z;
+            n2.projectedPosition = p2.position;
+            Vertex n3 = v0 * p3.weights.x + v1 * p3.weights.y + v2 * p3.weights.z;
+            n3.projectedPosition = p3.position;
+
+            Triangle newtri = Triangle(n1, n2, n3);
+            newtri.PerspectiveDivision();
+            clipped.push_back(newtri);
         }
     }
-    
+    // o/w trivial reject
 
-    if (insidePtCount == 0) 
-    {
-        // no triangle inside
-        return clippedTriangle;
-    }
 
-    if (insidePtCount == 3) 
-    {
-        clippedTriangle.emplace_back(clip);
-        return clippedTriangle;
-    }
-
-    if (insidePtCount == 1 && outsidePtCount == 2) 
-    {
-        Triangle newTri = clip;
-
-        float t = 0;
-
-        newTri.verts[0] = *insideVtx[0];
-        newTri.verts[1].pos = IntersectPlane(planePoint, planeNormal, newTri.verts[0].pos, (*outsideVtx[0]).pos, t);
-        newTri.verts[1].tex = (*insideVtx[0]).tex + ((*outsideVtx[0]).tex - (*insideVtx[0]).tex) * t;
-        newTri.verts[1].invW = (*insideVtx[0]).invW + ((*outsideVtx[0]).invW - (*insideVtx[0]).invW) * t;
-        newTri.verts[2].pos = IntersectPlane(planePoint, planeNormal, newTri.verts[0].pos, (*outsideVtx[1]).pos, t);
-        newTri.verts[2].tex = (*insideVtx[0]).tex + ((*outsideVtx[1]).tex - (*insideVtx[0]).tex) * t;
-        newTri.verts[2].invW = (*insideVtx[0]).invW + ((*outsideVtx[1]).invW - (*insideVtx[0]).invW) * t;
-
-        clippedTriangle.emplace_back(newTri);
-
-        return clippedTriangle;
-    }
-
-    if (insidePtCount == 2 && outsidePtCount == 1)
-    {
-        Triangle tri1 = clip, tri2 = clip;
-        float t1 = 0, t2 = 0;
-
-        tri1.verts[0] = *insideVtx[0];
-        tri1.verts[1] = *insideVtx[1];
-        tri1.verts[2].pos = IntersectPlane(planePoint, planeNormal, (*insideVtx[0]).pos, (*outsideVtx[0]).pos, t1);
-        tri1.verts[2].tex = (*insideVtx[0]).tex + ((*outsideVtx[0]).tex - (*insideVtx[0]).tex) * t1;
-        tri1.verts[2].invW = (*insideVtx[0]).invW + ((*outsideVtx[0]).invW - (*insideVtx[0]).invW) * t1;
-
-        tri2.verts[0] = *insideVtx[1];
-        tri2.verts[1] = tri1.verts[2];
-        tri2.verts[2].pos = IntersectPlane(planePoint, planeNormal, (*insideVtx[1]).pos, (*outsideVtx[0]).pos, t2);
-        tri2.verts[2].tex = (*insideVtx[1]).tex + ((*outsideVtx[0]).tex - (*insideVtx[1]).tex) * t2;
-        tri2.verts[2].invW = (*insideVtx[1]).invW + ((*outsideVtx[0]).invW - (*insideVtx[1]).invW) * t2;
-
-        clippedTriangle.emplace_back(tri1);
-        clippedTriangle.emplace_back(tri2);
-        return clippedTriangle;
-    }
-
-    assert(false, "unreachable code");
+    return clipped;
 }
 
 void ComputeBarycentricCoordinates(const Vertex& v1, const Vertex& v2, const Vertex& v3, float x, float y, float& alpha, float& beta, float& gamma) {
@@ -120,22 +212,22 @@ void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuf
         std::swap(invslope1, invslope2);
     }
 
-    for (float scanlineY = v1.pos.y; scanlineY <= v2.pos.y; scanlineY += delta) {
+    for (float y = v1.pos.y; y <= v2.pos.y; y += delta) {
         for (float x = curx1; x < curx2; x += delta) {
             // ... interpolate u and v (texture coordinates) and draw point
             float alpha, beta, gamma;
-            ComputeBarycentricCoordinates(v1, v2, v3, x, scanlineY, alpha, beta, gamma);
+            ComputeBarycentricCoordinates(v1, v2, v3, x, y, alpha, beta, gamma);
             float u = alpha * v1.tex.x + beta * v2.tex.x + gamma * v3.tex.x;
             float v = alpha * v1.tex.y + beta * v2.tex.y + gamma * v3.tex.y;
             float z = alpha * v1.invW + beta * v2.invW + gamma * v3.invW;
             u /= z;
             v /= z;
 
-            if (z < depth.GetBuffer(x, scanlineY)) {
+            if (z > depth.GetBuffer(x, y)) {
                 float r, g, b;
                 tex.Sample(u, v, r, g, b);
-                App::DrawPoint(x, scanlineY, r, g, b);
-                depth.SetBuffer(static_cast<int>(x), static_cast<int>(scanlineY), z);
+                App::DrawPoint(x, y, r, g, b);
+                depth.SetBuffer(static_cast<int>(x), static_cast<int>(y), z);
             }
         }
         curx1 += invslope1;
@@ -158,23 +250,22 @@ void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuffer
         std::swap(invslope1, invslope2);
     }
 
-    for (float scanlineY = v3.pos.y; scanlineY > v1.pos.y; scanlineY -= delta) {
+    for (float y = v3.pos.y; y > v1.pos.y; y -= delta) {
         for (float x = curx1; x < curx2; x += delta) {
             // ... interpolate u and v (texture coordinates) and draw point
             float alpha, beta, gamma;
-            ComputeBarycentricCoordinates(v1, v2, v3, x, scanlineY, alpha, beta, gamma);
+            ComputeBarycentricCoordinates(v1, v2, v3, x, y, alpha, beta, gamma);
             float u = alpha * v1.tex.x + beta * v2.tex.x + gamma * v3.tex.x;
             float v = alpha * v1.tex.y + beta * v2.tex.y + gamma * v3.tex.y;
             float z = alpha * v1.invW + beta * v2.invW + gamma * v3.invW;
-            //assert(z < 0.0);
             u /= z;
             v /= z;
 
-            if (z < depth.GetBuffer(x, scanlineY)) {
+            if (z > depth.GetBuffer(x, y)) {
                 float r, g, b;
                 tex.Sample(u, v, r, g, b);
-                App::DrawPoint(x, scanlineY, r, g, b);
-                depth.SetBuffer(static_cast<int>(x), static_cast<int>(scanlineY), z);
+                App::DrawPoint(x, y, r, g, b);
+                depth.SetBuffer(static_cast<int>(x), static_cast<int>(y), z);
             }
         }
         curx1 -= invslope1;
@@ -224,9 +315,9 @@ void Renderer::RenderTriangle(Triangle& tri, SimpleTexture& tex, DepthBuffer& de
 
 void Renderer::DebugDraw(const Triangle& tri)
 {
-    Vec3 v1 = tri.verts[0].pos;
-    Vec3 v2 = tri.verts[1].pos;
-    Vec3 v3 = tri.verts[2].pos;
+    Vec4 v1 = tri.verts[0].projectedPosition;
+    Vec4 v2 = tri.verts[1].projectedPosition;
+    Vec4 v3 = tri.verts[2].projectedPosition;
 
     App::DrawLine(v1.x, v1.y, v2.x, v2.y, 1, 0, 0);
     App::DrawLine(v1.x, v1.y, v3.x, v3.y, 1, 0, 0);    
@@ -237,6 +328,7 @@ void Renderer::Render()
 {
     Camera& cam = GetFirstComponent<Camera>(gCoordinator);
     DepthBuffer& depth = GetFirstComponent<DepthBuffer>(gCoordinator);
+
 
     depth.ClearBuffer();
 
@@ -259,9 +351,9 @@ void Renderer::Render()
             Vec3 normal;
 
             if (!mesh.hasNormal) {
-                Vec3 lineA = translation.verts[1].pos - translation.verts[0].pos;
-                Vec3 lineB = translation.verts[2].pos - translation.verts[0].pos;
-                normal = lineA.Cross(lineB);
+                Vec3 lineA = translation.verts[0].pos - translation.verts[1].pos;
+                Vec3 lineB = translation.verts[0].pos - translation.verts[2].pos;
+                normal = lineB.Cross(lineA);
                 normal.Normalize();
                 translation.verts[0].normal = normal;
                 translation.verts[1].normal = normal;
@@ -270,108 +362,39 @@ void Renderer::Render()
                 normal = (translation.verts[0].normal + translation.verts[1].normal + translation.verts[2].normal) * (1 / 3);
             }
             // back face culling
-            if (normal.Dot(translation.verts[0].pos - cam.pos) < 0)
+            if (normal.Dot(translation.verts[0].pos - cam.pos) > 0)
             {
                 // transform triangle into camera space
                 Triangle view = translation.transform(cam.world_to_cam);
+                view.verts[0].projectedPosition = cam.proj * Vec4(view.verts[0].pos);
+                view.verts[1].projectedPosition = cam.proj * Vec4(view.verts[1].pos);
+                view.verts[2].projectedPosition = cam.proj * Vec4(view.verts[2].pos);
                 // clip against the near plane
-                auto clipped = ClipTriangle(Vec3(0, 0, cam.nearplane), Vec3(0, 0, 1), view);
-                TrianglesToRaster.insert(TrianglesToRaster.end(), clipped.begin(), clipped.end());
+                TrianglesToRaster.push_back(view);
             }
         }
     }
-
-
-    // PainterSort(TrianglesToRaster);
-
 
     for (Triangle& triangle : TrianglesToRaster) {
 
-        Vec4 v1 = cam.proj * Vec4(triangle.verts[0].pos);
-        Vec4 v2 = cam.proj * Vec4(triangle.verts[1].pos);
-        Vec4 v3 = cam.proj * Vec4(triangle.verts[2].pos);
-
-
-        // Perspective division
-        triangle.verts[0].pos = v1.ToVec3();
-        triangle.verts[1].pos = v2.ToVec3();
-        triangle.verts[2].pos = v3.ToVec3();
-
-        triangle.verts[0].tex /= v1.w;
-        triangle.verts[1].tex /= v2.w;
-        triangle.verts[2].tex /= v3.w;
-
-        triangle.verts[0].invW = 1.0f / v1.w;
-        triangle.verts[1].invW = 1.0f / v2.w;
-        triangle.verts[2].invW = 1.0f / v3.w;
-
-        triangle.verts[0].pos *= -1;
-        triangle.verts[1].pos *= -1;
-        triangle.verts[2].pos *= -1;
-
-
-        triangle.verts[0].pos.x = (triangle.verts[0].pos.x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
-        triangle.verts[0].pos.y = (triangle.verts[0].pos.y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
-
-
-        triangle.verts[1].pos.x = (triangle.verts[1].pos.x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
-        triangle.verts[1].pos.y = (triangle.verts[1].pos.y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
-
-        triangle.verts[2].pos.x = (triangle.verts[2].pos.x + 1) * 0.5 * APP_VIRTUAL_WIDTH;
-        triangle.verts[2].pos.y = (triangle.verts[2].pos.y + 1) * 0.5 * APP_VIRTUAL_HEIGHT;
-
-
-        // clip against 4 planes
-        std::list<Triangle> clipped;
-        clipped.push_back(triangle);
-        int clipcount = 1;
-
-        for (int sideID = 0; sideID < 4; sideID++) {
-            while (clipcount > 0)
-            {
-                Triangle test = clipped.front();
-                clipped.pop_front();
-                clipcount--;
-                std::vector<Triangle> boxClipped;
-
-                switch (sideID) 
-                {
-                    case 0: boxClipped = ClipTriangle(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 1.0f, 0.0f), test); break;
-                    case 1: boxClipped = ClipTriangle(Vec3(0.0f, APP_VIRTUAL_HEIGHT - 1, 0.0f), Vec3(0.0f, -1.0f, 0.0f), test); break;
-                    case 2: boxClipped = ClipTriangle(Vec3(0.0f, 0.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f), test); break;
-                    case 3: boxClipped = ClipTriangle(Vec3(APP_VIRTUAL_WIDTH - 1, 0.0f, 0.0f), Vec3(-1.0f, 0.0f, 0.0f), test); break;
-                }
-                clipped.insert(clipped.end(), boxClipped.begin(), boxClipped.end());
-            }
-            clipcount = clipped.size();
+        std::vector<Triangle> clipped = Clip(triangle);        
+        
+        for (Triangle& clip : clipped) 
+        {
+            cam.ToRasterSpace(clip.verts[0].projectedPosition);
+            cam.ToRasterSpace(clip.verts[1].projectedPosition);
+            cam.ToRasterSpace(clip.verts[2].projectedPosition);
+            //DebugDraw(clip);
+            clip.verts[0].pos.x = clip.verts[0].projectedPosition.x;
+            clip.verts[0].pos.y = clip.verts[0].projectedPosition.y;
+            clip.verts[1].pos.x = clip.verts[1].projectedPosition.x;
+            clip.verts[1].pos.y = clip.verts[1].projectedPosition.y;
+            clip.verts[2].pos.x = clip.verts[2].projectedPosition.x;
+            clip.verts[2].pos.y = clip.verts[2].projectedPosition.y;
+            RenderTriangle(clip, tex, depth);
         }
 
-        for (Triangle& clip : clipped) {
-            
-            RenderTriangle(clip, tex, depth);
-
-            DebugDraw(clip);
-        
-            //App::DrawTriangle(
-            //    clip.verts[0].pos.x, clip.verts[0].pos.y,
-            //    clip.verts[1].pos.x, clip.verts[1].pos.y,
-            //    clip.verts[2].pos.x, clip.verts[2].pos.y,
-            //    1, 1, 1
-            //);
-        }        
     }
-    
-
-}
-
-void Renderer::PainterSort(std::vector<Triangle>& sort)
-{
-    std::sort(sort.begin(), sort.end(),
-    [](Triangle& t1, Triangle& t2) {
-        float z1 = (t1.verts[0].pos.z + t1.verts[1].pos.z + t1.verts[2].pos.z) / 3;
-        float z2 = (t2.verts[0].pos.z + t2.verts[1].pos.z + t2.verts[2].pos.z) / 3;
-        return z1 > z2;
-    });
 }
 
 

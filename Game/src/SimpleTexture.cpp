@@ -16,7 +16,8 @@ struct STBImageDeleter {
 
 SimpleTexture::SimpleTexture(const char* fileName)
 {
-	assert(LoadTexture(fileName), "Failed to Load Texture");
+    bool texLoaded = LoadTexture(fileName);
+	assert(texLoaded, "Failed to Load Texture");
 }
 
 
@@ -32,7 +33,6 @@ void SimpleTexture::Sample(float u, float v, float& r, float& g, float& b)
 
     // Calculate the offset for the pixel
     int offset = (y * mtexWidth + x) * 4; // 4 channels per pixel (RGBA)
-
     // Extract the RGB values
     r = texture[offset] / 255.0f;
     g = texture[offset + 1] / 255.0f;
@@ -42,7 +42,8 @@ void SimpleTexture::Sample(float u, float v, float& r, float& g, float& b)
 bool SimpleTexture::LoadTexture(const char* filename)
 {
 	int channels;
-	unsigned char * data = stbi_load(filename, &mtexWidth, &mtexHeight, &channels, 4);
+    int height;
+	unsigned char* data = stbi_load(filename, &mtexWidth, &mtexHeight, &channels, 4);
 	if (data) {
         texture = std::shared_ptr<unsigned char[]>(data, STBImageDeleter());
 		return true;

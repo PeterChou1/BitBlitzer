@@ -14,6 +14,10 @@ class Renderer : public System {
 public:
 	Renderer() {};
 
+
+	std::vector<Triangle> Clip(Triangle& clip);
+
+
 	std::vector<Triangle> ClipTriangle(Vec3& planePoint, Vec3& planeNormal, Triangle& clip);
 
 	void RenderTriangle(Triangle& tri, SimpleTexture& tex, DepthBuffer& depth);
@@ -22,6 +26,5 @@ public:
 
 	void Render();
 
-	void PainterSort(std::vector<Triangle>& mesh);
 
 };

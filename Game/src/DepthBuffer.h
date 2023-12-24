@@ -4,27 +4,29 @@
 
 class DepthBuffer {
 public:
-	DepthBuffer() {}
+	DepthBuffer() : m_height(0), m_width(0) {}
 
-	DepthBuffer(int height, int width) : m_height(height), m_width(width) {
-		mDepthBuffer = std::shared_ptr<float[]>(new float[height * width]);
+	DepthBuffer(int width, int height) : m_height(height), m_width(width) {
+		m_DepthBuffer = std::shared_ptr<float[]>(new float[height * width]);
 	}
 
 	void SetBuffer(int x, int y, float depth) {
-		mDepthBuffer[y * m_width + x] = depth;
+		assert(0 <= x && x <= m_width && 0 <= y && y <= m_height, "out of bounds index");
+		m_DepthBuffer[y * m_width + x] = depth;
 	}
 
 	float GetBuffer(int x, int y) {
-		return mDepthBuffer[y * m_width + x];
+		assert(0 <= x && x <= m_width && 0 <= y && y <= m_height, "out of bounds index");
+		return m_DepthBuffer[y * m_width + x];
 	}
 
 	void ClearBuffer() {
 		for (int i = 0; i < m_height * m_width; i++) {
-			mDepthBuffer[i] = 0.0f;
+			m_DepthBuffer[i] = 0.0f;
 		}
 	}
 private:
 	int m_height;
 	int m_width;
-	std::shared_ptr<float[]> mDepthBuffer;
+	std::shared_ptr<float[]> m_DepthBuffer;
 };
