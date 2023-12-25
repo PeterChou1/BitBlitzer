@@ -271,3 +271,19 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
         }        
         // 
         // //App::Print(100, 150, s.c_str(), 1, 0, 0);
+
+
+                           // Vec2 cornerA0 = t.GetCorner(tri.acceptIndex0);
+                   // Vec2 cornerA1 = t.GetCorner(tri.acceptIndex1);
+                   // Vec2 cornerA2 = t.GetCorner(tri.acceptIndex2);
+                   // float eA0 = tri.EdgeFunc0(cornerA0);
+                   // float eA1 = tri.EdgeFunc1(cornerA1);
+                   // float eA2 = tri.EdgeFunc2(cornerA2);
+                   // // trivial accept partial accept
+                   // if (eA0 <= 0 && eA1 <= 0 && eA2 <= 0)
+                   // {
+                   //     t.DebugDraw(0, 1, 0);
+                   // }
+                   // else {
+                   //     t.DebugDraw(0, 0, 1);
+                   // } 

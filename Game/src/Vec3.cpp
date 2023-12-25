@@ -106,11 +106,6 @@ Vec3 Vec3::operator * (const float rhs) const {
     return temp;
 }
 
-Vec3 Vec3::operator*(const Transform& rhs) const
-{
-    Vec3 t = *this + rhs.position;
-    return rhs.rotation.RotatePoint(t);
-}
 
 Vec3 Vec3::operator / (const float rhs) const {
     Vec3 temp;
@@ -127,11 +122,6 @@ const Vec3& Vec3::operator*=(const float rhs) {
     return *this;
 }
 
-const Vec3& Vec3::operator*=(const Transform& rhs)
-{
-    *this = (rhs.affine * Vec4(*this)).ToVec3();
-    return *this;
-}
 
 const Vec3& Vec3::operator/=(const float rhs) {
     x /= rhs;

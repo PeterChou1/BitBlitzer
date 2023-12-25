@@ -76,6 +76,12 @@
     <ClCompile Include="src\Tile.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Clipper.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AVXFloat.cpp">
+      <Filter>src\SIMD</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\main.h">
@@ -187,6 +193,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="src\Tile.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Clipper.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

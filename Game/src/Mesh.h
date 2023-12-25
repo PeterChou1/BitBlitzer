@@ -24,7 +24,6 @@ struct Vertex {
 	Vertex(Vec3& pos, Vec2& tex) : pos(pos), tex(tex) {}
 	Vertex(Vec3& pos, Vec3& normal, Vec2& tex) : pos(pos), normal(normal), tex(tex) {}
 	Vertex(const Vertex& v) : id(v.id), index(v.index), tex(v.tex), normal(v.normal), pos(v.pos), projectedPosition(v.projectedPosition), invW(v.invW) {}
-	Vertex transform(const Transform& rhs);
 
 	void PerspectiveDivision() 
 	{
@@ -39,7 +38,6 @@ struct Vertex {
 		copy.pos *= t;
 		copy.tex *= t;
 		copy.normal *= t;
-
 		return copy;
 	}
 
@@ -117,12 +115,13 @@ struct Triangle {
 
 	// /brief setup for larrabee rejection and check if 
 	bool Setup() {
-		B0 = verts[1].pos.y - verts[0].pos.y;
-		C0 = verts[1].pos.x - verts[0].pos.x;
-		B1 = verts[2].pos.y - verts[1].pos.y;
-		C1 = verts[2].pos.x - verts[1].pos.x;
-		B2 = verts[0].pos.y - verts[2].pos.y;
-		C2 = verts[0].pos.x - verts[2].pos.x;
+
+		B0 = verts[1].projectedPosition.y - verts[0].projectedPosition.y;
+		C0 = verts[1].projectedPosition.x - verts[0].projectedPosition.x;
+		B1 = verts[2].projectedPosition.y - verts[1].projectedPosition.y;
+		C1 = verts[2].projectedPosition.x - verts[1].projectedPosition.x;
+		B2 = verts[0].projectedPosition.y - verts[2].projectedPosition.y;
+		C2 = verts[0].projectedPosition.x - verts[2].projectedPosition.x;
 		const int det = C2 * B1 - C1 * B2;
 
 
@@ -140,10 +139,10 @@ struct Triangle {
 		Vec2 edgeNoraml3 = Vec2(-B2, C2);
 
 		// set up bounding box
-		maxX = static_cast<int>(std::max<float>(std::max<float>(verts[0].pos.x, verts[1].pos.x), verts[2].pos.x));
-		maxY = static_cast<int>(std::max<float>(std::max<float>(verts[0].pos.y, verts[1].pos.y), verts[2].pos.y));
-		minX = static_cast<int>(std::min<float>(std::min<float>(verts[0].pos.x, verts[1].pos.x), verts[2].pos.x));
-		minY = static_cast<int>(std::min<float>(std::min<float>(verts[0].pos.y, verts[1].pos.y), verts[2].pos.y));
+		maxX = static_cast<int>(std::max<float>(std::max<float>(verts[0].projectedPosition.x, verts[1].projectedPosition.x), verts[2].projectedPosition.x));
+		maxY = static_cast<int>(std::max<float>(std::max<float>(verts[0].projectedPosition.y, verts[1].projectedPosition.y), verts[2].projectedPosition.y));
+		minX = static_cast<int>(std::min<float>(std::min<float>(verts[0].projectedPosition.x, verts[1].projectedPosition.x), verts[2].projectedPosition.x));
+		minY = static_cast<int>(std::min<float>(std::min<float>(verts[0].projectedPosition.y, verts[1].projectedPosition.y), verts[2].projectedPosition.y));
 
 
 		if (edgeNormal1.x > 0) {
@@ -212,15 +211,15 @@ struct Triangle {
 	}
 	// edge function 
 	float EdgeFunc0(Vec2& p) {
-		return B0 * (p.x - verts[0].pos.x) - C0 * (p.y - verts[0].pos.y);
+		return B0 * (p.x - verts[0].projectedPosition.x) - C0 * (p.y - verts[0].projectedPosition.y);
 	}
 
 	float EdgeFunc1(Vec2& p) {
-		return B1 * (p.x - verts[1].pos.x) - C1 * (p.y - verts[1].pos.y);
+		return B1 * (p.x - verts[1].projectedPosition.x) - C1 * (p.y - verts[1].projectedPosition.y);
 	}
 
 	float EdgeFunc2(Vec2& p) {
-		return B2 * (p.x - verts[2].pos.x) - C2 * (p.y - verts[2].pos.y);
+		return B2 * (p.x - verts[2].projectedPosition.x) - C2 * (p.y - verts[2].projectedPosition.y);
 	}
 
 	bool CheckInTriangle(Vec2& point) {
@@ -229,8 +228,6 @@ struct Triangle {
 		float e2 = EdgeFunc2(point);
 		return e0 < 0 && e1 < 0 && e2 < 0;
 	}
-
-	Triangle transform(const Transform& rhs);
 
 };
 

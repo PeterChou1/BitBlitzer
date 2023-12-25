@@ -74,7 +74,13 @@ void Transform::Update(const Vec3& delta, const Quat& rot)
 	inverse = affine.AffineInverse();
 }
 
-Transform Transform::Inverse()
+Vec3& Transform::TransformVec3(const Vec3& point)
 {
-	return Transform(affine.AffineInverse());
+	return affine * point;
 }
+
+Vec3& Transform::TransformNormal(const Vec3& normal)
+{
+	return inverse.Transpose() * normal;
+}
+

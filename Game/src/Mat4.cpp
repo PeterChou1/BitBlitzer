@@ -220,6 +220,11 @@ Vec4 Mat4::operator*(const Vec4& rhs) const {
     return tmp;
 }
 
+Vec3 Mat4::operator*(const Vec3& rhs) const
+{
+    return (*this * Vec4(rhs)).ToVec3();
+}
+
 
 Mat4 Mat4::operator*(const float rhs) const {
     Mat4 tmp;

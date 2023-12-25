@@ -7,7 +7,6 @@ class Camera {
 public:
 	Mat4 proj;
 	Transform transform;
-	Transform world_to_cam;
 	Vec3 pos;
 	Vec3 target;
 	Vec3 forward;
@@ -23,6 +22,7 @@ public:
 	Camera(Vec3& pos, 
 		   Vec3& target, 
 		   Vec3& up, 
+		   float height, float width,
 		   float fov, float aspect_ratio, 
 		   float nearplane, float farplane);
 
@@ -30,9 +30,9 @@ public:
 
 	void ToRasterSpace(Vec4& point);
 
-	Mat4 CameraToWorldMatrix();
+	Vec3 CameraToWorld(const Vec3& point);
 
-	Mat4 WorldToCameraMatrix();
+	Vec3 WorldToCamera(const Vec3& point);
 
 private:
 

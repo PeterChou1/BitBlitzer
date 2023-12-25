@@ -12,79 +12,79 @@ public:
 	void Init()
 	{
 		// Create pointers to each manager
-		mComponentManager = std::make_shared<ComponentManager>();
-		mEntityManager = std::make_shared<EntityManager>();
-		mVisitorManager = std::make_shared<VisitorManager>();
+		m_ComponentManager = std::make_shared<ComponentManager>();
+		m_EntityManager = std::make_shared<EntityManager>();
+		m_VisitorManager = std::make_shared<VisitorManager>();
 	}
 
 
 	// Entity methods
 	Entity CreateEntity()
 	{
-		return mEntityManager->CreateEntity();
+		return m_EntityManager->CreateEntity();
 	}
 
 	void DestroyEntity(Entity entity)
 	{
-		mEntityManager->DestroyEntity(entity);
+		m_EntityManager->DestroyEntity(entity);
 
-		mComponentManager->EntityDestroyed(entity);
+		m_ComponentManager->EntityDestroyed(entity);
 
-		mVisitorManager->EntityDestroyed(entity);
+		m_VisitorManager->EntityDestroyed(entity);
 	}
 
 	template<typename T>
 	bool IsVisitorRegistered()
 	{
-		return mVisitorManager->IsVisitorRegistered<T>();
+		return m_VisitorManager->IsVisitorRegistered<T>();
 	}
 
 	template<typename T>
 	std::shared_ptr<T> GetVisitor() 
 	{
-		return mVisitorManager->GetVisitor<T>();
+		return m_VisitorManager->GetVisitor<T>();
 	}
 	// Component methods
 	template<typename T>
 	void RegisterComponent()
 	{
-		mComponentManager->RegisterComponent<T>();
+		m_ComponentManager->RegisterComponent<T>();
 	}
 
 	template<typename T>
 	void AddComponent(Entity entity, T component)
 	{
-		mComponentManager->AddComponent<T>(entity, component);
+		m_ComponentManager->AddComponent<T>(entity, component);
 
-		auto signature = mEntityManager->GetSignature(entity);
-		signature.set(mComponentManager->GetComponentType<T>(), true);
-		mEntityManager->SetSignature(entity, signature);
+		auto signature = m_EntityManager->GetSignature(entity);
+		signature.set(m_ComponentManager->GetComponentType<T>(), true);
+		m_EntityManager->SetSignature(entity, signature);
 
-		mVisitorManager->EntitySignatureChanged(entity, signature);
+		m_VisitorManager->EntitySignatureChanged(entity, signature);
 	}
 
 	template<typename T>
 	void RemoveComponent(Entity entity)
 	{
-		mComponentManager->RemoveComponent<T>(entity);
+		m_ComponentManager->RemoveComponent<T>(entity);
 
-		auto signature = mEntityManager->GetSignature(entity);
-		signature.set(mComponentManager->GetComponentType<T>(), false);
-		mEntityManager->SetSignature(entity, signature);
+		auto signature = m_EntityManager->GetSignature(entity);
+		signature.set(m_ComponentManager->GetComponentType<T>(), false);
+		m_EntityManager->SetSignature(entity, signature);
 
-		mVisitorManager->EntitySignatureChanged(entity, signature);
+		m_VisitorManager->EntitySignatureChanged(entity, signature);
 	}
 
 	template<typename T>
 	T& GetComponent(Entity entity)
 	{
-		return mComponentManager->GetComponent<T>(entity);
+		return m_ComponentManager->GetComponent<T>(entity);
 	}
 
 	template<typename T>
 	ComponentType GetComponentType()
 	{
-		return mComponentManager->GetComponentType<T>();
+		return m_ComponentManager->GetComponentType<T>();
 	}
 
 
@@ -92,22 +92,22 @@ public:
 	template<typename T>
 	std::shared_ptr<T> RegisterVisitor()
 	{
-		std::shared_ptr<T> visitor = mVisitorManager->RegisterVisitor<T>();
+		std::shared_ptr<T> visitor = m_VisitorManager->RegisterVisitor<T>();
 		std::shared_ptr<VisitorBase> visitorBase = visitor;
-		Signature s = visitorBase->GetRequirements(mComponentManager);
-		mVisitorManager->SetSignature<T>(s);
-		visitorBase->mEntities = mEntityManager->MatchSignature(s);
+		Signature s = visitorBase->GetRequirements(m_ComponentManager);
+		m_VisitorManager->SetSignature<T>(s);
+		visitorBase->m_Entities = m_EntityManager->MatchSignature(s);
 		return visitor;
 	}
 
 	template<typename ...Ts>
 	Signature GetSignature() {
-		return mComponentManager->GetSignature<Ts>();
+		return m_ComponentManager->GetSignature<Ts>();
 	}
 
 
 private:
-	std::shared_ptr<ComponentManager> mComponentManager;
-	std::shared_ptr<EntityManager> mEntityManager;
-	std::shared_ptr<VisitorManager> mVisitorManager;
+	std::shared_ptr<ComponentManager> m_ComponentManager;
+	std::shared_ptr<EntityManager> m_EntityManager;
+	std::shared_ptr<VisitorManager> m_VisitorManager;
 };

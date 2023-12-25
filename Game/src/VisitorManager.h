@@ -60,7 +60,7 @@ public:
 		{
 			auto const& system = pair.second;
 
-			system->mEntities.erase(entity);
+			system->m_Entities.erase(entity);
 		}
 	}
 
@@ -76,12 +76,12 @@ public:
 			// Entity signature matches system signature - insert into set
 			if ((entitySignature & systemSignature) == systemSignature)
 			{
-				system->mEntities.insert(entity);
+				system->m_Entities.insert(entity);
 			}
 			// Entity signature does not match system signature - erase from set
 			else
 			{
-				system->mEntities.erase(entity);
+				system->m_Entities.erase(entity);
 			}
 		}
 	}

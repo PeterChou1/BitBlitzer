@@ -10,7 +10,7 @@
 class VisitorBase
 {
 public:
-	std::set<Entity> mEntities;
+	std::set<Entity> m_Entities;
 	virtual Signature GetRequirements(std::shared_ptr<ComponentManager> manager) = 0;
 };
 

@@ -5,8 +5,9 @@
 
 class DebugCamera : System {
 public:
+	DebugCamera(Camera& cam) : m_cam(cam) {}
 	void Move(float deltaTime);
 	void Render();
 private:
-	Camera* cam;
+	Camera& m_cam;
 };

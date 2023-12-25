@@ -4,9 +4,9 @@
 #include "DebugCamera.h"
 #include "RendererM.h"
 
-class GameManager {
+class Scene {
 public:
-	GameManager() {}
+	Scene() {}
 
 	void Setup();
 

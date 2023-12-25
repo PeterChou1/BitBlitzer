@@ -18,7 +18,7 @@ public:
 		else {
 			v = c.RegisterVisitor<Visitor<Ts...>>();
 		}
-		return v->mEntities;
+		return v->m_Entities;
 	}
 	/*
 	 /brief Get First Component Registered with an Entity useful for getting component we know to be singletons like Cameras

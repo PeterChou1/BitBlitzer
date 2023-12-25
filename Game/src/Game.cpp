@@ -19,7 +19,7 @@
 // Renderer rendererSys;
 
 Coordinator gCoordinator;
-GameManager manager;
+Scene manager;
 
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.

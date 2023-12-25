@@ -40,10 +40,12 @@ public:
 
     std::string toString() const;
 
-    float Dot(const Vec2& rhs) const {
+    float Dot(const Vec2& rhs) const 
+    {
         return x * rhs.x + y * rhs.y;
     }
-    const float* ToPtr() const {
+    const float* ToPtr() const 
+    {
         return &x;
     }
 

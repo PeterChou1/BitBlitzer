@@ -5,6 +5,7 @@
 #include "System.h"
 #include "SimpleTexture.h"
 #include "DepthBuffer.h"
+#include "Camera.h"
 
 /*
 * /brief CPU ECS
@@ -12,13 +13,8 @@
 
 class Renderer : public System {
 public:
-	Renderer() {};
 
-
-	std::vector<Triangle> Clip(Triangle& clip);
-
-
-	std::vector<Triangle> ClipTriangle(Vec3& planePoint, Vec3& planeNormal, Triangle& clip);
+	Renderer(Camera& cam, DepthBuffer& depth) : m_cam(cam), m_depth(depth) {};
 
 	void RenderTriangle(Triangle& tri, SimpleTexture& tex, DepthBuffer& depth);
 
@@ -26,5 +22,7 @@ public:
 
 	void Render();
 
-
+private:
+	Camera& m_cam;
+	DepthBuffer& m_depth;
 };

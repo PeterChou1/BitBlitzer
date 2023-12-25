@@ -29,6 +29,7 @@ public:
     const float* ToPtr() const { return rows[0].ToPtr(); }
     float* ToPtr() { return rows[0].ToPtr(); }
     Vec4 operator*(const Vec4& rhs) const;
+    Vec3 operator*(const Vec3& rhs) const;
     Mat4 operator*(const float rhs) const;
     Mat4 operator*(const Mat4& rhs) const;
     Vec4 operator[](const int i) const;

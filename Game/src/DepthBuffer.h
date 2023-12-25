@@ -7,7 +7,7 @@ public:
 	DepthBuffer() : m_height(0), m_width(0) {}
 
 	DepthBuffer(int width, int height) : m_height(height), m_width(width) {
-		m_DepthBuffer = std::shared_ptr<float[]>(new float[height * width]);
+		m_DepthBuffer = std::shared_ptr<float[]>(new float[(height + 1) * (width + 1)]);
 	}
 
 	void SetBuffer(int x, int y, float depth) {

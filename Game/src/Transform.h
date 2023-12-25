@@ -22,5 +22,8 @@ struct Transform {
 
 	void Update(const Vec3& delta, const Quat& rot);
 
-	Transform Inverse();
+	Vec3& TransformVec3(const Vec3& point);
+
+	Vec3& TransformNormal(const Vec3& normal);
+
 };

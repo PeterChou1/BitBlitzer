@@ -186,6 +186,7 @@
     <ClInclude Include="App\SimpleController.h" />
     <ClInclude Include="App\SimpleSound.h" />
     <ClInclude Include="App\SimpleSprite.h" />
+    <ClInclude Include="src\Clipper.h" />
     <ClInclude Include="src\ComponentArray.h" />
     <ClInclude Include="src\ComponentManager.h" />
     <ClInclude Include="src\Concurrency.h" />
@@ -224,7 +225,9 @@
     <ClCompile Include="App\SimpleController.cpp" />
     <ClCompile Include="App\SimpleSound.cpp" />
     <ClCompile Include="App\SimpleSprite.cpp" />
+    <ClCompile Include="src\AVXFloat.cpp" />
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\Clipper.cpp" />
     <ClCompile Include="src\DebugCamera.cpp" />
     <ClCompile Include="src\RendererM.cpp" />
     <ClCompile Include="src\SimpleTexture.cpp" />
