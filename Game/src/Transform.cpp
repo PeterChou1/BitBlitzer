@@ -72,15 +72,17 @@ void Transform::Update(const Vec3& delta, const Quat& rot)
 	deltaMatrix.rows[3] = { 0.0, 0.0, 0.0, 1.0 };
 	affine = affine * deltaMatrix;
 	inverse = affine.AffineInverse();
+	isdirty = true;
+
 }
 
-Vec3& Transform::TransformVec3(const Vec3& point)
+Vec3& Transform::TransformVec3(const Vec3& point) const
 {
 	return affine * point;
 }
 
-Vec3& Transform::TransformNormal(const Vec3& normal)
+Vec3& Transform::TransformNormal(const Vec3& normal) const
 {
-	return inverse.Transpose() * normal;
+	return rotation.RotatePoint(normal);
 }
 

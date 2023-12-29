@@ -113,5 +113,16 @@ namespace App
 	// See SimpleController.h for more info.
 	//-------------------------------------------------------------------------------------------
 	const CController &GetController( int pad = 0 );
+
+
+
+	void SetupGL();
+
+	//-------------------------------------------------------------------------------------------
+	// void RenderTexture(GLubyte imageData[]);
+	//-------------------------------------------------------------------------------------------
+	// Renders image data to a quad
+	//-------------------------------------------------------------------------------------------
+	void RenderTexture(unsigned char* imageData);
 };
 #endif //_APP_H

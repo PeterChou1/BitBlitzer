@@ -96,9 +96,9 @@ std::vector<Point> ClipPlane(uint32_t planeid, std::vector<Point>& points)
 std::vector<Triangle> Clip(Triangle& clip)
 {
 
-    uint8_t clipcode1 = OutCode(clip.verts[0].projectedPosition);
-    uint8_t clipcode2 = OutCode(clip.verts[1].projectedPosition);
-    uint8_t clipcode3 = OutCode(clip.verts[2].projectedPosition);
+    uint8_t clipcode1 = OutCode(clip.verts[0].proj);
+    uint8_t clipcode2 = OutCode(clip.verts[1].proj);
+    uint8_t clipcode3 = OutCode(clip.verts[2].proj);
 
     std::vector<Triangle> clipped;
 
@@ -116,9 +116,9 @@ std::vector<Triangle> Clip(Triangle& clip)
 
 
         std::vector<Point> points = {
-            Point(clip.verts[0].projectedPosition, {1, 0, 0}),
-            Point(clip.verts[1].projectedPosition, {0, 1, 0}),
-            Point(clip.verts[2].projectedPosition, {0, 0, 1})
+            Point(clip.verts[0].proj, {1, 0, 0}),
+            Point(clip.verts[1].proj, {0, 1, 0}),
+            Point(clip.verts[2].proj, {0, 0, 1})
         };
         uint32_t mask = clipcode1 | clipcode2 | clipcode3;
         if (mask & LEFT_PLANE) {
@@ -153,11 +153,11 @@ std::vector<Triangle> Clip(Triangle& clip)
             Point& p3 = points[j];
 
             Vertex n1 = v0 * p1.weights.x + v1 * p1.weights.y + v2 * p1.weights.z;
-            n1.projectedPosition = p1.position;
+            n1.proj = p1.position;
             Vertex n2 = v0 * p2.weights.x + v1 * p2.weights.y + v2 * p2.weights.z;
-            n2.projectedPosition = p2.position;
+            n2.proj = p2.position;
             Vertex n3 = v0 * p3.weights.x + v1 * p3.weights.y + v2 * p3.weights.z;
-            n3.projectedPosition = p3.position;
+            n3.proj = p3.position;
 
             Triangle newtri = Triangle(n1, n2, n3);
             newtri.PerspectiveDivision();

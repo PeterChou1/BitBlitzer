@@ -22,46 +22,71 @@ void Scene::Setup()
     // Setup Rendering
     Entity dBufferEntity = gCoordinator.CreateEntity();
     DepthBuffer depthBuffer = DepthBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
-
-
     Entity graphicsEntity = gCoordinator.CreateEntity();
     GraphicsBuffer g = GraphicsBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
+    Entity colorEntity = gCoordinator.CreateEntity();
+    ColorBuffer color = ColorBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
     
+    // Setup Mesh Instance
 
-    Entity testRenderEntity = gCoordinator.CreateEntity();
-    Transform t1 = Transform(Vec3(0, 0, 10), Quat(Vec3(1, 0, 0), 0.0));// 3.14 / 2));
+    for (int x = -5; x < 5; x++) {
+        for (int z = 0; z < 10; z++) {
+            Entity testRenderEntity = gCoordinator.CreateEntity();
+            Transform modelTransform = Transform(Vec3(x * 2, 0, 5 + z * 2), Quat(Vec3(1, 0, 0), 0.0));// 3.14 / 2));
+            MeshInstance meshI;
+            Utils::LoadInstance("./Assets/spot.obj", meshI, testRenderEntity);
+            gCoordinator.AddComponent<Transform>(testRenderEntity, modelTransform);
 
-    MeshInstance meshI;
-    // Setup 
-    Utils::LoadInstance("./Assets/triangle.obj", meshI, true , false, testRenderEntity);
+            for (auto& vert : meshI.vertices)
+            {
+                vert.pos = modelTransform.TransformVec3(vert.pos);
+                vert.normal = modelTransform.TransformNormal(vert.normal);
+            }
 
-    std::cout << "Triangle Count: " << meshI.indices.size() / 3 << std::endl;
-    g.AddMeshInstance(meshI);
+            g.AddMeshInstance(meshI);
 
-    Entity e = gCoordinator.CreateEntity();
-    Mesh mesh_obj = Mesh(meshI);
-    Transform t2 = Transform(Vec3(0, 0, 10), Quat(Vec3(1, 0, 0), 0.0));// 3.14 / 2));
-    SimpleTexture texture = SimpleTexture("./Assets/spot_texture.png");
+            Entity e = gCoordinator.CreateEntity();
+            Mesh mesh_obj = Mesh(meshI);
+            Transform t2 = Transform(Vec3(x * 2, 0, 10), Quat(Vec3(1, 0, 0), 0.0));// 3.14 / 2));
+            SimpleTexture texture = SimpleTexture("./Assets/spot_texture.png");
 
-    gCoordinator.AddComponent<Mesh>(e, mesh_obj);
-    gCoordinator.AddComponent<Transform>(e, t2);
-    gCoordinator.AddComponent<SimpleTexture>(e, texture);
+            gCoordinator.AddComponent<Mesh>(e, mesh_obj);
+            gCoordinator.AddComponent<Transform>(e, t2);
+            gCoordinator.AddComponent<SimpleTexture>(e, texture);
+        }
+    }
+
+
+
     gCoordinator.AddComponent<Camera>(camEntity, cam);
     gCoordinator.AddComponent<DepthBuffer>(dBufferEntity, depthBuffer);
     gCoordinator.AddComponent<GraphicsBuffer>(graphicsEntity, g);
-    gCoordinator.AddComponent<Transform>(testRenderEntity, t1);
+    gCoordinator.AddComponent<ColorBuffer>(colorEntity, color);
 
-
-    debugCam = std::make_shared<DebugCamera>(DebugCamera(gCoordinator.GetComponent<Camera>(camEntity)));
-    rendererM = std::make_shared<RendererM>(RendererM(gCoordinator.GetComponent<GraphicsBuffer>(graphicsEntity), gCoordinator.GetComponent<Camera>(camEntity)));
-    //renderer = std::make_shared<Renderer>(Renderer(cam, depthBuffer));
+    debugCam = std::make_shared<DebugCamera>(
+        DebugCamera(gCoordinator.GetComponent<Camera>(camEntity))
+    );
+    rendererM = std::make_shared<RendererM>(
+        RendererM(
+            gCoordinator.GetComponent<GraphicsBuffer>(graphicsEntity), 
+            gCoordinator.GetComponent<Camera>(camEntity),
+            gCoordinator.GetComponent<ColorBuffer>(colorEntity)
+        )
+    );
+    renderer = std::make_shared<Renderer>(
+        Renderer(
+            gCoordinator.GetComponent<Camera>(camEntity), 
+            gCoordinator.GetComponent<DepthBuffer>(dBufferEntity),
+            gCoordinator.GetComponent<ColorBuffer>(colorEntity)
+        )
+    );
 
 }
 
 void Scene::Render()
 {
     rendererM->Render();
-    // renderer->Render();
+    //renderer->Render();
     debugCam->Render();
 }
 

@@ -11,12 +11,12 @@ public:
 	}
 
 	void SetBuffer(int x, int y, float depth) {
-		assert(0 <= x && x <= m_width && 0 <= y && y <= m_height, "out of bounds index");
+		assert(0 <= x && x <= m_width && 0 <= y && y <= m_height && "out of bounds index");
 		m_DepthBuffer[y * m_width + x] = depth;
 	}
 
 	float GetBuffer(int x, int y) {
-		assert(0 <= x && x <= m_width && 0 <= y && y <= m_height, "out of bounds index");
+		assert(0 <= x && x <= m_width && 0 <= y && y <= m_height && "out of bounds index");
 		return m_DepthBuffer[y * m_width + x];
 	}
 

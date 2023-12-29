@@ -34,9 +34,9 @@ void SimpleTexture::Sample(float u, float v, float& r, float& g, float& b)
     // Calculate the offset for the pixel
     int offset = (y * mtexWidth + x) * 4; // 4 channels per pixel (RGBA)
     // Extract the RGB values
-    r = texture[offset] / 255.0f;
-    g = texture[offset + 1] / 255.0f;
-    b = texture[offset + 2] / 255.0f;
+    r = texture[offset];
+    g = texture[offset + 1];
+    b = texture[offset + 2];
 }
 
 bool SimpleTexture::LoadTexture(const char* filename)

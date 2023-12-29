@@ -21,11 +21,14 @@
 Coordinator gCoordinator;
 Scene manager;
 
+constexpr int imageSize = APP_VIRTUAL_WIDTH * APP_VIRTUAL_HEIGHT * 3;
+
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.
 //------------------------------------------------------------------------
 void Init()
 {
+	App::SetupGL();
 	gCoordinator.Init();
 	manager.Setup();
 }
@@ -45,7 +48,7 @@ void Update(float deltaTime)
 // See App.h 
 //------------------------------------------------------------------------
 void Render()
-{	
+{
 	manager.Render();
 }
 //------------------------------------------------------------------------

@@ -79,8 +79,8 @@
     <ClCompile Include="src\Clipper.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\AVXFloat.cpp">
-      <Filter>src\SIMD</Filter>
+    <ClCompile Include="src\UpdateModel.cpp">
+      <Filter>src\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +196,15 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="src\Clipper.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorBuffer.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMD.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UpdateModel.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

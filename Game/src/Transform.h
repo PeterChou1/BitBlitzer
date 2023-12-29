@@ -9,6 +9,8 @@ struct Transform {
 	Quat rotation;
 	Mat4 affine;
 	Mat4 inverse;
+	// used to update models
+	bool isdirty;
 
 	Transform();
 
@@ -22,8 +24,8 @@ struct Transform {
 
 	void Update(const Vec3& delta, const Quat& rot);
 
-	Vec3& TransformVec3(const Vec3& point);
+	Vec3& TransformVec3(const Vec3& point) const;
 
-	Vec3& TransformNormal(const Vec3& normal);
+	Vec3& TransformNormal(const Vec3& normal) const;
 
 };

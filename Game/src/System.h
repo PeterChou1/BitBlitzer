@@ -27,7 +27,7 @@ public:
 	T& GetFirstComponent(Coordinator c)
 	{
 		std::set<Entity> visitSet = Visit<T>(c);
-		assert(visitSet.size() != 0, "No Entity with component found!");
+		assert(visitSet.size() != 0 && "No Entity with component found!");
 		return c.GetComponent<T>(*visitSet.begin());
 	}
 

@@ -36,8 +36,5 @@ public:
     
 
 public:
-    float x;
-    float y;
-    float z;
-    float w;
+    float x, y, z, w;
 };

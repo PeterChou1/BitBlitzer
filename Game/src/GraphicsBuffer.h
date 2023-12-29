@@ -25,10 +25,14 @@ public:
 
     void AddMeshInstance(MeshInstance& mesh) 
     {
-        vertices.insert(vertices.end(), mesh.vertices.begin(), mesh.vertices.end());
-        int offset = indices.size();
+        int offsetVertex = vertices.size();
+        for (auto& vertex : mesh.vertices) {
+            vertex.index = offsetVertex + vertex.index;
+            vertices.push_back(vertex);
+        }
+        int offsetIndex = indices.size();
         for (auto id : mesh.indices) {
-            indices.push_back(offset + id);
+            indices.push_back(offsetIndex + id);
         };
         projectedVertex.resize(vertices.size());
         triangleCount = indices.size() / 3;

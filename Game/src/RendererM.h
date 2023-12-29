@@ -7,13 +7,14 @@
 #include "DepthBuffer.h"
 #include "GraphicsBuffer.h"
 #include "Camera.h"
+#include "ColorBuffer.h"
 
 /*
 * /brief multithreaded renderer
 */
 class RendererM : public System {
 public:
-    RendererM(GraphicsBuffer& g, Camera& cam);
+    RendererM(GraphicsBuffer& g, Camera& cam, ColorBuffer& color);
 
     void Render();
 
@@ -34,13 +35,14 @@ public:
 
 
 private:
-    std::vector<std::uint32_t> coreIds;
+    std::vector<std::uint32_t> m_coreIds;
     std::vector<Vertex>& m_vertexBuffer;
     std::vector<std::uint32_t>& m_indexBuffer;
     std::vector<Vertex>& m_projectedVertexBuffer;
     std::vector<std::vector<Triangle>>& m_projectedClip;
     std::vector<Tile>& m_tiles;
     Camera& m_cam;
+    ColorBuffer& m_color;
     int m_coreCount;
     int m_coreInterval;
 };

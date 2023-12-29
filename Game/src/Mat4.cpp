@@ -2,6 +2,7 @@
 #include "Mat4.h"
 #include <math.h>
 #include <cassert>
+#include <immintrin.h>  // For AVX-512
 
 Mat4::Mat4(const Mat4& rhs) {
     rows[0] = rhs.rows[0];
@@ -212,11 +213,24 @@ void Mat4::PerspectiveVulkan(float fovy, float aspect_ratio, float near, float f
 }
 
 Vec4 Mat4::operator*(const Vec4& rhs) const {
+
+    __m256 vecBroadcastX = _mm256_set1_ps(rhs.x);
+    __m256 vecBroadcastY = _mm256_set1_ps(rhs.y);
+    __m256 vecBroadcastZ = _mm256_set1_ps(rhs.z);
+    __m256 vecBroadcastW = _mm256_set1_ps(rhs.w);
+    
+    // Load two rows at a time into 256-bit registers
+    __m256 row01 = _mm256_loadu_ps(rows[0].ToPtr());
+    __m256 row23 = _mm256_loadu_ps(rows[2].ToPtr());
+    //
+
     Vec4 tmp;
     tmp[0] = rows[0].Dot(rhs);
     tmp[1] = rows[1].Dot(rhs);
     tmp[2] = rows[2].Dot(rhs);
     tmp[3] = rows[3].Dot(rhs);
+
+
     return tmp;
 }
 

@@ -7,7 +7,7 @@
 #include <numeric>
 #include <thread>
 
-//#define PARALLEL
+#define PARALLEL
 
 class Concurrency final
 {

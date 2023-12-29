@@ -8,6 +8,6 @@ namespace Utils {
 	// load mesh -- old api --
 	bool LoadFromObjectFile(std::string filename, Mesh& mesh, bool UV, bool Normal);
 	// load mesh new
-	bool LoadInstance(std::string filename, MeshInstance& mesh, bool UV, bool Normal, Entity id);
+	bool LoadInstance(std::string filename, MeshInstance& mesh, Entity id);
 
 }
