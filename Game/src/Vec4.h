@@ -1,6 +1,8 @@
 #pragma once
 #include "Vec3.h"
-class Vec4 {
+
+class Vec4
+{
 public:
     Vec4();
     Vec4(const Vec3& rhs);
@@ -28,12 +30,18 @@ public:
     bool IsValid() const;
     Vec3 ToVec3() const;
 
-    void Zero() { x = 0; y = 0; z = 0; w = 0; }
+    void Zero()
+    {
+        x = 0;
+        y = 0;
+        z = 0;
+        w = 0;
+    }
+
     const float* ToPtr() const { return &x; }
     float* ToPtr() { return &x; }
 
     std::string toString() const;
-    
 
 public:
     float x, y, z, w;

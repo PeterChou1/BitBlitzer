@@ -96,8 +96,7 @@ const Vec2& Vec2::Normalize() {
 }
 
 float Vec2::GetMagnitude() const {
-    float mag;
-    mag = x * x + y * y;
+    float mag = x * x + y * y;
     mag = sqrtf(mag);
     return mag;
 }
@@ -112,7 +111,7 @@ bool Vec2::IsValid() const {
     return true;
 }
 
-std::string Vec2::toString() const
+std::string Vec2::ToString() const
 {
     return "{" + std::to_string(x) + "," + std::to_string(y) + "}";
 }

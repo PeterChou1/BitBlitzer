@@ -19,12 +19,12 @@
 #include "../glut/include/GL/freeglut_ext.h"
 
 
-std::map<const char*, CSimpleSprite::sTextureDef > CSimpleSprite::m_textures;
+std::map<const char*, CSimpleSprite::sTextureDef> CSimpleSprite::m_textures;
 
 //-----------------------------------------------------------------------------
 CSimpleSprite::CSimpleSprite(const char* fileName, unsigned int nColumns, unsigned int nRows)
     : m_nColumns(nColumns)
-    , m_nRows(nRows)
+      , m_nRows(nRows)
 {
     if (LoadTexture(fileName))
     {
@@ -177,7 +177,7 @@ bool CSimpleSprite::LoadTexture(const char* filename)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         gluBuild2DMipmaps(GL_TEXTURE_2D, 4, m_texWidth, m_texHeight, GL_RGBA, GL_UNSIGNED_BYTE, imageData);
         stbi_image_free(imageData);
-        sTextureDef textureDef = { (unsigned int)m_texWidth, (unsigned int)m_texHeight, texture };
+        sTextureDef textureDef = {(unsigned int)m_texWidth, (unsigned int)m_texHeight, texture};
         m_textures[filename] = textureDef;
         m_texture = texture;
         return true;

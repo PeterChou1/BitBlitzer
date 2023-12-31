@@ -196,7 +196,7 @@ void Vec3::GetOrtho(Vec3& u, Vec3& v) const {
     u.Normalize();
 }
 
-std::string Vec3::toString() const
+std::string Vec3::ToString() const
 {
     return "{" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + "}";
 }

@@ -3,11 +3,16 @@
 #include "Camera.h"
 #include <memory>
 
-class DebugCamera : System {
+class DebugCamera : System
+{
 public:
-	DebugCamera(Camera& cam) : m_cam(cam) {}
-	void Move(float deltaTime);
-	void Render();
+    DebugCamera(Camera& cam) : m_cam(cam)
+    {
+    }
+
+    void Move(float deltaTime);
+    void Render();
+
 private:
-	Camera& m_cam;
+    Camera& m_cam;
 };

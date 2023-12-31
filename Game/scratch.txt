@@ -287,3 +287,151 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
 // else {
 //     t.DebugDraw(0, 0, 1);
 // } 
+
+
+                            if (pixel.mask.GetBit(0)) {
+                                m_color.SetColor(pixel.position.x[0], pixel.position.y[0], 255, 255, 255);
+                            }
+                        
+                            if (pixel.mask.GetBit(1)) {
+                                m_color.SetColor(pixel.position.x[1], pixel.position.y[1], 255, 255, 255);
+                            }
+                        
+                            if (pixel.mask.GetBit(2)) {
+                                m_color.SetColor(pixel.position.x[2], pixel.position.y[2], 255, 255, 255);
+                            }
+                        
+                            if (pixel.mask.GetBit(3)) {
+                                m_color.SetColor(pixel.position.x[3], pixel.position.y[3], 255, 255, 255);
+                            }
+                        
+                            if (pixel.mask.GetBit(4)) {
+                                m_color.SetColor(pixel.position.x[4], pixel.position.y[4], 255, 255, 255);
+                            }
+                        
+                            if (pixel.mask.GetBit(5)) {
+                                m_color.SetColor(pixel.position.x[5], pixel.position.y[5], 255, 255, 255);
+                            }
+                        
+                            if (pixel.mask.GetBit(6)) {
+                                m_color.SetColor(pixel.position.x[6], pixel.position.y[6], 255, 255, 255);
+                            }
+                        
+                            if (pixel.mask.GetBit(7)) {
+                                m_color.SetColor(pixel.position.x[7], pixel.position.y[7], 255, 255, 255);
+                            }
+
+
+                            #else
+                for (int pixelY = minPt.y; pixelY < maxPt.y; pixelY++) {
+                    for (int pixelX = minPt.x; pixelX < maxPt.x; pixelX++) {
+
+                        Vec2 pixelE = Vec2(pixelX, pixelY);
+                        float eA0 = tri.EdgeFunc0(pixelE);
+                        float eA1 = tri.EdgeFunc1(pixelE);
+                        float eA2 = tri.EdgeFunc2(pixelE);
+
+                        constexpr float epsilon = -std::numeric_limits<float>::epsilon();
+
+                        // trivial accept
+                        if (eA0 <= 0 && eA1 <= 0 && eA2 <= 0 &&
+                            (eA0 <= epsilon || eA1 <= epsilon || eA2 <= epsilon))
+                        {
+                            m_color.SetColor(pixelX, pixelY, 255, 255, 255);
+                        }
+                    }
+                }
+#endif
+
+
+    float maxDepth = 0;
+    
+    for (int y = 0; y < APP_VIRTUAL_HEIGHT; y += SIMDPixel::pixelHeight) {
+    
+        for (int x = 0; x < APP_VIRTUAL_WIDTH; x += SIMDPixel::pixelWidth)
+        {
+            auto depth = m_depth.GetBuffer(x, y);
+    
+            if (depth[0] != 0.0) {
+                if (depth[0] > maxDepth) {
+                    maxDepth = depth[0];
+                }
+            }
+            if (depth[1] != 0.0) {
+                if (depth[1] > maxDepth) {
+                    maxDepth = depth[1];
+                }
+            }
+            if (depth[2] != 0.0) {
+                if (depth[2] > maxDepth) {
+                    maxDepth = depth[2];
+                }
+            }
+            if (depth[3] != 0.0) {
+                if (depth[3] > maxDepth) {
+                    maxDepth = depth[3];
+                }
+            }
+            if (depth[4] != 0.0) {
+                if (depth[4] > maxDepth) {
+                    maxDepth = depth[4];
+                }
+            }
+            if (depth[5] != 0.0) {
+                if (depth[5] > maxDepth) {
+                    maxDepth = depth[5];
+                }
+            }
+            if (depth[6] != 0.0) {
+                if (depth[6] > maxDepth) {
+                    maxDepth = depth[6];
+                }
+            }
+            if (depth[7] != 0.0) {
+                if (depth[7] > maxDepth) {
+                    maxDepth = depth[7];
+                }
+            }
+        }
+    }
+    
+    for (int y = 0; y < APP_VIRTUAL_HEIGHT; y += SIMDPixel::pixelHeight) {
+    
+        for (int x = 0; x < APP_VIRTUAL_WIDTH ; x += SIMDPixel::pixelWidth)
+        {
+            auto depth = m_depth.GetBuffer(x, y);
+    
+            if (depth[0] != 0.0) {
+                unsigned char color = depth[0] / maxDepth * 255;
+                m_color.SetColor(x, y, color, color, color);
+            }
+            if (depth[1] != 0.0) {
+                unsigned char color = depth[1] / maxDepth * 255;
+                m_color.SetColor(x + 1, y, color, color, color);
+            }
+            if (depth[2] != 0.0) {
+                unsigned char color = depth[2] / maxDepth * 255;
+                m_color.SetColor(x + 2, y, color, color, color);
+            }
+            if (depth[3] != 0.0) {
+                unsigned char color = depth[3] / maxDepth * 255;
+                m_color.SetColor(x + 3, y, color, color, color);
+            }
+            if (depth[4] != 0.0) {
+                unsigned char color = depth[4] / maxDepth * 255;
+                m_color.SetColor(x, y + 1, color, color, color);
+            }
+            if (depth[5] != 0.0) {
+                unsigned char color = depth[5] / maxDepth * 255;
+                m_color.SetColor(x + 1, y + 1, color, color, color);
+            }
+            if (depth[6] != 0.0) {
+                unsigned char color = depth[6] / maxDepth * 255;
+                m_color.SetColor(x + 2, y + 1, color, color, color);
+            }
+            if (depth[7] != 0.0) {
+                unsigned char color = depth[7] / maxDepth * 255;
+                m_color.SetColor(x + 3, y + 1, color, color, color);
+            }
+        }
+    }

@@ -9,7 +9,8 @@
 
 struct Vertex {
 	// parent entity this belongs to
-	Entity id{};
+	size_t tex_id{};
+
 	std::uint32_t index{};
 	Vec2 tex{};
 	Vec3 normal{};
@@ -24,7 +25,15 @@ struct Vertex {
 	Vertex(Vec3& pos) : pos(pos) {}
 	Vertex(Vec3& pos, Vec2& tex) : pos(pos), tex(tex) {}
 	Vertex(Vec3& pos, Vec3& normal, Vec2& tex) : pos(pos), normal(normal), tex(tex) {}
-	Vertex(const Vertex& v) : id(v.id), index(v.index), tex(v.tex), normal(v.normal), pos(v.pos), proj(v.proj), invW(v.invW) {}
+    Vertex(const Vertex& v)
+          : tex_id(v.tex_id)
+          , index(v.index)
+          , tex(v.tex)
+          , normal(v.normal)
+          , pos(v.pos)
+          , proj(v.proj)
+          , invW(v.invW)
+        {}
 
 	void PerspectiveDivision() 
 	{
@@ -33,8 +42,8 @@ struct Vertex {
 		tex *= invW;
 	}
 
-	Vertex operator*(float t) 
-	{
+	Vertex operator*(float t) const
+    {
 		auto copy = *this;
 		copy.pos *= t;
 		copy.tex *= t;
@@ -43,8 +52,8 @@ struct Vertex {
 	}
 
 
-	Vertex operator+(const Vertex& v) 
-	{
+	Vertex operator+(const Vertex& v) const
+    {
 		auto copy = *this;
 
 		copy.pos += v.pos;
@@ -52,13 +61,13 @@ struct Vertex {
 		copy.normal += v.normal;
 
 		return copy;
-
 	}
 
 
 	bool operator==(const Vertex& rhs) const 
 	{
-		return tex == rhs.tex && normal == rhs.normal && id == rhs.id && pos == rhs.pos && invW == rhs.invW;
+                return tex == rhs.tex && normal == rhs.normal &&
+                       pos == rhs.pos && invW == rhs.invW && tex_id == rhs.tex_id;
 	}
 
 };
@@ -67,7 +76,7 @@ struct Vertex {
 // hash method used: https://en.cppreference.com/w/Talk:cpp/utility/hash
 template<> struct std::hash<Vertex> {
 	std::size_t operator()(Vertex const& v) const noexcept {
-		std::size_t h1 = std::hash<Entity>{}(v.id);
+		std::size_t h1 = std::hash<Entity>{}(v.tex_id);
 		h1 = h1 ^ (std::hash<float>{}(v.tex.x) << 1);
 		h1 = h1 ^ (std::hash<float>{}(v.tex.y) << 2);
 		h1 = h1 ^ (std::hash<float>{}(v.pos.x) << 3);
@@ -95,6 +104,8 @@ struct Triangle
 	int maxX{}, maxY{};
 	int minX{}, minY{};
 
+	float invDet{};
+
 	Triangle(const Triangle& t) :
 		B0(t.B0), C0(t.C0), B1(t.B1),
 		C1(t.C1), B2(t.B2), C2(t.C2),
@@ -102,7 +113,7 @@ struct Triangle
 		rejectIndex1(t.rejectIndex1), acceptIndex1(t.acceptIndex1),
 		rejectIndex2(t.rejectIndex2), acceptIndex2(t.acceptIndex2),
 		maxX(t.maxX), maxY(t.maxY),
-		minX(t.minX), minY(t.minY) {
+		minX(t.minX), minY(t.minY), invDet(t.invDet) {
 		std::copy(std::begin(t.verts), std::end(t.verts), std::begin(verts));
 	}
 
@@ -126,10 +137,11 @@ struct Triangle
 		C1 = static_cast<int>(verts[2].proj.x - verts[1].proj.x);
 		B2 = static_cast<int>(verts[0].proj.y - verts[2].proj.y);
 		C2 = static_cast<int>(verts[0].proj.x - verts[2].proj.x);
-		const int det = C2 * B1 - C1 * B2;
 
+		const int det = C2 * -B1 + C1 * B2;
 
-		if (det > 0) {
+		if (det < 0) 
+		{
 			B0 *= -1;
 			C0 *= -1;
 			B1 *= -1;
@@ -137,6 +149,13 @@ struct Triangle
 			B2 *= -1;
 			C2 *= -1;
 		}
+
+		if (det == 0) 
+		{
+			return false;
+		}
+
+		invDet = 1 / det;
 
 		Vec2 edgeNormal1 = Vec2(-B0, C0);
 		Vec2 edgeNormal2 = Vec2(-B1, C1);
@@ -214,19 +233,23 @@ struct Triangle
 		return det > 0;
 	}
 	// edge function 
-	float EdgeFunc0(Vec2& p) {
+	float EdgeFunc0(Vec2& p) 
+	{
 		return B0 * (p.x - verts[0].proj.x) - C0 * (p.y - verts[0].proj.y);
 	}
 
-	float EdgeFunc1(Vec2& p) {
+	float EdgeFunc1(Vec2& p) 
+	{
 		return B1 * (p.x - verts[1].proj.x) - C1 * (p.y - verts[1].proj.y);
 	}
 
-	float EdgeFunc2(Vec2& p) {
+	float EdgeFunc2(Vec2& p) 
+	{
 		return B2 * (p.x - verts[2].proj.x) - C2 * (p.y - verts[2].proj.y);
 	}
 
-	bool CheckInTriangle(Vec2& point) {
+	bool CheckInTriangle(Vec2& point) 
+	{
 		float e0 = EdgeFunc0(point);
 		float e1 = EdgeFunc1(point);
 		float e2 = EdgeFunc2(point);
@@ -241,9 +264,11 @@ constexpr float epsilon = -std::numeric_limits<float>::epsilon();
 struct SIMDTriangle
 {
 	SIMDFloat B0{}, C0{}, B1{}, C1{}, B2{}, C2{};
+	SIMDFloat invDet;
+    SIMDVec3 normal1, normal2, normal3;
 	SIMDVec2 v1, v2, v3;
-
-
+	SIMDFloat invW1, invW2, invW3;
+	SIMDVec2 tex1, tex2, tex3;
 
 	SIMDTriangle(const Triangle& t) 
 		: B0(SIMDFloat(static_cast<float>(t.B0))),
@@ -251,10 +276,20 @@ struct SIMDTriangle
 		  B1(SIMDFloat(static_cast<float>(t.B1))),
 		  C1(SIMDFloat(static_cast<float>(t.C1))),
 		  B2(SIMDFloat(static_cast<float>(t.B2))),
-		  C2(SIMDFloat(static_cast<float>(t.C2))),
+         C2(SIMDFloat(static_cast<float>(t.C2)))
+          , normal1()
+          , normal2()
+          , normal3()
 		  v1(SIMDVec2(t.verts[0].proj.x, t.verts[0].proj.y)),
 		  v2(SIMDVec2(t.verts[1].proj.x, t.verts[1].proj.y)),
-		  v3(SIMDVec2(t.verts[2].proj.x, t.verts[2].proj.y))
+		  v3(SIMDVec2(t.verts[2].proj.x, t.verts[2].proj.y)),
+		  invW1(t.verts[0].invW),
+		  invW2(t.verts[1].invW),
+		  invW3(t.verts[2].invW),
+          tex1(SIMDVec2(t.verts[0].tex.x, t.verts[0].tex.y)),
+          tex2(SIMDVec2(t.verts[1].tex.x, t.verts[1].tex.y)),
+          tex3(SIMDVec2(t.verts[2].tex.x, t.verts[2].tex.y)),
+          invDet(t.invDet) 
 	{};
 	
 	SIMDFloat EdgeFunc0(SIMDVec2& p) 
@@ -272,18 +307,21 @@ struct SIMDTriangle
 		return B2 * (p.x - v3.x) - C2 * (p.y - v3.y);
 	}
 
-	bool IsInTriangle(SIMDPixel& p)
+	SIMDFloat IsInTriangle(SIMDPixel& p)
 	{
 		SIMDFloat e1 = EdgeFunc0(p.position);
 		SIMDFloat e2 = EdgeFunc1(p.position);
 		SIMDFloat e3 = EdgeFunc2(p.position);
-	
-		p.mask = (e1 <= 0.0f & e2 <= 0.0f & e3 <= 0.0f) &
-			     (e1 <= epsilon | e2 <= epsilon | e3 <= epsilon);
-	
-		return SIMD::Any(p.mask);
+		return (e1 <= 0.0f & e2 <= 0.0f & e3 <= 0.0f);
 	}
 
+
+	void ComputeBarcentric(SIMDPixel& p, SIMDFloat& alpha, SIMDFloat& beta, SIMDFloat& gamma)
+	{
+		alpha = (C2 * (p.position.x - v3.x) + C1 * (p.position.y - v3.y)) * invDet;
+		beta =  (B2 * -1 * (p.position.x - v3.x) + C2 * -1 * (p.position.y - v3.y)) * invDet;
+		gamma = SIMDFloat(1.0) - alpha - beta;
+	}
 
 };
 

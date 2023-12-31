@@ -10,13 +10,13 @@
 #include "../app/app.h"
 
 
-
 extern Coordinator gCoordinator;
 
 constexpr double ASPECT_RATIO = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
 
 
-void ComputeBarycentricCoordinates(const Vertex& v1, const Vertex& v2, const Vertex& v3, float x, float y, float& alpha, float& beta, float& gamma) 
+void ComputeBarycentricCoordinates(const Vertex& v1, const Vertex& v2, const Vertex& v3, float x, float y, float& alpha,
+                                   float& beta, float& gamma)
 {
     float det = (v2.pos.y - v3.pos.y) * (v1.pos.x - v3.pos.x) + (v3.pos.x - v2.pos.x) * (v1.pos.y - v3.pos.y);
     alpha = ((v2.pos.y - v3.pos.y) * (x - v3.pos.x) + (v3.pos.x - v2.pos.x) * (y - v3.pos.y)) / det;
@@ -26,7 +26,6 @@ void ComputeBarycentricCoordinates(const Vertex& v1, const Vertex& v2, const Ver
 
 void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuffer& depth, ColorBuffer& color)
 {
-
     float delta = 1;
     float invslope1 = (v2.pos.x - v1.pos.x) / (v2.pos.y - v1.pos.y);
     float invslope2 = (v3.pos.x - v1.pos.x) / (v3.pos.y - v1.pos.y);
@@ -37,13 +36,15 @@ void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuf
     float curx1 = v1.pos.x;
     float curx2 = v1.pos.x;
 
-    if (invslope1 > invslope2) {
+    if (invslope1 > invslope2)
+    {
         std::swap(invslope1, invslope2);
     }
 
-    for (float y = v1.pos.y; y <= v2.pos.y; y += delta) {
-
-        for (float x = curx1; x < curx2; x += delta) {
+    for (float y = v1.pos.y; y <= v2.pos.y; y += delta)
+    {
+        for (float x = curx1; x < curx2; x += delta)
+        {
             // ... interpolate u and v (texture coordinates) and draw point
 
             float alpha, beta, gamma;
@@ -54,11 +55,13 @@ void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuf
             u /= z;
             v /= z;
 
-            if (z > depth.GetBuffer(x, y)) {
+            if (z > depth.GetBuffer(x, y))
+            {
                 float r, g, b;
                 tex.Sample(u, v, r, g, b);
                 // App::DrawPoint(x, y, r / 255.0f, g / 255.0f, b / 255.0f);
-                color.SetColor(static_cast<int>(x), static_cast<int>(y), r, g, b);
+                //color.SetColor(static_cast<int>(x), static_cast<int>(y), r, g, b);
+                color.SetColor(static_cast<int>(x), static_cast<int>(y), 255, 255, 255);
                 depth.SetBuffer(static_cast<int>(x), static_cast<int>(y), z);
             }
         }
@@ -67,8 +70,8 @@ void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuf
     }
 }
 
-void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuffer& depth, ColorBuffer& color) {
-
+void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuffer& depth, ColorBuffer& color)
+{
     float delta = 1;
     float invslope1 = (v3.pos.x - v1.pos.x) / (v3.pos.y - v1.pos.y);
     float invslope2 = (v3.pos.x - v2.pos.x) / (v3.pos.y - v2.pos.y);
@@ -78,12 +81,15 @@ void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuffer
     float curx1 = v3.pos.x;
     float curx2 = v3.pos.x;
 
-    if (invslope1 < invslope2) {
+    if (invslope1 < invslope2)
+    {
         std::swap(invslope1, invslope2);
     }
 
-    for (float y = v3.pos.y; y > v1.pos.y; y -= delta) {
-        for (float x = curx1; x < curx2; x += delta) {
+    for (float y = v3.pos.y; y > v1.pos.y; y -= delta)
+    {
+        for (float x = curx1; x < curx2; x += delta)
+        {
             // ... interpolate u and v (texture coordinates) and draw point
             float alpha, beta, gamma;
             ComputeBarycentricCoordinates(v1, v2, v3, x, y, alpha, beta, gamma);
@@ -93,11 +99,13 @@ void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuffer
             u /= z;
             v /= z;
 
-            if (z > depth.GetBuffer(x, y)) {
+            if (z > depth.GetBuffer(x, y))
+            {
                 float r, g, b;
                 tex.Sample(u, v, r, g, b);
                 // App::DrawPoint(x, y, r / 255.0f, g / 255.0f, b / 255.0f);
-                color.SetColor(static_cast<int>(x), static_cast<int>(y), r, g, b);
+                //color.SetColor(static_cast<int>(x), static_cast<int>(y), r, g, b);
+                color.SetColor(static_cast<int>(x), static_cast<int>(y), 255, 255, 255);
                 depth.SetBuffer(static_cast<int>(x), static_cast<int>(y), z);
             }
         }
@@ -107,14 +115,14 @@ void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuffer
 }
 
 
-
-
-void Renderer::RenderTriangle(Triangle& tri, SimpleTexture& tex) {
+void Renderer::RenderTriangle(Triangle& tri, SimpleTexture& tex)
+{
     // Sort vertices by y-coordinate
     std::sort(std::begin(tri.verts), std::end(tri.verts),
-        [](const Vertex& a, const Vertex& b) {
-            return a.pos.y < b.pos.y;
-        }
+              [](const Vertex& a, const Vertex& b)
+              {
+                  return a.pos.y < b.pos.y;
+              }
     );
 
     Vertex& v1 = tri.verts[0];
@@ -122,17 +130,21 @@ void Renderer::RenderTriangle(Triangle& tri, SimpleTexture& tex) {
     Vertex& v3 = tri.verts[2];
 
     // trivial reject
-    if ((v1.pos.y == v2.pos.y && v2.pos.y == v3.pos.y) || v3.pos.y - v1.pos.y <= 1.0) {
+    if ((v1.pos.y == v2.pos.y && v2.pos.y == v3.pos.y) || v3.pos.y - v1.pos.y <= 1.0)
+    {
         return;
     }
 
-    if (v2.pos.y == v3.pos.y) {
+    if (v2.pos.y == v3.pos.y)
+    {
         FillBottom(v1, v2, v3, tex, m_depth, m_color);
     }
-    else if (v1.pos.y == v2.pos.y) {
+    else if (v1.pos.y == v2.pos.y)
+    {
         FillTop(v1, v2, v3, tex, m_depth, m_color);
     }
-    else {
+    else
+    {
         // Interpolate to find the fourth vertex
         float t = (v2.pos.y - v3.pos.y) / (v1.pos.y - v3.pos.y);
         Vec3 pos4 = Vec3(v3.pos.x + (v1.pos.x - v3.pos.x) * t, v2.pos.y, 0);
@@ -153,32 +165,31 @@ void Renderer::DebugDraw(const Triangle& tri)
     Vec4 v3 = tri.verts[2].proj;
 
     App::DrawLine(v1.x, v1.y, v2.x, v2.y, 1, 0, 0);
-    App::DrawLine(v1.x, v1.y, v3.x, v3.y, 1, 0, 0);    
+    App::DrawLine(v1.x, v1.y, v3.x, v3.y, 1, 0, 0);
     App::DrawLine(v2.x, v2.y, v3.x, v3.y, 1, 0, 0);
 }
 
 void Renderer::Render()
 {
-
     m_depth.ClearBuffer();
     m_color.ClearBuffer();
 
-    Vec3 light_direction = Vec3(0, -1.0, 0.0f);
     std::vector<Triangle> TrianglesToRaster;
-    //TODO Refactor texture system
     SimpleTexture tex;
-   
-    // Geometric pipeline
-    for (Entity const& e : Visit<Mesh, Transform, SimpleTexture>(gCoordinator)) {
 
+    // Geometric pipeline
+    for (Entity const& e : Visit<Mesh, Transform, SimpleTexture>(gCoordinator))
+    {
         Mesh& mesh = gCoordinator.GetComponent<Mesh>(e);
         tex = gCoordinator.GetComponent<SimpleTexture>(e);
 
-        for (Triangle& tri : mesh.tris) {
+        for (Triangle& tri : mesh.tris)
+        {
             // transform triangle by model matrix
             Triangle translation = tri;
-         
-            Vec3 normal = (translation.verts[0].normal + translation.verts[1].normal + translation.verts[2].normal) * (1.0f / 3.0f);
+
+            Vec3 normal = (translation.verts[0].normal + translation.verts[1].normal + translation.verts[2].normal) * (
+                1.0f / 3.0f);
             // back face culling
             if (normal.Dot(translation.verts[0].pos - m_cam.pos) > 0)
             {
@@ -196,11 +207,11 @@ void Renderer::Render()
         }
     }
 
-    for (Triangle& triangle : TrianglesToRaster) {
+    for (Triangle& triangle : TrianglesToRaster)
+    {
+        std::vector<Triangle> clipped = Clip(triangle);
 
-        std::vector<Triangle> clipped = Clip(triangle);        
-        
-        for (Triangle& clip : clipped) 
+        for (Triangle& clip : clipped)
         {
             m_cam.ToRasterSpace(clip.verts[0].proj);
             m_cam.ToRasterSpace(clip.verts[1].proj);
@@ -220,6 +231,3 @@ void Renderer::Render()
 
     App::RenderTexture(m_color.GetBuffer());
 }
-
-
-

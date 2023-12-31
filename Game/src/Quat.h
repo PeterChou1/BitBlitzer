@@ -3,7 +3,8 @@
 #include "Mat3.h"
 #include "Vec4.h"
 
-class Quat {
+class Quat
+{
 public:
     Quat();
     Quat(const Quat& rhs);
@@ -25,6 +26,7 @@ public:
     Mat3 ToMat3() const;
     Vec4 ToVec4() const { return Vec4(w, x, y, z); }
     static Quat FromRotationMatrix(Mat3& m);
+
 public:
     float w;
     float x;

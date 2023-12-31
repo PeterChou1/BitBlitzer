@@ -3,14 +3,22 @@
 #include "Mat3.h"
 /* ================================ Mat4 ================================ */
 
-class Mat4 {
+class Mat4
+{
 public:
-    Mat4() {}
+    Mat4()
+    {
+    }
+
     Mat4(const Mat4& rhs);
     Mat4(const float* mat);
     Mat4(const Vec4& row0, const Vec4& row1, const Vec4& row2, const Vec4& row3);
     Mat4& operator=(const Mat4& rhs);
-    ~Mat4() {}
+
+    ~Mat4()
+    {
+    }
+
     void Zero();
     void Identity();
     float Trace() const;

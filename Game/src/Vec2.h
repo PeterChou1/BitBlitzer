@@ -38,7 +38,7 @@ public:
     float GetMagnitude() const;
     bool IsValid() const;
 
-    std::string toString() const;
+    std::string ToString() const;
 
     float Dot(const Vec2& rhs) const 
     {

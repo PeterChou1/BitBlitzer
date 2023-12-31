@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <cassert>
-
+#include "Concurrency.h"
 struct Color 
 {
     unsigned char r, g, b;
@@ -28,12 +28,15 @@ public:
 
     void ClearBuffer() 
     {
-        for (int i = 0; i < m_height * m_width * 3; i += 3) 
-        {
-            m_buffer[i] = 0.0f;
-            m_buffer[i + 1] = 0.0f;
-            m_buffer[i + 2] = 0.0f;
-        }
+        Concurrency::ForEach(m_buffer.begin(), m_buffer.end(), [&](unsigned char& color) {
+            color = 0.0f;
+        });
+        // for (int i = 0; i < m_height * m_width * 3; i += 3) 
+        // {
+        //     m_buffer[i] = 0.0f;
+        //     m_buffer[i + 1] = 0.0f;
+        //     m_buffer[i + 2] = 0.0f;
+        // }
     }
 
 

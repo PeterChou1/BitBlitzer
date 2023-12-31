@@ -4,19 +4,21 @@
 #include "DebugCamera.h"
 #include "RendererM.h"
 
-class Scene {
+class Scene
+{
 public:
-	Scene() {}
+    Scene()
+    {
+    }
 
-	void Setup();
+    void Setup();
 
-	void Render();
+    void Render();
 
-	void Update(float deltaTime);
+    void Update(float deltaTime);
 
 private:
-	std::shared_ptr<Renderer> renderer;
-	std::shared_ptr<RendererM> rendererM;
-	std::shared_ptr<DebugCamera> debugCam;
-
+    std::shared_ptr<Renderer> renderer;
+    std::shared_ptr<RendererM> rendererM;
+    std::shared_ptr<DebugCamera> debugCam;
 };

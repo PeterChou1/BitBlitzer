@@ -38,7 +38,8 @@ void Lerp(const Point& a, const Point& b, float alpha, Point& out)
 }
 
 
-uint8_t OutCode(const Vec4& v) {
+uint8_t OutCode(const Vec4& v)
+{
 
     uint8_t outcode = 0;
 
@@ -52,7 +53,8 @@ uint8_t OutCode(const Vec4& v) {
     return outcode;
 }
 
-std::vector<Point> ClipPlane(uint32_t planeid, std::vector<Point>& points)
+__forceinline std::vector<Point>
+ClipPlane(uint32_t planeid, std::vector<Point>& points)
 {
 
     std::vector<Point> outPoints;
@@ -161,7 +163,6 @@ std::vector<Triangle> Clip(Triangle& clip)
 
             Triangle newtri = Triangle(n1, n2, n3);
             newtri.PerspectiveDivision();
-            newtri.Setup();
             clipped.push_back(newtri);
         }
     }

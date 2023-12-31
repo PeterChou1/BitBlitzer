@@ -34,7 +34,5 @@ public:
 
 	Vec3 WorldToCamera(const Vec3& point);
 
-private:
-
 
 };

@@ -58,7 +58,7 @@ public:
         return &x;
     }
 
-    std::string toString() const;
+    std::string ToString() const;
 
 public:
     float x;

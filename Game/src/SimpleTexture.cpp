@@ -14,25 +14,31 @@ struct STBImageDeleter {
 };
 
 
-SimpleTexture::SimpleTexture(const char* fileName)
+SimpleTexture::SimpleTexture(const char* fileName,
+                             Vec3 ambient,
+                             Vec3 diffuse,
+                             Vec3 specular,
+                             float highlight)
+  : ambient(ambient)
+  , diffuse(diffuse), specular(specular), highlight(highlight)
 {
-    bool texLoaded = LoadTexture(fileName);
-	assert(texLoaded, "Failed to Load Texture");
+    const bool texLoaded = LoadTexture(fileName);
+	assert(texLoaded && "Failed to Load Texture");
 }
 
 
 void SimpleTexture::Sample(float u, float v, float& r, float& g, float& b)
 {
-    // Convert u and v to pixel coordinates
-    int x = static_cast<int>(u * mtexWidth);
-    int y = static_cast<int>(v * mtexHeight);
 
-    // Ensure x and y do not exceed image dimensions
-    x = std::min(x, mtexWidth - 1);
-    y = std::min(y, mtexHeight - 1);
+    u = std::min(1.0f, std::max(0.0f, u));
+    v = std::min(1.0f, std::max(0.0f, v));
+
+    // Convert u and v to pixel coordinates
+    const int x = static_cast<int>(u * (mtexWidth - 1));
+    const int y = static_cast<int>(v * (mtexHeight - 1));
 
     // Calculate the offset for the pixel
-    int offset = (y * mtexWidth + x) * 4; // 4 channels per pixel (RGBA)
+    const int offset = (y * mtexWidth + x) * 4; // 4 channels per pixel (RGBA)
     // Extract the RGB values
     r = texture[offset];
     g = texture[offset + 1];
@@ -42,7 +48,6 @@ void SimpleTexture::Sample(float u, float v, float& r, float& g, float& b)
 bool SimpleTexture::LoadTexture(const char* filename)
 {
 	int channels;
-    int height;
 	unsigned char* data = stbi_load(filename, &mtexWidth, &mtexHeight, &channels, 4);
 	if (data) {
         texture = std::shared_ptr<unsigned char[]>(data, STBImageDeleter());

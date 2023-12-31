@@ -6,8 +6,6 @@
 #include "SimpleTexture.h"
 #include "DepthBuffer.h"
 #include "GraphicsBuffer.h"
-#include "../App/app.h"
-#include <iostream>
 
 extern Coordinator gCoordinator;
 constexpr double ASPECT_RATIO = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
@@ -15,82 +13,101 @@ constexpr double ASPECT_RATIO = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
 void Scene::Setup()
 {
     // Setup Camera
-	Entity camEntity = gCoordinator.CreateEntity();
-	Camera cam = Camera(Vec3(0, 0, 0), Vec3(0, 0, 1), Vec3(0, 1, 0), APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT, 90.0f, ASPECT_RATIO, 0.1, 100);
-	
+    Entity camEntity = gCoordinator.CreateEntity();
+    auto cam = Camera(Vec3(0, 0, 0), Vec3(0, 0, 1), Vec3(0, 1, 0), APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT, 90.0f,
+                      ASPECT_RATIO, 0.1, 100);
+
 
     // Setup Rendering
     Entity dBufferEntity = gCoordinator.CreateEntity();
-    DepthBuffer depthBuffer = DepthBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
-    Entity graphicsEntity = gCoordinator.CreateEntity();
-    GraphicsBuffer g = GraphicsBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
-    Entity colorEntity = gCoordinator.CreateEntity();
-    ColorBuffer color = ColorBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
-    
-    // Setup Mesh Instance
+    auto depthBuffer = DepthBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
+    Entity simdDepthEntity = gCoordinator.CreateEntity();
+    auto simdDepth = DepthBufferSIMD(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
 
-    for (int x = -5; x < 5; x++) {
-        for (int z = 0; z < 10; z++) {
+    Entity graphicsEntity = gCoordinator.CreateEntity();
+    auto g = GraphicsBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
+    
+    Entity colorEntity = gCoordinator.CreateEntity();
+    auto color = ColorBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
+
+    Entity textureEntity = gCoordinator.CreateEntity();
+    auto texList = TextureList();
+
+
+    // Setup Mesh Instance
+    MeshInstance meshI;
+    bool loadsucceed = Utils::LoadInstance("./Assets/furina.obj", meshI, texList);
+    assert(loadsucceed && "failed to load file");
+
+    for (int x = 0; x < 1; x++)
+    {
+        for (int z = 0; z < 1; z++)
+        {
             Entity testRenderEntity = gCoordinator.CreateEntity();
-            Transform modelTransform = Transform(Vec3(x * 2, 0, 5 + z * 2), Quat(Vec3(1, 0, 0), 0.0));// 3.14 / 2));
-            MeshInstance meshI;
-            Utils::LoadInstance("./Assets/spot.obj", meshI, testRenderEntity);
+            auto modelTransform = Transform(Vec3(x * 2, 0, 5 + z * 2), Quat(Vec3(1, 0, 0), 0.0)); // 3.14 / 2));
+            MeshInstance meshCopy = meshI;
             gCoordinator.AddComponent<Transform>(testRenderEntity, modelTransform);
 
-            for (auto& vert : meshI.vertices)
+            for (auto& vert : meshCopy.vertices)
             {
                 vert.pos = modelTransform.TransformVec3(vert.pos);
                 vert.normal = modelTransform.TransformNormal(vert.normal);
             }
 
-            g.AddMeshInstance(meshI);
+            g.AddMeshInstance(meshCopy);
 
             Entity e = gCoordinator.CreateEntity();
-            Mesh mesh_obj = Mesh(meshI);
-            Transform t2 = Transform(Vec3(x * 2, 0, 10), Quat(Vec3(1, 0, 0), 0.0));// 3.14 / 2));
-            SimpleTexture texture = SimpleTexture("./Assets/spot_texture.png");
-
+            auto mesh_obj = Mesh(meshCopy);
+            auto t2 = Transform(Vec3(x * 2, 0, 10), Quat(Vec3(1, 0, 0), 0.0)); // 3.14 / 2));
+            auto texture = SimpleTexture("./Assets/spot_texture.png",
+                                         Vec3(0, 0, 0),
+                                         Vec3(0, 0, 0),
+                                         Vec3(0, 0, 0), 0.0);
+            // 
             gCoordinator.AddComponent<Mesh>(e, mesh_obj);
             gCoordinator.AddComponent<Transform>(e, t2);
             gCoordinator.AddComponent<SimpleTexture>(e, texture);
+
         }
     }
-
 
 
     gCoordinator.AddComponent<Camera>(camEntity, cam);
     gCoordinator.AddComponent<DepthBuffer>(dBufferEntity, depthBuffer);
     gCoordinator.AddComponent<GraphicsBuffer>(graphicsEntity, g);
     gCoordinator.AddComponent<ColorBuffer>(colorEntity, color);
+    gCoordinator.AddComponent<DepthBufferSIMD>(simdDepthEntity, simdDepth);
+    gCoordinator.AddComponent<TextureList>(textureEntity, texList);
 
     debugCam = std::make_shared<DebugCamera>(
         DebugCamera(gCoordinator.GetComponent<Camera>(camEntity))
     );
     rendererM = std::make_shared<RendererM>(
         RendererM(
-            gCoordinator.GetComponent<GraphicsBuffer>(graphicsEntity), 
+            gCoordinator.GetComponent<GraphicsBuffer>(graphicsEntity),
             gCoordinator.GetComponent<Camera>(camEntity),
-            gCoordinator.GetComponent<ColorBuffer>(colorEntity)
+            gCoordinator.GetComponent<ColorBuffer>(colorEntity),
+            gCoordinator.GetComponent<DepthBufferSIMD>(simdDepthEntity),
+            gCoordinator.GetComponent<TextureList>(textureEntity)
         )
     );
     renderer = std::make_shared<Renderer>(
         Renderer(
-            gCoordinator.GetComponent<Camera>(camEntity), 
+            gCoordinator.GetComponent<Camera>(camEntity),
             gCoordinator.GetComponent<DepthBuffer>(dBufferEntity),
             gCoordinator.GetComponent<ColorBuffer>(colorEntity)
         )
     );
-
 }
 
 void Scene::Render()
 {
-    rendererM->Render();
-    //renderer->Render();
+    //rendererM->Render();
+    renderer->Render();
     debugCam->Render();
 }
 
 void Scene::Update(float deltaTime)
 {
-	debugCam->Move(deltaTime);
+    debugCam->Move(deltaTime);
 }

@@ -1,20 +1,20 @@
 #pragma once
 #include <vector>
 #include "Mesh.h"
-#include "Mat4.h"
 #include "System.h"
-#include "SimpleTexture.h"
 #include "DepthBuffer.h"
 #include "GraphicsBuffer.h"
 #include "Camera.h"
 #include "ColorBuffer.h"
+#include "SimpleTexture.h"
 
 /*
 * /brief multithreaded renderer
 */
-class RendererM : public System {
+class RendererM : public System
+{
 public:
-    RendererM(GraphicsBuffer& g, Camera& cam, ColorBuffer& color);
+    RendererM(GraphicsBuffer& g, Camera& cam, ColorBuffer& color, DepthBufferSIMD& depth, TextureList& textureList);
 
     void Render();
 
@@ -32,8 +32,6 @@ public:
 
     void ClearBuffer();
 
-
-
 private:
     std::vector<std::uint32_t> m_coreIds;
     std::vector<Vertex>& m_vertexBuffer;
@@ -41,8 +39,10 @@ private:
     std::vector<Vertex>& m_projectedVertexBuffer;
     std::vector<std::vector<Triangle>>& m_projectedClip;
     std::vector<Tile>& m_tiles;
+    TextureList& m_textureList;
     Camera& m_cam;
     ColorBuffer& m_color;
-    int m_coreCount;
+    DepthBufferSIMD& m_depth;
+    unsigned int m_coreCount;
     int m_coreInterval;
 };

@@ -4,17 +4,21 @@
 #include <vector>
 #include "Tile.h"
 
-class GraphicsBuffer {
+class GraphicsBuffer
+{
 public:
-    GraphicsBuffer() {}
+    GraphicsBuffer()
+    {
+    }
 
-    GraphicsBuffer(int width, int height) {
-        int numCores = std::thread::hardware_concurrency();
+    GraphicsBuffer(int width, int height)
+    {
+        unsigned int numCores = std::thread::hardware_concurrency();
         projectedClipped.resize(numCores);
-        int TileCountX = width / TileSizeX;
-        int TileCountY = height / TileSizeY;
-        for (int y = 0; y < TileCountY; ++y) {
-            for (int x = 0; x < TileCountX; ++x) {
+        for (int y = 0; y < TileCountY; ++y)
+        {
+            for (int x = 0; x < TileCountX; ++x)
+            {
                 auto max = Vec2((std::min)((x + 1) * TileSizeX, width), (std::min)((y + 1) * TileSizeY, height));
                 auto min = Vec2((std::min)(x * TileSizeX, width), (std::min)(y * TileSizeY, height));
                 Tile t = Tile(min, max);
@@ -23,47 +27,49 @@ public:
         }
     }
 
-    void AddMeshInstance(MeshInstance& mesh) 
+    void AddMeshInstance(MeshInstance& mesh)
     {
         int offsetVertex = vertices.size();
-        for (auto& vertex : mesh.vertices) {
+        for (auto& vertex : mesh.vertices)
+        {
             vertex.index = offsetVertex + vertex.index;
             vertices.push_back(vertex);
         }
-        int offsetIndex = indices.size();
-        for (auto id : mesh.indices) {
-            indices.push_back(offsetIndex + id);
+        //int offsetIndex = indices.size();
+        for (auto id : mesh.indices)
+        {
+            indices.push_back(offsetVertex + id);
         };
         projectedVertex.resize(vertices.size());
         triangleCount = indices.size() / 3;
     };
 
-    std::uint32_t GetTriangleCount() 
+    std::uint32_t GetTriangleCount()
     {
         return triangleCount;
     }
 
-    std::vector<Vertex>& GetVertexBuffer() 
+    std::vector<Vertex>& GetVertexBuffer()
     {
         return vertices;
     }
 
-    std::vector<std::uint32_t>& GetIndexBuffer() 
+    std::vector<std::uint32_t>& GetIndexBuffer()
     {
         return indices;
     }
 
-    std::vector<Vertex>& GetProjectedVertex() 
+    std::vector<Vertex>& GetProjectedVertex()
     {
         return projectedVertex;
     }
 
-    std::vector<std::vector<Triangle>>& GetProjectedClipped() 
+    std::vector<std::vector<Triangle>>& GetProjectedClipped()
     {
         return projectedClipped;
     }
 
-    std::vector<Tile>& GetTiles() 
+    std::vector<Tile>& GetTiles()
     {
         return tiles;
     }
