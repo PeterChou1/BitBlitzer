@@ -368,8 +368,8 @@ struct SIMDTriangle
 
     void ComputeBarcentric(SIMDFloat& x, SIMDFloat& y, SIMDFloat& alpha, SIMDFloat& beta, SIMDFloat& gamma)
     {
-        alpha = (C2 * (x - v3.x) + C1 * (y - v3.y)) * invDet;
-        beta = (B2 * -1 * (x - v3.x) + C2 * -1 * (y - v3.y)) * invDet;
+        alpha = (B1 * -1 * (x - v3.x) + C1 * (y - v3.y)) * invDet;
+        beta = (B2 * -1 * (x - v3.x) + C2 * (y - v3.y)) * invDet;
         gamma = SIMDFloat(1.0) - alpha - beta;
     }
 };

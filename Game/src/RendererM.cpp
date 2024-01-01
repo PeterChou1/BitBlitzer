@@ -157,6 +157,8 @@ RendererM::RasterizationStage()
 
         Vec2 tileMin = tile.GetMin();
         Vec2 tileMax = tile.GetMax();
+        bool hasTexture;
+
 
         for (auto& binTriangle : binTriangles)
         {
@@ -174,7 +176,10 @@ RendererM::RasterizationStage()
                          (std::max)((std::min)(tileMax.y, static_cast<float>(tri.maxY)),
                                     static_cast<float>(tri.minY)));
 
-                SimpleTexture texture = m_textureList.textureList[tri.verts[0].tex_id];
+                hasTexture = tri.verts[0].tex_id != -1;
+                SimpleTexture texture;
+                if (hasTexture) texture = m_textureList.textureList[tri.verts[0].tex_id];
+
                 // iterate over pixels to determine which pixel belong in the triangle
 
                 // Aligning pixel tile boundaries
@@ -216,10 +221,9 @@ RendererM::RasterizationStage()
                             deltaXe1 <= 0.0f & deltaXe2 <= 0.0f & deltaXe3 <= 0.0f &
                             (deltaXe1 <= epsilon | deltaXe2 <= epsilon | deltaXe3 <= epsilon);
 
+
                         if (SIMD::Any(inTriangle))
                         {
-                            assert(x == posX[0] && y == posY[0] && "pos X Y out of sync");
-
                             SIMDFloat alpha, beta, gamma;
                             triSIMD.ComputeBarcentric(posX, posY, alpha, beta, gamma);
                             SIMDFloat depth = alpha * triSIMD.invW1 + beta * triSIMD.invW2 +
@@ -227,17 +231,17 @@ RendererM::RasterizationStage()
 
                             int pixelX = x / SIMDPixel::PIXEL_WIDTH;
                             int pixelY = y / SIMDPixel::PIXEL_HEIGHT;
-                            SIMDFloat visible = inTriangle;
-                                //m_depth.DepthTest(pixelX, pixelY, depth, inTriangle);
+                            SIMDFloat visible = m_depth.DepthTest(pixelX, pixelY, depth, inTriangle);
 
-                            //if (SIMD::Any(visible))
-                            //{
+                            if (SIMD::Any(visible))
+                            {
                                 m_depth.UpdateBuffer(pixelX, pixelY, visible, depth);
 
                                 SIMDVec3 normal = (triSIMD.normal1 * alpha + triSIMD.normal1 * beta + triSIMD.normal3 * gamma) / depth;
                                 SIMDVec2 texUV = (triSIMD.tex1 * alpha + triSIMD.tex2 * beta + triSIMD.tex3 * gamma) / depth;
 
                                 float r = 255.0, g = 255.0, b = 255.0;
+                                // float r, g, b;
 
                                 if (visible.GetBit(0))
                                 {
@@ -273,6 +277,7 @@ RendererM::RasterizationStage()
                                 {
                                     //texture.Sample(texUV.x[5], texUV.y[5], r, g, b);
                                     m_color.SetColor(posX[5], posY[5], r, g, b);
+                                }
 
                                 if (visible.GetBit(6))
                                 {
@@ -287,9 +292,9 @@ RendererM::RasterizationStage()
                                 }
 
                             
-                            //}
+                            }
+                        
                         }
-                    }
                         deltaXe1 = deltaXe1 + deltaX0;
                         deltaXe2 = deltaXe2 + deltaX1;
                         deltaXe3 = deltaXe3 + deltaX2;
@@ -303,7 +308,6 @@ RendererM::RasterizationStage()
             }
         }
     });
-    // std::cout << maxDepth;
     App::RenderTexture(m_color.GetBuffer());
 }
 

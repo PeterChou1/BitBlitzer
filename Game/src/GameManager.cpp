@@ -39,7 +39,7 @@ void Scene::Setup()
 
     // Setup Mesh Instance
     MeshInstance meshI;
-    bool loadsucceed = Utils::LoadInstance("./Assets/furina.obj", meshI, texList);
+    bool loadsucceed = Utils::LoadInstance("./Assets/big.obj", meshI, texList);
     assert(loadsucceed && "failed to load file");
 
     for (int x = 0; x < 1; x++)
@@ -59,17 +59,17 @@ void Scene::Setup()
 
             g.AddMeshInstance(meshCopy);
 
-            Entity e = gCoordinator.CreateEntity();
-            auto mesh_obj = Mesh(meshCopy);
-            auto t2 = Transform(Vec3(x * 2, 0, 10), Quat(Vec3(1, 0, 0), 0.0)); // 3.14 / 2));
-            auto texture = SimpleTexture("./Assets/spot_texture.png",
-                                         Vec3(0, 0, 0),
-                                         Vec3(0, 0, 0),
-                                         Vec3(0, 0, 0), 0.0);
-            // 
-            gCoordinator.AddComponent<Mesh>(e, mesh_obj);
-            gCoordinator.AddComponent<Transform>(e, t2);
-            gCoordinator.AddComponent<SimpleTexture>(e, texture);
+            // Entity e = gCoordinator.CreateEntity();
+            // auto mesh_obj = Mesh(meshCopy);
+            // auto t2 = Transform(Vec3(x * 2, 0, 10), Quat(Vec3(1, 0, 0), 0.0)); // 3.14 / 2));
+            // auto texture = SimpleTexture("./Assets/spot_texture.png",
+            //                              Vec3(0, 0, 0),
+            //                              Vec3(0, 0, 0),
+            //                              Vec3(0, 0, 0), 0.0);
+            // // 
+            // gCoordinator.AddComponent<Mesh>(e, mesh_obj);
+            // gCoordinator.AddComponent<Transform>(e, t2);
+            // gCoordinator.AddComponent<SimpleTexture>(e, texture);
         }
     }
 
