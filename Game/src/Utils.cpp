@@ -80,8 +80,8 @@ bool Utils::LoadFromObjectFile(std::string filename, Mesh& mesh, bool UV,
                 if (UV && !uvIndex.empty())
                 {
                     int uvIdx = std::stoi(uvIndex) - 1;
-                    triangle.verts[i].tex.x = temp_uvs[uvIdx].x;
-                    triangle.verts[i].tex.y = std::abs(temp_uvs[uvIdx].y - 1);
+                    triangle.verts[i].uv.x = temp_uvs[uvIdx].x;
+                    triangle.verts[i].uv.y = std::abs(temp_uvs[uvIdx].y - 1);
                 }
 
                 if (Normal && !normalIndex.empty())
@@ -199,8 +199,8 @@ Utils::LoadInstance(std::string filename,
                 if (UV && !uvIndex.empty())
                 {
                     int uvIdx = std::stoi(uvIndex) - 1;
-                    v.tex.x = temp_uvs[uvIdx].x;
-                    v.tex.y = std::abs(temp_uvs[uvIdx].y - 1);
+                    v.uv.x = temp_uvs[uvIdx].x;
+                    v.uv.y = std::abs(temp_uvs[uvIdx].y - 1);
                 }
 
                 if (Normal && !normalIndex.empty())

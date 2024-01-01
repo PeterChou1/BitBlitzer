@@ -2,18 +2,19 @@
 #include "Vec3.h"
 #include "Vec4.h"
 #include <vector>
-#include "Quat.h"
 #include "Transform.h"
 #include "Entity.h"
 #include "SIMD.h"
 
 struct Vertex
 {
-    // parent entity this belongs to
+    // texture ID of the texture that shade this vertex
     size_t tex_id{};
-
+    // index of vertex in vertex buffer
     std::uint32_t index{};
-    Vec2 tex{};
+    // texture uv
+    Vec2 uv{};
+    // vertex normal
     Vec3 normal{};
     // camera space position
     Vec3 pos{};
@@ -30,18 +31,18 @@ struct Vertex
     {
     }
 
-    Vertex(Vec3& pos, Vec2& tex) : pos(pos), tex(tex)
+    Vertex(Vec3& pos, Vec2& tex) : pos(pos), uv(tex)
     {
     }
 
-    Vertex(Vec3& pos, Vec3& normal, Vec2& tex) : pos(pos), normal(normal), tex(tex)
+    Vertex(Vec3& pos, Vec3& normal, Vec2& tex) : pos(pos), normal(normal), uv(tex)
     {
     }
 
     Vertex(const Vertex& v)
         : tex_id(v.tex_id)
           , index(v.index)
-          , tex(v.tex)
+          , uv(v.uv)
           , normal(v.normal)
           , pos(v.pos)
           , proj(v.proj)
@@ -53,14 +54,14 @@ struct Vertex
     {
         invW = 1 / proj.w;
         proj *= invW;
-        tex *= invW;
+        uv *= invW;
     }
 
     Vertex operator*(float t) const
     {
         auto copy = *this;
         copy.pos *= t;
-        copy.tex *= t;
+        copy.uv *= t;
         copy.normal *= t;
         return copy;
     }
@@ -71,7 +72,7 @@ struct Vertex
         auto copy = *this;
 
         copy.pos += v.pos;
-        copy.tex += v.tex;
+        copy.uv += v.uv;
         copy.normal += v.normal;
 
         return copy;
@@ -80,7 +81,7 @@ struct Vertex
 
     bool operator==(const Vertex& rhs) const
     {
-        return tex == rhs.tex && normal == rhs.normal &&
+        return uv == rhs.uv && normal == rhs.normal &&
             pos == rhs.pos && invW == rhs.invW && tex_id == rhs.tex_id;
     }
 };
@@ -93,8 +94,8 @@ struct std::hash<Vertex>
     std::size_t operator()(Vertex const& v) const noexcept
     {
         std::size_t h1 = std::hash<Entity>{}(v.tex_id);
-        h1 = h1 ^ (std::hash<float>{}(v.tex.x) << 1);
-        h1 = h1 ^ (std::hash<float>{}(v.tex.y) << 2);
+        h1 = h1 ^ (std::hash<float>{}(v.uv.x) << 1);
+        h1 = h1 ^ (std::hash<float>{}(v.uv.y) << 2);
         h1 = h1 ^ (std::hash<float>{}(v.pos.x) << 3);
         h1 = h1 ^ (std::hash<float>{}(v.pos.y) << 4);
         h1 = h1 ^ (std::hash<float>{}(v.pos.z) << 5);
@@ -335,9 +336,9 @@ struct SIMDTriangle
           invW1(t.verts[0].invW),
           invW2(t.verts[1].invW),
           invW3(t.verts[2].invW),
-          tex1(SIMDVec2(t.verts[0].tex.x, t.verts[0].tex.y)),
-          tex2(SIMDVec2(t.verts[1].tex.x, t.verts[1].tex.y)),
-          tex3(SIMDVec2(t.verts[2].tex.x, t.verts[2].tex.y)),
+          tex1(SIMDVec2(t.verts[0].uv.x, t.verts[0].uv.y)),
+          tex2(SIMDVec2(t.verts[1].uv.x, t.verts[1].uv.y)),
+          tex3(SIMDVec2(t.verts[2].uv.x, t.verts[2].uv.y)),
           invDet(t.invDet)
     {
     };
@@ -357,16 +358,7 @@ struct SIMDTriangle
         return B2 * (p.x - v3.x) - C2 * (p.y - v3.y);
     }
 
-    SIMDFloat IsInTriangle(SIMDPixel& p)
-    {
-        SIMDFloat e1 = EdgeFunc0(p.position);
-        SIMDFloat e2 = EdgeFunc1(p.position);
-        SIMDFloat e3 = EdgeFunc2(p.position);
-        return (e1 <= 0.0f & e2 <= 0.0f & e3 <= 0.0f);
-    }
-
-
-    void ComputeBarcentric(SIMDFloat& x, SIMDFloat& y, SIMDFloat& alpha, SIMDFloat& beta, SIMDFloat& gamma)
+    void ComputeBarycentric(SIMDFloat& x, SIMDFloat& y, SIMDFloat& alpha, SIMDFloat& beta, SIMDFloat& gamma) const
     {
         alpha = (B1 * -1 * (x - v3.x) + C1 * (y - v3.y)) * invDet;
         beta = (B2 * -1 * (x - v3.x) + C2 * (y - v3.y)) * invDet;

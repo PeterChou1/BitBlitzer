@@ -2,7 +2,8 @@
 #include <immintrin.h>
 #include <iostream>
 #include <vector>
-
+#include "Vec2.h"
+#include "Vec3.h"
 /* 
 * /brief Float based on avx2
 */
@@ -141,6 +142,8 @@ public:
     {
     }
 
+    SIMDVec2(Vec2 v) : x(v.x), y(v.y) {}
+
 
     __forceinline SIMDVec2 operator+(const SIMDVec2& rhs) const
     {
@@ -173,6 +176,8 @@ public:
     {
     }
 
+    SIMDVec3(Vec3 v) : x(v.x), y(v.y), z(v.z) {}
+
     __forceinline SIMDVec3 operator+(const SIMDVec3& rhs) const
     {
         return {x + rhs.x, y + rhs.y, z + rhs.z};
@@ -189,49 +194,6 @@ public:
     }
 
     SIMDFloat x{}, y{}, z{};
-};
-
-/*
-* /brief sets of 8 pixels (4 x 2) 
-*/
-class SIMDPixel
-{
-public:
-    SIMDPixel(const SIMDVec2& position, int binId, int binIndex) :
-    position(position), binId(binId), binIndex(binIndex)
-    {
-    }
-
-    static constexpr int PIXEL_WIDTH = 4;
-    static constexpr int PIXEL_HEIGHT = 2;
-    static SIMDFloat PixelOffsetX;
-    static SIMDFloat PixelOffsetY;
-    SIMDVec2 position{};
-    int binId;
-    int binIndex;
-};
-
-class SIMDPixelBuffer
-{
-public:
-
-    SIMDPixelBuffer() = default;
-
-    SIMDPixelBuffer(int width, int height) : m_width(width / SIMDPixel::PIXEL_WIDTH),
-                                             m_height(height / SIMDPixel::PIXEL_HEIGHT)
-    {
-        m_Pixelbuffer.resize(m_height * m_width);
-    }
-
-    void SetBuffer(int x, int y, const SIMDPixel& pixel)
-    {
-        m_Pixelbuffer[y * m_width + x].push_back(pixel);
-    }
-
-private:
-    std::vector<std::vector<SIMDPixel>> m_Pixelbuffer;
-    int m_width{};
-    int m_height{};
 };
 
 

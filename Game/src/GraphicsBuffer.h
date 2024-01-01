@@ -77,6 +77,5 @@ private:
     std::vector<std::uint32_t> indices;
     std::vector<Vertex> projectedVertex;
     std::vector<std::vector<Triangle>> projectedClipped;
-    std::vector<int> colorBuffer;
     std::vector<Tile> tiles;
 };

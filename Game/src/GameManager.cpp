@@ -39,7 +39,7 @@ void Scene::Setup()
 
     // Setup Mesh Instance
     MeshInstance meshI;
-    bool loadsucceed = Utils::LoadInstance("./Assets/big.obj", meshI, texList);
+    bool loadsucceed = Utils::LoadInstance("./Assets/furina.obj", meshI, texList);
     assert(loadsucceed && "failed to load file");
 
     for (int x = 0; x < 1; x++)
@@ -92,7 +92,9 @@ void Scene::Setup()
             gCoordinator.GetComponent<Camera>(camEntity),
             gCoordinator.GetComponent<ColorBuffer>(colorEntity),
             gCoordinator.GetComponent<DepthBufferSIMD>(simdDepthEntity),
-            gCoordinator.GetComponent<TextureList>(textureEntity)
+            gCoordinator.GetComponent<TextureList>(textureEntity),
+            gCoordinator.GetComponent<SIMDPixelBuffer>(simdPixelEntity)
+
         )
     );
     renderer = std::make_shared<Renderer>(

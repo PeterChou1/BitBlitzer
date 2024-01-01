@@ -13,8 +13,9 @@ RendererM::RendererM(GraphicsBuffer& g,
                      Camera& cam,
                      ColorBuffer& color,
                      DepthBufferSIMD& depth,
-                     TextureList& textureList)
-      : m_vertexBuffer(g.GetVertexBuffer())
+                     TextureList& textureList,
+                     SIMDPixelBuffer& pixel)
+    : m_vertexBuffer(g.GetVertexBuffer())
       , m_indexBuffer(g.GetIndexBuffer())
       , m_projectedVertexBuffer(g.GetProjectedVertex())
       , m_projectedClip(g.GetProjectedClipped())
@@ -23,6 +24,7 @@ RendererM::RendererM(GraphicsBuffer& g,
       , m_cam(cam)
       , m_color(color)
       , m_depth(depth)
+      , m_pixelbuffer(pixel)
 {
     m_coreCount = std::thread::hardware_concurrency();
     m_coreInterval = (g.GetTriangleCount() + m_coreCount - 1) / m_coreCount;
@@ -45,16 +47,15 @@ RendererM::Render()
 void
 RendererM::VertexShaderStage()
 {
-    Concurrency::ForEach(
-        m_vertexBuffer.begin(), m_vertexBuffer.end(), [&](Vertex& v)
-        {
-            // Transform modelTransform = gCoordinator.GetComponent<Transform>(v.id);
-            Vertex projected = v;
-            // projected.pos = modelTransform.TransformVec3(projected.pos);
-            // projected.normal = modelTransform.TransformNormal(projected.normal);
-            projected.proj = m_cam.proj * Vec4(m_cam.WorldToCamera(projected.pos));
-            m_projectedVertexBuffer[v.index] = projected;
-        });
+    Concurrency::ForEach(m_vertexBuffer.begin(), m_vertexBuffer.end(), [&](Vertex& v)
+    {
+        // Transform modelTransform = gCoordinator.GetComponent<Transform>(v.id);
+        Vertex projected = v;
+        // projected.pos = modelTransform.TransformVec3(projected.pos);
+        // projected.normal = modelTransform.TransformNormal(projected.normal);
+        projected.proj = m_cam.proj * Vec4(m_cam.WorldToCamera(projected.pos));
+        m_projectedVertexBuffer[v.index] = projected;
+    });
 }
 
 void
@@ -157,8 +158,6 @@ RendererM::RasterizationStage()
 
         Vec2 tileMin = tile.GetMin();
         Vec2 tileMax = tile.GetMax();
-        bool hasTexture;
-
 
         for (auto& binTriangle : binTriangles)
         {
@@ -176,10 +175,6 @@ RendererM::RasterizationStage()
                          (std::max)((std::min)(tileMax.y, static_cast<float>(tri.maxY)),
                                     static_cast<float>(tri.minY)));
 
-                hasTexture = tri.verts[0].tex_id != -1;
-                SimpleTexture texture;
-                if (hasTexture) texture = m_textureList.textureList[tri.verts[0].tex_id];
-
                 // iterate over pixels to determine which pixel belong in the triangle
 
                 // Aligning pixel tile boundaries
@@ -193,6 +188,8 @@ RendererM::RasterizationStage()
                     std::ceil(maxPt.y / SIMDPixel::PIXEL_HEIGHT) * SIMDPixel::PIXEL_HEIGHT;
 
                 SIMDTriangle triSIMD(tri);
+
+                SimpleTexture& texture = m_textureList.textureList[tri.verts[0].tex_id];
 
                 SIMDFloat posX = SIMDPixel::PixelOffsetX + minPt.x;
                 SIMDFloat posY = SIMDPixel::PixelOffsetY + minPt.y;
@@ -225,7 +222,7 @@ RendererM::RasterizationStage()
                         if (SIMD::Any(inTriangle))
                         {
                             SIMDFloat alpha, beta, gamma;
-                            triSIMD.ComputeBarcentric(posX, posY, alpha, beta, gamma);
+                            triSIMD.ComputeBarycentric(posX, posY, alpha, beta, gamma);
                             SIMDFloat depth = alpha * triSIMD.invW1 + beta * triSIMD.invW2 +
                                 gamma * triSIMD.invW3;
 
@@ -236,64 +233,72 @@ RendererM::RasterizationStage()
                             if (SIMD::Any(visible))
                             {
                                 m_depth.UpdateBuffer(pixelX, pixelY, visible, depth);
+                                SIMDPixel pixel = SIMDPixel(SIMDVec2(posX, posY), depth, alpha, beta, gamma, tri.BinID,
+                                                            tri.BinIndex);
+                                pixel.mask = visible;
+                                m_pixelbuffer.SetBuffer(pixelX, pixelY, pixel);
 
-                                SIMDVec3 normal = (triSIMD.normal1 * alpha + triSIMD.normal1 * beta + triSIMD.normal3 * gamma) / depth;
-                                SIMDVec2 texUV = (triSIMD.tex1 * alpha + triSIMD.tex2 * beta + triSIMD.tex3 * gamma) / depth;
-
-                                float r = 255.0, g = 255.0, b = 255.0;
+                                // SIMDVec3 normal = (triSIMD.normal1 * alpha + triSIMD.normal1 * beta + triSIMD.normal3 * gamma) / depth;
+                                // SIMDVec2 texUV = (triSIMD.tex1 * alpha + triSIMD.tex2 * beta + triSIMD.tex3 * gamma) / depth;
+                                // 
                                 // float r, g, b;
-
-                                if (visible.GetBit(0))
-                                {
-                                    //texture.Sample(texUV.x[0], texUV.y[0], r, g, b);
-                                    m_color.SetColor(posX[0], posY[0], r, g, b);
-                                }
-
-                                if (visible.GetBit(1))
-                                {
-                                    //texture.Sample(texUV.x[1], texUV.y[1], r, g, b);
-                                    m_color.SetColor(posX[1], posY[1], r, g, b);
-                                }
-
-                                if (visible.GetBit(2))
-                                {
-                                    //texture.Sample(texUV.x[2], texUV.y[2], r, g, b);
-                                    m_color.SetColor(posX[2], posY[2], r, g, b);
-                                }
-
-                                if (visible.GetBit(3))
-                                {
-                                    //texture.Sample(texUV.x[3], texUV.y[3], r, g, b);
-                                    m_color.SetColor(posX[3], posY[3], r, g, b);
-                                }
-
-                                if (visible.GetBit(4))
-                                {
-                                    //texture.Sample(texUV.x[4], texUV.y[4], r, g, b);
-                                    m_color.SetColor(posX[4], posY[4], r, g, b);
-                                }
-
-                                if (visible.GetBit(5))
-                                {
-                                    //texture.Sample(texUV.x[5], texUV.y[5], r, g, b);
-                                    m_color.SetColor(posX[5], posY[5], r, g, b);
-                                }
-
-                                if (visible.GetBit(6))
-                                {
-                                    //texture.Sample(texUV.x[6], texUV.y[6], r, g, b);
-                                    m_color.SetColor(posX[6], posY[6], r, g, b);
-                                }
-
-                                if (visible.GetBit(7))
-                                {
-                                    //texture.Sample(texUV.x[7], texUV.y[7], r, g, b);
-                                    m_color.SetColor(posX[7], posY[7], r, g, b);
-                                }
-
-                            
+                                // 
+                                // if (visible.GetBit(0))
+                                // {
+                                //     texture.Sample(texUV.x[0], texUV.y[0], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[0], pixel.position.y[0], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(1))
+                                // {
+                                //     texture.Sample(texUV.x[1], texUV.y[1], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[1], pixel.position.y[1], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(2))
+                                // {
+                                //     texture.Sample(texUV.x[2], texUV.y[2], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[2], pixel.position.y[2], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(3))
+                                // {
+                                //     texture.Sample(texUV.x[3], texUV.y[3], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[3], pixel.position.y[3], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(4))
+                                // {
+                                //     texture.Sample(texUV.x[4], texUV.y[4], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[4], pixel.position.y[4], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(5))
+                                // {
+                                //     texture.Sample(texUV.x[5], texUV.y[5], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[5], pixel.position.y[5], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(6))
+                                // {
+                                //     texture.Sample(texUV.x[6], texUV.y[6], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[6], pixel.position.y[6], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(7))
+                                // {
+                                //     texture.Sample(texUV.x[7], texUV.y[7], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[7], pixel.position.y[7], r, g, b);
+                                // }
                             }
-                        
                         }
                         deltaXe1 = deltaXe1 + deltaX0;
                         deltaXe2 = deltaXe2 + deltaX1;
@@ -308,26 +313,87 @@ RendererM::RasterizationStage()
             }
         }
     });
-    App::RenderTexture(m_color.GetBuffer());
+    m_pixelbuffer.AccumulatePixel(m_depth);
 }
 
 void
 RendererM::FragmentShaderStage()
 {
+    Concurrency::ForEach(m_pixelbuffer.begin(), m_pixelbuffer.end(), [&](SIMDPixel& pixel)
+    {
+        Triangle& triangle = m_projectedClip[pixel.binId][pixel.binIndex];
+        pixel.Interpolate(triangle);
+        SimpleTexture& texture = m_textureList.textureList[triangle.verts[0].tex_id];
+        SIMDVec2 texUV = pixel.textureCoord;
+
+        float r, g, b;
+
+        if (pixel.mask.GetBit(0))
+        {
+            texture.Sample(texUV.x[0], texUV.y[0], r, g, b);
+            m_color.SetColor(pixel.position.x[0], pixel.position.y[0], r, g, b);
+        }
+
+        if (pixel.mask.GetBit(1))
+        {
+            texture.Sample(texUV.x[1], texUV.y[1], r, g, b);
+            m_color.SetColor(pixel.position.x[1], pixel.position.y[1], r, g, b);
+        }
+
+        if (pixel.mask.GetBit(2))
+        {
+            texture.Sample(texUV.x[2], texUV.y[2], r, g, b);
+            m_color.SetColor(pixel.position.x[2], pixel.position.y[2], r, g, b);
+        }
+
+        if (pixel.mask.GetBit(3))
+        {
+            texture.Sample(texUV.x[3], texUV.y[3], r, g, b);
+            m_color.SetColor(pixel.position.x[3], pixel.position.y[3], r, g, b);
+        }
+
+        if (pixel.mask.GetBit(4))
+        {
+            texture.Sample(texUV.x[4], texUV.y[4], r, g, b);
+            m_color.SetColor(pixel.position.x[4], pixel.position.y[4], r, g, b);
+        }
+
+        if (pixel.mask.GetBit(5))
+        {
+            texture.Sample(texUV.x[5], texUV.y[5], r, g, b);
+            m_color.SetColor(pixel.position.x[5], pixel.position.y[5], r, g, b);
+        }
+
+        if (pixel.mask.GetBit(6))
+        {
+            texture.Sample(texUV.x[6], texUV.y[6], r, g, b);
+            m_color.SetColor(pixel.position.x[6], pixel.position.y[6], r, g, b);
+        }
+
+        if (pixel.mask.GetBit(7))
+        {
+            texture.Sample(texUV.x[7], texUV.y[7], r, g, b);
+            m_color.SetColor(pixel.position.x[7], pixel.position.y[7], r, g, b);
+        }
+    });
 }
 
 void
 RendererM::UpdateFrameBuffer()
 {
+    App::RenderTexture(m_color.GetBuffer());
 }
 
 void
 RendererM::ClearBuffer()
 {
-    m_depth.ClearBuffer();
-    m_color.ClearBuffer();
-    Concurrency::ForEach(
-        m_tiles.begin(), m_tiles.end(), [&](Tile& tile) { tile.Clear(); });
+    m_depth.Clear();
+    m_color.Clear();
+    m_pixelbuffer.Clear();
+    Concurrency::ForEach(m_tiles.begin(), m_tiles.end(), [&](Tile& tile)
+    {
+        tile.Clear();
+    });
     Concurrency::ForEach(m_coreIds.begin(), m_coreIds.end(), [&](int bin)
     {
         m_projectedClip[bin].clear();

@@ -1,10 +1,10 @@
 #pragma once
 #include "Vec2.h"
 #include "Mesh.h"
-#include "SIMD.h"
 #include "../App/app.h"
 #include <thread>
 #include <vector>
+
 
 constexpr int TileSizeX = 32;
 constexpr int TileSizeY = 32;
@@ -34,7 +34,6 @@ public:
         {
             binTriangle.clear();
         }
-        pixels.clear();
     }
 
 
@@ -81,6 +80,5 @@ private:
     Vec2 minRaster;
     Vec2 maxRaster;
     std::vector<std::vector<Triangle>> binTriangles;
-    std::vector<SIMDPixel> pixels;
     static Vec2 CornerIndex[4];
 };

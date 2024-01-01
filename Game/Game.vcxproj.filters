@@ -85,6 +85,9 @@
     <ClCompile Include="src\SIMD.cpp">
       <Filter>src\SIMD</Filter>
     </ClCompile>
+    <ClCompile Include="src\SIMDPixel.cpp">
+      <Filter>src\SIMD</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\main.h">
@@ -208,6 +211,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="src\UpdateModel.h">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMDPixel.h">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

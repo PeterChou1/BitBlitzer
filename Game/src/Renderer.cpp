@@ -47,8 +47,8 @@ void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuf
 
             float alpha, beta, gamma;
             ComputeBarycentricCoordinates(v1, v2, v3, x, y, alpha, beta, gamma);
-            float u = alpha * v1.tex.x + beta * v2.tex.x + gamma * v3.tex.x;
-            float v = alpha * v1.tex.y + beta * v2.tex.y + gamma * v3.tex.y;
+            float u = alpha * v1.uv.x + beta * v2.uv.x + gamma * v3.uv.x;
+            float v = alpha * v1.uv.y + beta * v2.uv.y + gamma * v3.uv.y;
             float z = alpha * v1.invW + beta * v2.invW + gamma * v3.invW;
             Vec3 normal = v1.normal * alpha + v2.normal * beta + v3.normal * gamma;
 
@@ -97,8 +97,8 @@ void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuffer
             // ... interpolate u and v (texture coordinates) and draw point
             float alpha, beta, gamma;
             ComputeBarycentricCoordinates(v1, v2, v3, x, y, alpha, beta, gamma);
-            float u = alpha * v1.tex.x + beta * v2.tex.x + gamma * v3.tex.x;
-            float v = alpha * v1.tex.y + beta * v2.tex.y + gamma * v3.tex.y;
+            float u = alpha * v1.uv.x + beta * v2.uv.x + gamma * v3.uv.x;
+            float v = alpha * v1.uv.y + beta * v2.uv.y + gamma * v3.uv.y;
             float z = alpha * v1.invW + beta * v2.invW + gamma * v3.invW;
             Vec3 normal =  v1.normal * alpha + v2.normal * beta + v3.normal * gamma;
 
@@ -159,7 +159,7 @@ void Renderer::RenderTriangle(Triangle& tri, SimpleTexture& tex)
         // Interpolate to find the fourth vertex
         float t = (v2.pos.y - v3.pos.y) / (v1.pos.y - v3.pos.y);
         Vec3 pos4 = Vec3(v3.pos.x + (v1.pos.x - v3.pos.x) * t, v2.pos.y, 0);
-        Vec2 tex4 = v3.tex + (v1.tex - v3.tex) * t;
+        Vec2 tex4 = v3.uv + (v1.uv - v3.uv) * t;
         float w = v3.invW + (v1.invW - v3.invW) * t;
         Vertex v4(pos4, tex4);
         v4.invW = w;
@@ -183,7 +183,7 @@ void Renderer::DebugDraw(const Triangle& tri)
 void Renderer::Render()
 {
     m_depth.ClearBuffer();
-    m_color.ClearBuffer();
+    m_color.Clear();
 
     std::vector<Triangle> TrianglesToRaster;
     SimpleTexture tex;

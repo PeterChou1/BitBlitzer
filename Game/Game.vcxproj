@@ -186,6 +186,7 @@
     <ClInclude Include="App\SimpleController.h" />
     <ClInclude Include="App\SimpleSound.h" />
     <ClInclude Include="App\SimpleSprite.h" />
+    <ClInclude Include="src\SIMDPixel.h" />
     <ClInclude Include="src\SIMD.h" />
     <ClInclude Include="src\Clipper.h" />
     <ClInclude Include="src\ColorBuffer.h" />
@@ -233,6 +234,7 @@
     <ClCompile Include="src\DebugCamera.cpp" />
     <ClCompile Include="src\RendererM.cpp" />
     <ClCompile Include="src\SIMD.cpp" />
+    <ClCompile Include="src\SIMDPixel.cpp" />
     <ClCompile Include="src\SimpleTexture.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\Transform.cpp" />

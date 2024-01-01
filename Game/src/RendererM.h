@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "ColorBuffer.h"
 #include "SimpleTexture.h"
+#include "SIMDPixel.h"
 
 /*
 * /brief multithreaded renderer
@@ -14,7 +15,7 @@
 class RendererM : public System
 {
 public:
-    RendererM(GraphicsBuffer& g, Camera& cam, ColorBuffer& color, DepthBufferSIMD& depth, TextureList& textureList);
+    RendererM(GraphicsBuffer& g, Camera& cam, ColorBuffer& color, DepthBufferSIMD& depth, TextureList& textureList, SIMDPixelBuffer& pixel);
 
     void Render();
 
@@ -43,6 +44,7 @@ private:
     Camera& m_cam;
     ColorBuffer& m_color;
     DepthBufferSIMD& m_depth;
+    SIMDPixelBuffer& m_pixelbuffer;
     unsigned int m_coreCount;
     int m_coreInterval;
 };
