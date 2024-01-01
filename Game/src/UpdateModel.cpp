@@ -3,5 +3,4 @@
 
 void UpdateModel::Update()
 {
-
 }

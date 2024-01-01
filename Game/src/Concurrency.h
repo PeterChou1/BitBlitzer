@@ -29,9 +29,10 @@ public:
             auto end = std::next(begin, chunkSize + (remainder > 0 ? 1 : 0));
             remainder--;
 
-            t = std::thread([=, &func]() {
+            t = std::thread([=, &func]()
+            {
                 std::for_each(begin, end, func);
-                });
+            });
 
             begin = end;
         }
@@ -40,11 +41,9 @@ public:
         {
             if (t.joinable())
                 t.join();
-    }
+        }
 #else
         std::for_each(first, last, func);
 #endif
     }
 };
-
-

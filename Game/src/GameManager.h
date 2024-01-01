@@ -7,9 +7,7 @@
 class Scene
 {
 public:
-    Scene()
-    {
-    }
+    Scene() = default;
 
     void Setup();
 

@@ -7,8 +7,10 @@
 
 
 // Custom deleter function for stbi_image_free
-struct STBImageDeleter {
-    void operator()(unsigned char* data) const {
+struct STBImageDeleter
+{
+    void operator()(unsigned char* data) const
+    {
         stbi_image_free(data);
     }
 };
@@ -19,17 +21,16 @@ SimpleTexture::SimpleTexture(const char* fileName,
                              Vec3 diffuse,
                              Vec3 specular,
                              float highlight)
-  : ambient(ambient)
-  , diffuse(diffuse), specular(specular), highlight(highlight)
+    : ambient(ambient)
+      , diffuse(diffuse), specular(specular), highlight(highlight)
 {
     const bool texLoaded = LoadTexture(fileName);
-	assert(texLoaded && "Failed to Load Texture");
+    assert(texLoaded && "Failed to Load Texture");
 }
 
 
 void SimpleTexture::Sample(float u, float v, float& r, float& g, float& b)
 {
-
     u = std::min(1.0f, std::max(0.0f, u));
     v = std::min(1.0f, std::max(0.0f, v));
 
@@ -47,11 +48,12 @@ void SimpleTexture::Sample(float u, float v, float& r, float& g, float& b)
 
 bool SimpleTexture::LoadTexture(const char* filename)
 {
-	int channels;
-	unsigned char* data = stbi_load(filename, &mtexWidth, &mtexHeight, &channels, 4);
-	if (data) {
+    int channels;
+    unsigned char* data = stbi_load(filename, &mtexWidth, &mtexHeight, &channels, 4);
+    if (data)
+    {
         texture = std::shared_ptr<unsigned char[]>(data, STBImageDeleter());
-		return true;
-	}
-	return false;
+        return true;
+    }
+    return false;
 }

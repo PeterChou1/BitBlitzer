@@ -1,6 +1,7 @@
 #pragma once
 #include <immintrin.h>
 #include <iostream>
+#include <vector>
 
 /* 
 * /brief Float based on avx2
@@ -26,7 +27,7 @@ public:
 
     __forceinline SIMDFloat operator*(const SIMDFloat& rhs) const
     {
-        return SIMDFloat(_mm256_mul_ps(m_avx, rhs.m_avx));
+        return _mm256_mul_ps(m_avx, rhs.m_avx);
     }
 
     __forceinline SIMDFloat operator*(const float rhs) const
@@ -36,12 +37,12 @@ public:
 
     __forceinline SIMDFloat operator+(const SIMDFloat& rhs) const
     {
-        return SIMDFloat(_mm256_add_ps(m_avx, rhs.m_avx));
+        return _mm256_add_ps(m_avx, rhs.m_avx);
     }
 
     __forceinline SIMDFloat operator-(const SIMDFloat& rhs) const
     {
-        return SIMDFloat(_mm256_sub_ps(m_avx, rhs.m_avx));
+        return _mm256_sub_ps(m_avx, rhs.m_avx);
     }
 
     __forceinline float& operator[](const size_t i)
@@ -140,22 +141,23 @@ public:
     {
     }
 
-    SIMDFloat x{}, y{};
 
     __forceinline SIMDVec2 operator+(const SIMDVec2& rhs) const
     {
-        return SIMDVec2(x + rhs.x, y + rhs.y);
+        return {x + rhs.x, y + rhs.y};
     }
 
     __forceinline SIMDVec2 operator*(const SIMDFloat& rhs) const
     {
-        return SIMDVec2(x * rhs, y * rhs);
+        return {x * rhs, y * rhs};
     }
 
     __forceinline SIMDVec2 operator/(const SIMDFloat& rhs) const
     {
-        return SIMDVec2(x / rhs, y / rhs);
+        return {x / rhs, y / rhs};
     }
+
+    SIMDFloat x{}, y{};
 };
 
 class SIMDVec3
@@ -167,42 +169,87 @@ public:
     {
     }
 
+    SIMDVec3(SIMDFloat x, SIMDFloat y, SIMDFloat z) : x(x), y(y), z(z)
+    {
+    }
+
+    __forceinline SIMDVec3 operator+(const SIMDVec3& rhs) const
+    {
+        return {x + rhs.x, y + rhs.y, z + rhs.z};
+    }
+
+    __forceinline SIMDVec3 operator*(const SIMDFloat& rhs) const
+    {
+        return {x * rhs, y * rhs, z * rhs};
+    }
+
+    __forceinline SIMDVec3 operator/(const SIMDFloat& rhs) const
+    {
+        return {x / rhs, y / rhs, z / rhs};
+    }
+
     SIMDFloat x{}, y{}, z{};
 };
 
 /*
 * /brief sets of 8 pixels (4 x 2) 
 */
-struct SIMDPixel
+class SIMDPixel
 {
-    static constexpr int pixelWidth = 4;
-    static constexpr int pixelHeight = 2;
-
-    SIMDVec2 position{};
-    SIMDVec3 normal{};
-    SIMDFloat depth{};
-    SIMDVec2 tex{};
-    SIMDFloat mask{};
-
-    SIMDPixel(int pixelX, int pixelY)
+public:
+    SIMDPixel(const SIMDVec2& position, int binId, int binIndex) :
+    position(position), binId(binId), binIndex(binIndex)
     {
-        // offset for pixel
-        auto x = SIMDFloat({0.0f, 1.0f, 2.0f, 3.0f, 0.0f, 1.0f, 2.0f, 3.0f});
-        auto y = SIMDFloat({0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f, 1.0f});
-        position = SIMDVec2(static_cast<float>(pixelX), static_cast<float>(pixelY)) + SIMDVec2(x, y);
     }
+
+    static constexpr int PIXEL_WIDTH = 4;
+    static constexpr int PIXEL_HEIGHT = 2;
+    static SIMDFloat PixelOffsetX;
+    static SIMDFloat PixelOffsetY;
+    SIMDVec2 position{};
+    int binId;
+    int binIndex;
+};
+
+class SIMDPixelBuffer
+{
+public:
+
+    SIMDPixelBuffer() = default;
+
+    SIMDPixelBuffer(int width, int height) : m_width(width / SIMDPixel::PIXEL_WIDTH),
+                                             m_height(height / SIMDPixel::PIXEL_HEIGHT)
+    {
+        m_Pixelbuffer.resize(m_height * m_width);
+    }
+
+    void SetBuffer(int x, int y, const SIMDPixel& pixel)
+    {
+        m_Pixelbuffer[y * m_width + x].push_back(pixel);
+    }
+
+private:
+    std::vector<std::vector<SIMDPixel>> m_Pixelbuffer;
+    int m_width{};
+    int m_height{};
 };
 
 
 namespace SIMD
 {
-    inline bool All(const SIMDFloat& rhs) { return _mm256_movemask_ps(rhs.m_avx) == 255; };
+    __forceinline bool All(const SIMDFloat& rhs)
+    {
+        return _mm256_movemask_ps(rhs.m_avx) == 255;
+    };
 
-    inline bool Any(const SIMDFloat& rhs) { return _mm256_movemask_ps(rhs.m_avx) != 0x0; };
+    __forceinline bool Any(const SIMDFloat& rhs)
+    {
+        return _mm256_movemask_ps(rhs.m_avx) != 0x0;
+    };
 
-    // if mask bit == 0 than A bit will be choosen
-    // if mask bit == 1 than B bit will be choosen
-    inline SIMDFloat Select(const SIMDFloat& mask, SIMDFloat& a, SIMDFloat& b)
+    // if mask bit == 0 than A bit will be chosen
+    // if mask bit == 1 than B bit will be chosen
+    __forceinline SIMDFloat Select(const SIMDFloat& mask, SIMDFloat& a, SIMDFloat& b)
     {
         return _mm256_blendv_ps(a.m_avx, b.m_avx, mask.m_avx);
     }

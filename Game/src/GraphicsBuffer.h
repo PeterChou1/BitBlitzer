@@ -7,13 +7,11 @@
 class GraphicsBuffer
 {
 public:
-    GraphicsBuffer()
-    {
-    }
+    GraphicsBuffer() = default;
 
-    GraphicsBuffer(int width, int height)
+    GraphicsBuffer(const int width, const int height)
     {
-        unsigned int numCores = std::thread::hardware_concurrency();
+        const unsigned int numCores = std::thread::hardware_concurrency();
         projectedClipped.resize(numCores);
         for (int y = 0; y < TileCountY; ++y)
         {
@@ -29,22 +27,21 @@ public:
 
     void AddMeshInstance(MeshInstance& mesh)
     {
-        int offsetVertex = vertices.size();
+        const int offsetVertex = vertices.size();
         for (auto& vertex : mesh.vertices)
         {
             vertex.index = offsetVertex + vertex.index;
             vertices.push_back(vertex);
         }
-        //int offsetIndex = indices.size();
-        for (auto id : mesh.indices)
+        for (const auto id : mesh.indices)
         {
             indices.push_back(offsetVertex + id);
-        };
+        }
         projectedVertex.resize(vertices.size());
         triangleCount = indices.size() / 3;
     };
 
-    std::uint32_t GetTriangleCount()
+    std::uint32_t GetTriangleCount() const
     {
         return triangleCount;
     }

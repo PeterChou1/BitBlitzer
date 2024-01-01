@@ -4,8 +4,8 @@
 #include "stdafx.h"
 #define STB_IMAGE_IMPLEMENTATION
 //------------------------------------------------------------------------
-#include <windows.h> 
-#include <math.h>  
+#include <windows.h>
+#include <math.h>
 #include <iostream>
 #include <fstream>
 //------------------------------------------------------------------------
@@ -28,9 +28,9 @@ constexpr int imageSize = APP_VIRTUAL_WIDTH * APP_VIRTUAL_HEIGHT * 3;
 //------------------------------------------------------------------------
 void Init()
 {
-	App::SetupGL();
-	gCoordinator.Init();
-	manager.Setup();
+    App::SetupGL();
+    gCoordinator.Init();
+    manager.Setup();
 }
 
 //------------------------------------------------------------------------
@@ -39,8 +39,7 @@ void Init()
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
-
-	manager.Update(deltaTime);
+    manager.Update(deltaTime);
 }
 
 //------------------------------------------------------------------------
@@ -49,12 +48,13 @@ void Update(float deltaTime)
 //------------------------------------------------------------------------
 void Render()
 {
-	manager.Render();
+    manager.Render();
 }
+
 //------------------------------------------------------------------------
 // Add your shutdown code here. Called when the APP_QUIT_KEY is pressed.
 // Just before the app exits.
 //------------------------------------------------------------------------
 void Shutdown()
-{	
+{
 }

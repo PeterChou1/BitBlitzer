@@ -82,6 +82,9 @@
     <ClCompile Include="src\UpdateModel.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\SIMD.cpp">
+      <Filter>src\SIMD</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\main.h">

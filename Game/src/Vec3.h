@@ -8,7 +8,8 @@ struct Transform;
 Vec3
 ===================
 */
-class Vec3 {
+class Vec3
+{
 public:
     Vec3();
     Vec3(float value);
@@ -36,7 +37,8 @@ public:
     float operator[](const int idx) const;
     float& operator[](const int idx);
 
-    void Zero() {
+    void Zero()
+    {
         x = 0.0f;
         y = 0.0f;
         z = 0.0f;
@@ -46,7 +48,9 @@ public:
     float Dot(const Vec3& rhs) const;
     Vec3& Normalize();
     float GetMagnitude() const;
-    float GetLengthSqr() const {
+
+    float GetLengthSqr() const
+    {
         return Dot(*this);
     }
 
@@ -54,7 +58,8 @@ public:
 
     void GetOrtho(Vec3& u, Vec3& v) const;
 
-    const float* ToPtr() const {
+    const float* ToPtr() const
+    {
         return &x;
     }
 

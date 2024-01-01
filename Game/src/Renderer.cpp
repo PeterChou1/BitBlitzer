@@ -1,7 +1,5 @@
 #include "stdafx.h"
-#include <iostream>
 #include <algorithm>
-#include "Quat.h"
 #include "Renderer.h"
 #include "Utils.h"
 #include "Coordinator.h"
@@ -52,16 +50,22 @@ void FillBottom(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuf
             float u = alpha * v1.tex.x + beta * v2.tex.x + gamma * v3.tex.x;
             float v = alpha * v1.tex.y + beta * v2.tex.y + gamma * v3.tex.y;
             float z = alpha * v1.invW + beta * v2.invW + gamma * v3.invW;
+            Vec3 normal = v1.normal * alpha + v2.normal * beta + v3.normal * gamma;
+
+            normal.x /= z;
+            normal.y /= z;
+            normal.z /= z;
+
             u /= z;
             v /= z;
 
             if (z > depth.GetBuffer(x, y))
             {
-                float r, g, b;
-                tex.Sample(u, v, r, g, b);
+                float r = normal.x * 255, g = normal.y * 255, b = normal.z * 255;
+                // tex.Sample(u, v, r, g, b);
                 // App::DrawPoint(x, y, r / 255.0f, g / 255.0f, b / 255.0f);
-                //color.SetColor(static_cast<int>(x), static_cast<int>(y), r, g, b);
-                color.SetColor(static_cast<int>(x), static_cast<int>(y), 255, 255, 255);
+                // color.SetColor(static_cast<int>(x), static_cast<int>(y), r, g, b);
+                color.SetColor(static_cast<int>(x), static_cast<int>(y), r, g, b);
                 depth.SetBuffer(static_cast<int>(x), static_cast<int>(y), z);
             }
         }
@@ -96,16 +100,23 @@ void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, SimpleTexture& tex, DepthBuffer
             float u = alpha * v1.tex.x + beta * v2.tex.x + gamma * v3.tex.x;
             float v = alpha * v1.tex.y + beta * v2.tex.y + gamma * v3.tex.y;
             float z = alpha * v1.invW + beta * v2.invW + gamma * v3.invW;
+            Vec3 normal =  v1.normal * alpha + v2.normal * beta + v3.normal * gamma;
+
+            normal.x /= z;
+            normal.y /= z;
+            normal.z /= z;
+
+
             u /= z;
             v /= z;
 
             if (z > depth.GetBuffer(x, y))
             {
-                float r, g, b;
-                tex.Sample(u, v, r, g, b);
+                float r = normal.x * 255, g = normal.y * 255, b = normal.z * 255;
+                // tex.Sample(u, v, r, g, b);
                 // App::DrawPoint(x, y, r / 255.0f, g / 255.0f, b / 255.0f);
                 //color.SetColor(static_cast<int>(x), static_cast<int>(y), r, g, b);
-                color.SetColor(static_cast<int>(x), static_cast<int>(y), 255, 255, 255);
+                color.SetColor(static_cast<int>(x), static_cast<int>(y), r, g, b);
                 depth.SetBuffer(static_cast<int>(x), static_cast<int>(y), z);
             }
         }

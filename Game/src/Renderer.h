@@ -12,19 +12,21 @@
 * /brief CPU ECS
 */
 
-class Renderer : public System {
+class Renderer : public System
+{
 public:
+    Renderer(Camera& cam, DepthBuffer& depth, ColorBuffer& color) : m_cam(cam), m_depth(depth), m_color(color)
+    {
+    };
 
-	Renderer(Camera& cam, DepthBuffer& depth, ColorBuffer& color) : m_cam(cam), m_depth(depth), m_color(color) {};
+    void RenderTriangle(Triangle& tri, SimpleTexture& tex);
 
-	void RenderTriangle(Triangle& tri, SimpleTexture& tex);
+    void DebugDraw(const Triangle& tri);
 
-	void DebugDraw(const Triangle& tri);
-
-	void Render();
+    void Render();
 
 private:
-	Camera& m_cam;
-	DepthBuffer& m_depth;
-	ColorBuffer& m_color;
+    Camera& m_cam;
+    DepthBuffer& m_depth;
+    ColorBuffer& m_color;
 };

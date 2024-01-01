@@ -4,19 +4,20 @@
 
 float Dot(uint8_t planeId, const Vec4& v)
 {
-    switch (planeId) {
+    switch (planeId)
+    {
     case LEFT_PLANE:
-        return v.x + v.w;        /* v * (1 0 0 1) left */
+        return v.x + v.w; /* v * (1 0 0 1) left */
     case RIGHT_PLANE:
-        return -v.x + v.w;       /* v * (-1 0 0 1) right */
+        return -v.x + v.w; /* v * (-1 0 0 1) right */
     case DOWN_PLANE:
-        return v.y + v.w;        /* v * (0 1 0 1) down*/
+        return v.y + v.w; /* v * (0 1 0 1) down*/
     case UP_PLANE:
-        return -v.y + v.w;       /* v * (0 -1 0 1) up*/
+        return -v.y + v.w; /* v * (0 -1 0 1) up*/
     case FAR_PLANE:
-        return v.z + v.w;        /* v * (0 0 1 1) far */
+        return v.z + v.w; /* v * (0 0 1 1) far */
     case NEAR_PLANE:
-        return -v.z + v.w;       /* v * (0 0 -1 1) near */
+        return -v.z + v.w; /* v * (0 0 -1 1) near */
     default:
         assert(false && "unreachable code");
     }
@@ -40,7 +41,6 @@ void Lerp(const Point& a, const Point& b, float alpha, Point& out)
 
 uint8_t OutCode(const Vec4& v)
 {
-
     uint8_t outcode = 0;
 
     if (Dot(LEFT_PLANE, v) < 0) outcode |= LEFT_PLANE;
@@ -56,7 +56,6 @@ uint8_t OutCode(const Vec4& v)
 __forceinline std::vector<Point>
 ClipPlane(uint32_t planeid, std::vector<Point>& points)
 {
-
     std::vector<Point> outPoints;
 
     for (int i = 0, j = 1; i < points.size(); i++, j++)
@@ -77,15 +76,19 @@ ClipPlane(uint32_t planeid, std::vector<Point>& points)
         const auto isInsideB = Dot(planeid, Bpoint.position) > 0;
 
 
-        if (isInsideA) {
-            if (isInsideB) {
+        if (isInsideA)
+        {
+            if (isInsideB)
+            {
                 outPoints.push_back(Bpoint);
             }
-            else {
+            else
+            {
                 outPoints.push_back(newpoint);
             }
         }
-        else if (isInsideB) {
+        else if (isInsideB)
+        {
             outPoints.push_back(newpoint);
             outPoints.push_back(Bpoint);
         }
@@ -97,7 +100,6 @@ ClipPlane(uint32_t planeid, std::vector<Point>& points)
 
 std::vector<Triangle> Clip(Triangle& clip)
 {
-
     uint8_t clipcode1 = OutCode(clip.verts[0].proj);
     uint8_t clipcode2 = OutCode(clip.verts[1].proj);
     uint8_t clipcode3 = OutCode(clip.verts[2].proj);
@@ -105,13 +107,14 @@ std::vector<Triangle> Clip(Triangle& clip)
     std::vector<Triangle> clipped;
 
 
-    if (!(clipcode1 | clipcode2 | clipcode3)) {
+    if (!(clipcode1 | clipcode2 | clipcode3))
+    {
         // trivial accept
         clip.PerspectiveDivision();
         clipped.push_back(clip);
     }
-    else if (!(clipcode1 & clipcode2 & clipcode3)) {
-
+    else if (!(clipcode1 & clipcode2 & clipcode3))
+    {
         Vertex v0 = clip.verts[0];
         Vertex v1 = clip.verts[1];
         Vertex v2 = clip.verts[2];
@@ -123,27 +126,33 @@ std::vector<Triangle> Clip(Triangle& clip)
             Point(clip.verts[2].proj, {0, 0, 1})
         };
         uint32_t mask = clipcode1 | clipcode2 | clipcode3;
-        if (mask & LEFT_PLANE) {
+        if (mask & LEFT_PLANE)
+        {
             points = ClipPlane(LEFT_PLANE, points);
         }
 
-        if (mask & RIGHT_PLANE) {
+        if (mask & RIGHT_PLANE)
+        {
             points = ClipPlane(RIGHT_PLANE, points);
         }
 
-        if (mask & DOWN_PLANE) {
+        if (mask & DOWN_PLANE)
+        {
             points = ClipPlane(DOWN_PLANE, points);
         }
 
-        if (mask & UP_PLANE) {
+        if (mask & UP_PLANE)
+        {
             points = ClipPlane(UP_PLANE, points);
         }
 
-        if (mask & NEAR_PLANE) {
+        if (mask & NEAR_PLANE)
+        {
             points = ClipPlane(NEAR_PLANE, points);
         }
 
-        if (mask & FAR_PLANE) {
+        if (mask & FAR_PLANE)
+        {
             points = ClipPlane(FAR_PLANE, points);
         }
 
@@ -169,5 +178,3 @@ std::vector<Triangle> Clip(Triangle& clip)
     // o/w trivial reject
     return clipped;
 }
-
-

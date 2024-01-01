@@ -26,12 +26,15 @@ void Scene::Setup()
 
     Entity graphicsEntity = gCoordinator.CreateEntity();
     auto g = GraphicsBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
-    
+
     Entity colorEntity = gCoordinator.CreateEntity();
     auto color = ColorBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
 
     Entity textureEntity = gCoordinator.CreateEntity();
     auto texList = TextureList();
+
+    Entity simdPixelEntity = gCoordinator.CreateEntity();
+    auto simdPixelBuffer = SIMDPixelBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT);
 
 
     // Setup Mesh Instance
@@ -67,7 +70,6 @@ void Scene::Setup()
             gCoordinator.AddComponent<Mesh>(e, mesh_obj);
             gCoordinator.AddComponent<Transform>(e, t2);
             gCoordinator.AddComponent<SimpleTexture>(e, texture);
-
         }
     }
 
@@ -78,6 +80,8 @@ void Scene::Setup()
     gCoordinator.AddComponent<ColorBuffer>(colorEntity, color);
     gCoordinator.AddComponent<DepthBufferSIMD>(simdDepthEntity, simdDepth);
     gCoordinator.AddComponent<TextureList>(textureEntity, texList);
+    gCoordinator.AddComponent<SIMDPixelBuffer>(simdPixelEntity, simdPixelBuffer);
+
 
     debugCam = std::make_shared<DebugCamera>(
         DebugCamera(gCoordinator.GetComponent<Camera>(camEntity))
@@ -102,8 +106,8 @@ void Scene::Setup()
 
 void Scene::Render()
 {
-    //rendererM->Render();
-    renderer->Render();
+    rendererM->Render();
+    //renderer->Render();
     debugCam->Render();
 }
 

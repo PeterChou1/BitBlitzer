@@ -5,11 +5,14 @@
 
 #include "Vec3.h"
 
-class SimpleTexture {
+class SimpleTexture
+{
 public:
-	SimpleTexture() : texture(nullptr), mtexWidth(0), mtexHeight(0) {};
-	SimpleTexture(const char* fileName, Vec3 ambient, Vec3 diffuse, Vec3 specular, float highlight);
-	void Sample(float u, float v, float& r, float& g, float& b);
+    SimpleTexture() : texture(nullptr), mtexWidth(0), mtexHeight(0)
+    {
+    };
+    SimpleTexture(const char* fileName, Vec3 ambient, Vec3 diffuse, Vec3 specular, float highlight);
+    void Sample(float u, float v, float& r, float& g, float& b);
 
     Vec3 ambient{};
     Vec3 diffuse{};
@@ -17,10 +20,10 @@ public:
     float highlight{};
 
 private:
-	bool LoadTexture(const char* filename);
-	int mtexWidth;
-	int mtexHeight;
-	std::shared_ptr<unsigned char[]> texture;
+    bool LoadTexture(const char* filename);
+    int mtexWidth;
+    int mtexHeight;
+    std::shared_ptr<unsigned char[]> texture;
 };
 
 

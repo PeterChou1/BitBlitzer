@@ -248,7 +248,8 @@ bool
 Utils::LoadMTLFile(const std::string& filename, TextureList& texList)
 {
     std::ifstream file(filename);
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         return false;
     }
 
@@ -257,15 +258,18 @@ Utils::LoadMTLFile(const std::string& filename, TextureList& texList)
     float highlight;
     std::string textureFilename;
     std::string textureName;
-    while (getline(file, line)) {
+    while (getline(file, line))
+    {
         std::istringstream iss(line);
         std::string keyword;
         iss >> keyword;
 
-        if (keyword == "newmtl") {
+        if (keyword == "newmtl")
+        {
             // Handle new material - save the previous material if it exists
-            if (!textureFilename.empty() && !textureName.empty()) {
-                texList.textureIDs[textureName] = 
+            if (!textureFilename.empty() && !textureName.empty())
+            {
+                texList.textureIDs[textureName] =
                     texList.textureList.size();
                 texList.textureList.emplace_back(textureFilename.c_str(),
                                                  ambient,
@@ -275,28 +279,43 @@ Utils::LoadMTLFile(const std::string& filename, TextureList& texList)
                 textureFilename.clear();
             }
             iss >> textureName;
-        } else if (keyword == "Ka") { // Ambient color
+        }
+        else if (keyword == "Ka")
+        {
+            // Ambient color
             iss >> ambient.x >> ambient.y >> ambient.z;
-        } else if (keyword == "Kd") { // Diffuse color
+        }
+        else if (keyword == "Kd")
+        {
+            // Diffuse color
             iss >> diffuse.x >> diffuse.y >> diffuse.z;
-        } else if (keyword == "Ks") { // Specular color
+        }
+        else if (keyword == "Ks")
+        {
+            // Specular color
             iss >> specular.x >> specular.y >> specular.z;
-        } else if (keyword == "Ns") { // Specular highlight, exponent
+        }
+        else if (keyword == "Ns")
+        {
+            // Specular highlight, exponent
             iss >> highlight;
-        } else if (keyword == "map_Kd") { // Diffuse texture map
+        }
+        else if (keyword == "map_Kd")
+        {
+            // Diffuse texture map
             iss >> textureFilename;
         }
         // ... Handle other properties as needed ...
     }
 
     // Handle the last material
-    if (!textureFilename.empty()) {
+    if (!textureFilename.empty())
+    {
         texList.textureIDs[textureName] = texList.textureList.size();
         texList.textureList.emplace_back(
-          textureFilename.c_str(), ambient, diffuse, specular, highlight);
+            textureFilename.c_str(), ambient, diffuse, specular, highlight);
     }
 
     file.close();
     return true;
-
 }

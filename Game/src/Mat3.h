@@ -5,9 +5,13 @@
 
 class Quat;
 
-class Mat3 {
+class Mat3
+{
 public:
-    Mat3() {}
+    Mat3()
+    {
+    }
+
     Mat3(const Mat3& rhs);
     Mat3(const float* mat);
     Mat3(const Vec3& row0, const Vec3& row1, const Vec3& row2);
