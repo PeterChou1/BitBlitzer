@@ -7,7 +7,7 @@
 #include "RendererAVX.h"
 #include "../App/app.h"
 #include "Clipper.h"
-#include "Concurrency.h"
+#include "Concurrent.h"
 #include "SIMD.h"
 #include "Camera.h"
 #include "AssetServer.h"
@@ -15,9 +15,8 @@
 
 constexpr float epsilon = -std::numeric_limits<float>::epsilon();
 
-extern Coordinator gCoordinator;
 
-RendererAVX::RendererAVX(const int width, const int height) : Renderer(width, height)
+RendererAVX::RendererAVX(const int width, const int height, Camera& cam) : Renderer(width, height, cam)
 {
     m_DepthBuffer = SIMDDepthBuffer(width, height);
     m_PixelBuffer = SIMDPixelBuffer(width, height);
@@ -54,8 +53,6 @@ RendererAVX::Render()
 void
 RendererAVX::VertexShaderStage()
 {
-    Camera& m_cam = GetFirstComponent<Camera>(gCoordinator);
-
     Concurrent::ForEach(m_VertexBuffer.begin(), m_VertexBuffer.end(), [&](Vertex& v)
     {
         Vertex projected = v;
@@ -67,7 +64,6 @@ RendererAVX::VertexShaderStage()
 void
 RendererAVX::ClippingStage()
 {
-    Camera& m_cam = GetFirstComponent<Camera>(gCoordinator);
     m_CoreInterval = (m_TriangleCount + m_CoreCount - 1) / m_CoreCount;
 
     Concurrent::ForEach(m_CoreIds.begin(), m_CoreIds.end(), [&](int binID)
@@ -343,18 +339,18 @@ RendererAVX::ClearBuffer()
     {
         m_Tiles[i].Clear();
     }
-
+    
     for (int i = 0; i < m_CoreIds.size(); i++)
     {
         m_ProjectedClip[i].clear();
     }
     // threading makes this slower surprisingly
-    // Concurrency::ForEach(m_tiles.begin(), m_tiles.end(), [&](Tile& tile)
-    // {
-    //     tile.Clear();
-    // });
-    // Concurrency::ForEach(m_coreIds.begin(), m_coreIds.end(), [&](int bin)
-    // {
-    //     m_projectedClip[bin].clear();
-    // });
+    //Concurrent::ForEach(m_Tiles.begin(), m_Tiles.end(), [&](Tile& tile)
+    //{
+    //    tile.Clear();
+    //});
+    //Concurrent::ForEach(m_CoreIds.begin(), m_CoreIds.end(), [&](int bin)
+    //{
+    //    m_ProjectedClip[bin].clear();
+    //});
 }

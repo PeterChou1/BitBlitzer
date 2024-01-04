@@ -12,7 +12,7 @@
 class RendererAVX : public Renderer
 {
 public:
-    RendererAVX(int width, int height);
+    RendererAVX(int width, int height, Camera& cam);
 
     void Render() override;
 

@@ -189,16 +189,13 @@
     <ClInclude Include="src\Utils.h">
       <Filter>src\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="src\System.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
     <ClInclude Include="src\Entity.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\Mesh.h">
       <Filter>src\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\Concurrency.h">
+    <ClInclude Include="src\Concurrent.h">
       <Filter>src\Utils</Filter>
     </ClInclude>
     <ClInclude Include="src\Transform.h">

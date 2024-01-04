@@ -2,23 +2,24 @@
 #include "Renderer.h"
 
 #include "AssetServer.h"
+#include "Coordinator.h"
 #include "Utils.h"
 
 
-extern Coordinator gCoordinator;
+extern Coordinator ECS;
 
 void Renderer::Update()
 {
     std::vector<Entity> MarkedForDeletion;
 
-    for (const auto e : Visit<Transform, Mesh>(gCoordinator))
+    for (const auto e : ECS.Visit<Transform, Mesh>())
     {
-        auto& mesh = gCoordinator.GetComponent<Mesh>(e);
-        auto& transform = gCoordinator.GetComponent<Transform>(e);
+        auto& mesh = ECS.GetComponent<Mesh>(e);
+        auto& transform = ECS.GetComponent<Transform>(e);
 
         if (!mesh.loaded)
         {
-            AddMesh(mesh, transform);
+            AddMesh(e, mesh, transform);
             mesh.loaded = true;
         }
         else if (mesh.markedForDeletion)
@@ -86,7 +87,7 @@ void Renderer::DeleteMeshes(const std::vector<Entity>& entities)
             m_EntityToIndexRange.erase(entity);
         }
 
-        gCoordinator.RemoveComponent<Mesh>(entity);
+        ECS.RemoveComponent<Mesh>(entity);
     }
 
     // Step 2: Sort ranges to facilitate efficient removal
@@ -144,11 +145,14 @@ void Renderer::DeleteMeshes(const std::vector<Entity>& entities)
 
 
 
-void Renderer::AddMesh(Mesh mesh, Transform& transform)
+void Renderer::AddMesh(Entity entity, Mesh mesh, Transform& transform)
 {
     MeshInstance instance = AssetServer::GetInstance().GetObj(mesh.MeshType);
     instance.transform(transform);
     int offsetVertex = m_VertexBuffer.size();
+    m_EntityToVertexRange[entity]= {m_VertexBuffer.size(), m_VertexBuffer.size() + instance.vertices.size()};
+    m_EntityToIndexRange[entity] = {m_IndexBuffer.size(), m_IndexBuffer.size() + instance.indices.size() };
+
     for (auto& vertex : instance.vertices)
     {
         vertex.index = offsetVertex + vertex.index;

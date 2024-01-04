@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <cassert>
-#include "Concurrency.h"
+#include "Concurrent.h"
 
 struct Color
 {

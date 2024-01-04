@@ -13,7 +13,7 @@
 //------------------------------------------------------------------------
 
 
-Coordinator gCoordinator;
+Coordinator ECS;
 Scene manager;
 
 //------------------------------------------------------------------------
@@ -22,7 +22,7 @@ Scene manager;
 void Init()
 {
     App::SetupGL();
-    gCoordinator.Init();
+    ECS.Init();
     manager.Setup();
 }
 

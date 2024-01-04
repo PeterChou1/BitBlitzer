@@ -215,37 +215,6 @@ void Mat4::PerspectiveOpenGL(float fovy, float aspect_ratio, float near, float f
     rows[3] = Vec4(0, 0, -1, 0);
 }
 
-void Mat4::PerspectiveOLC(float fovy, float aspect_ratio, float far, float near)
-{
-    float fFovRad = 1.0f / tanf(fovy * 0.5f / 180.0f * 3.14159f);
-    (*this)[0][0] = aspect_ratio * fFovRad;
-    (*this)[1][1] = fFovRad;
-    (*this)[2][2] = far / (far - near);
-    (*this)[2][3] = (-far * near) / (far - near);
-    (*this)[3][2] = 1.0f;
-    (*this)[3][3] = 0.0f;
-}
-
-void Mat4::PerspectiveVulkan(float fovy, float aspect_ratio, float near, float far)
-{
-    // Vulkan changed its NDC. It switched from a left-handed
-    // coordinate system to a right-handed one.
-    // +x points to the right,
-    // +z points into the screen,
-    // +y points down (it used to point up, in OpenGL).
-    // It also changed the range from [-1, 1] to [0, 1] for the z.
-    // Clip space remains [-1, 1] for x and y.
-    // Check section 23 of the specification.
-    Mat4 matVulkan;
-    matVulkan.rows[0] = Vec4(1, 0, 0, 0);
-    matVulkan.rows[1] = Vec4(0, -1, 0, 0);
-    matVulkan.rows[2] = Vec4(0, 0, 0.5f, 0.5f);
-    matVulkan.rows[3] = Vec4(0, 0, 0, 1);
-
-    Mat4 matOpenGL;
-    matOpenGL.PerspectiveOpenGL(fovy, aspect_ratio, near, far);
-    *this = matVulkan * matOpenGL;
-}
 
 Vec4 Mat4::operator*(const Vec4& rhs) const
 {

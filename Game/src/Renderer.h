@@ -1,21 +1,20 @@
 #pragma once
+#include <unordered_map>
 #include <vector>
 
+#include "Camera.h"
 #include "ColorBuffer.h"
 #include "Entity.h"
 #include "Mesh.h"
-#include "System.h"
 #include "Vertex.h"
 
 using BufferRange = std::pair<int, int>;
 
 
-class Renderer : public System
+class Renderer
 {
 public:
-    Renderer(int width, int height) : m_ColorBuffer(ColorBuffer(width, height)) {}
-
-    // ~Renderer() override = default; 
+    Renderer(int width, int height, Camera& cam) : m_cam(cam), m_ColorBuffer(ColorBuffer(width, height)) {}
 
     void Update();
 
@@ -27,8 +26,9 @@ protected:
 
     void UpdateMesh(Entity entity, Transform& transform);
 
-    void AddMesh(Mesh mesh, Transform& transform);
+    void AddMesh(Entity entity, Mesh mesh, Transform& transform);
 
+    Camera& m_cam;
     std::vector<Vertex> m_ProjectedVertexBuffer;
     std::uint32_t m_TriangleCount{};
     std::vector<Vertex> m_VertexBuffer;

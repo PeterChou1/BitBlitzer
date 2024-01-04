@@ -1,9 +1,7 @@
 #pragma once
-#include "System.h"
 #include "Camera.h"
-#include <memory>
 
-class DebugCamera : System
+class DebugCamera 
 {
 public:
     DebugCamera(Camera& cam) : m_cam(cam)

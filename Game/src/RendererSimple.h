@@ -2,7 +2,6 @@
 #include <vector>
 #include "Mesh.h"
 #include "Mat4.h"
-#include "System.h"
 #include "Texture.h"
 #include "DepthBuffer.h"
 #include "Camera.h"
@@ -13,7 +12,7 @@
 * /brief CPU ECS
 */
 
-class RendererSimple : public System
+class RendererSimple
 {
 public:
     RendererSimple(Camera& cam, DepthBuffer& depth, ColorBuffer& color) : m_cam(cam), m_depth(depth), m_color(color)

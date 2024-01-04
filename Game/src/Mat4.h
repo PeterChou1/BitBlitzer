@@ -27,13 +27,11 @@ public:
     Mat4 Inverse() const;
     // fast inverse specifically for affine matrix
     Mat4 AffineInverse() const;
-    Mat3 Minor(const int i, const int j) const;
-    float Cofactor(const int i, const int j) const;
+    Mat3 Minor(int i, int j) const;
+    float Cofactor(int i, int j) const;
     void Orient(Vec3 pos, Vec3 fwd, Vec3 up);
     void LookAt(Vec3 pos, Vec3 lookAt, Vec3 up);
     void PerspectiveOpenGL(float fovy, float aspect_ratio, float near, float far);
-    void PerspectiveOLC(float, float aspect_ratio, float near, float far);
-    void PerspectiveVulkan(float fovy, float aspect_ratio, float near, float far);
     const float* ToPtr() const { return rows[0].ToPtr(); }
     float* ToPtr() { return rows[0].ToPtr(); }
     Vec4 operator*(const Vec4& rhs) const;
@@ -45,6 +43,5 @@ public:
 
     const Mat4& operator*=(const float rhs);
 
-public:
     Vec4 rows[4];
 };

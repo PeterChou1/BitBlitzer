@@ -199,7 +199,7 @@
     <ClInclude Include="src\ColorBuffer.h" />
     <ClInclude Include="src\ComponentArray.h" />
     <ClInclude Include="src\ComponentManager.h" />
-    <ClInclude Include="src\Concurrency.h" />
+    <ClInclude Include="src\Concurrent.h" />
     <ClInclude Include="src\Coordinator.h" />
     <ClInclude Include="src\DebugCamera.h" />
     <ClInclude Include="src\DepthBuffer.h" />
@@ -210,7 +210,6 @@
     <ClInclude Include="src\RendererAVX.h" />
     <ClInclude Include="src\SIMDPixelBuffer.h" />
     <ClInclude Include="src\SIMDTriangle.h" />
-    <ClInclude Include="src\System.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\Triangle.h" />

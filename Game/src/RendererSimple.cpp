@@ -9,7 +9,7 @@
 #include "../app/app.h"
 
 
-extern Coordinator gCoordinator;
+extern Coordinator ECS;
 
 constexpr double ASPECT_RATIO = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
 
@@ -186,10 +186,10 @@ void RendererSimple::Render()
     // Texture tex;
     // 
     // // Geometric pipeline
-    // for (Entity const& e : Visit<Mesh, Transform, Texture>(gCoordinator))
+    // for (Entity const& e : Visit<Mesh, Transform, Texture>(ECS))
     // {
-    //     Mesh& mesh = gCoordinator.GetComponent<Mesh>(e);
-    //     tex = gCoordinator.GetComponent<Texture>(e);
+    //     Mesh& mesh = ECS.GetComponent<Mesh>(e);
+    //     tex = ECS.GetComponent<Texture>(e);
     // 
     //     for (Triangle& tri : mesh.tris)
     //     {

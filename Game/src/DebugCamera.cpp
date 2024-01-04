@@ -2,56 +2,52 @@
 #include "DebugCamera.h"
 #include "Camera.h"
 #include "../App/app.h"
-#include <iostream>
-#include <sstream>
+#include "Coordinator.h"
 
-extern Coordinator gCoordinator;
+extern Coordinator ECS;
 
 
 void DebugCamera::Move(float deltaTime)
 {
-    Camera& cam = GetFirstComponent<Camera>(gCoordinator);
     Vec3 delta = Vec3(0, 0, 0);
-    Quat r = Quat(cam.up, 0);
+    Quat r = Quat(m_cam.up, 0);
 
     float speed = 5 * (deltaTime / 1000);
     float rotation = 3.141 / 2 * (deltaTime / 1000);
     // 
     if (App::GetController().GetLeftThumbStickX() > 0.5f)
     {
-        r *= Quat(cam.up, -rotation);
+        r *= Quat(m_cam.up, -rotation);
     }
     if (App::GetController().GetLeftThumbStickX() < -0.5f)
     {
-        r *= Quat(cam.up, rotation);
+        r *= Quat(m_cam.up, rotation);
     }
 
     if (App::GetController().GetLeftThumbStickY() > 0.5f)
     {
-        delta += cam.forward * speed;
+        delta += m_cam.forward * speed;
     }
     if (App::GetController().GetLeftThumbStickY() < -0.5f)
     {
-        delta -= cam.forward * speed;
+        delta -= m_cam.forward * speed;
     }
 
     if (App::IsKeyPressed('Q'))
     {
-        delta += cam.up * speed;
+        delta += m_cam.up * speed;
     }
 
     if (App::IsKeyPressed('E'))
     {
-        delta -= cam.up * speed;
+        delta -= m_cam.up * speed;
     }
 
-    cam.UpdatePos(delta, r);
+    m_cam.UpdatePos(delta, r);
 }
 
 void DebugCamera::Render()
 {
-    Camera& cam = GetFirstComponent<Camera>(gCoordinator);
-    std::string pos = "Position x:" + std::to_string(cam.pos.x) + " y: " + std::to_string(cam.pos.y) + " z: " +
-        std::to_string(cam.pos.z);
+    std::string pos = "Position x:" + std::to_string(m_cam.pos.x) + " y: " + std::to_string(m_cam.pos.y) + " z: " + std::to_string(m_cam.pos.z);
     App::Print(100, 100, pos.c_str());
 }
