@@ -2,18 +2,13 @@
 #include <string>
 #include "Mesh.h"
 #include "Entity.h"
-#include "SimpleTexture.h"
+#include "Texture.h"
 
 namespace Utils
 {
-    // load mesh -- old api --
-    bool LoadFromObjectFile(std::string filename, Mesh& mesh, bool UV, bool Normal);
+    // load .obj file
+    bool LoadInstance(std::string filename, MeshInstance& mesh, std::vector<Texture>& textureList);
 
-    // load mesh new
-    bool LoadInstance(std::string filename,
-                      MeshInstance& mesh,
-                      TextureList& texList);
-
-    // load mtl mesh
-    bool LoadMTLFile(const std::string& filename, TextureList& texList);
+    // loader for an .mtl material file
+    bool LoadMTLFile(const std::string& filename, std::vector<Texture>& textureList, std::unordered_map<std::string, size_t>& textureIDs);
 }

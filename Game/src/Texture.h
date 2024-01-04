@@ -5,13 +5,15 @@
 
 #include "Vec3.h"
 
-class SimpleTexture
+class Texture
 {
 public:
-    SimpleTexture() : texture(nullptr), mtexWidth(0), mtexHeight(0)
+    Texture() : mtexWidth(0), mtexHeight(0), texture(nullptr)
     {
-    };
-    SimpleTexture(const char* fileName, Vec3 ambient, Vec3 diffuse, Vec3 specular, float highlight);
+    }
+
+    Texture(const char* fileName, Vec3 ambient, Vec3 diffuse, Vec3 specular, float highlight);
+
     void Sample(float u, float v, float& r, float& g, float& b);
 
     Vec3 ambient{};
@@ -33,5 +35,5 @@ private:
 struct TextureList
 {
     std::unordered_map<std::string, size_t> textureIDs;
-    std::vector<SimpleTexture> textureList;
+    std::vector<Texture> textureList;
 };

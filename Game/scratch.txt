@@ -435,68 +435,79 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
             }
         }
     }
+                    // SimpleTexture& texture = m_textureList.textureList[tri.verts[0].tex_id];
+                                // SIMDVec3 normal = (triSIMD.normal1 * alpha + triSIMD.normal1 * beta + triSIMD.normal3 * gamma) / depth;
+                                // SIMDVec2 texUV = (triSIMD.tex1 * alpha + triSIMD.tex2 * beta + triSIMD.tex3 * gamma) / depth;
+                                // 
+                                // float r, g, b;
+                                // 
+                                // if (visible.GetBit(0))
+                                // {
+                                //     texture.Sample(texUV.x[0], texUV.y[0], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[0], pixel.position.y[0], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(1))
+                                // {
+                                //     texture.Sample(texUV.x[1], texUV.y[1], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[1], pixel.position.y[1], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(2))
+                                // {
+                                //     texture.Sample(texUV.x[2], texUV.y[2], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[2], pixel.position.y[2], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(3))
+                                // {
+                                //     texture.Sample(texUV.x[3], texUV.y[3], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[3], pixel.position.y[3], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(4))
+                                // {
+                                //     texture.Sample(texUV.x[4], texUV.y[4], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[4], pixel.position.y[4], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(5))
+                                // {
+                                //     texture.Sample(texUV.x[5], texUV.y[5], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[5], pixel.position.y[5], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(6))
+                                // {
+                                //     texture.Sample(texUV.x[6], texUV.y[6], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[6], pixel.position.y[6], r, g, b);
+                                // }
+                                // 
+                                // if (visible.GetBit(7))
+                                // {
+                                //     texture.Sample(texUV.x[7], texUV.y[7], r, g, b);
+                                //     m_color.SetColor(
+                                //         pixel.position.x[7], pixel.position.y[7], r, g, b);
+                                // }
 
-SIMDVec3 normal = (triSIMD.normal1 * alpha + triSIMD.normal1 * beta + triSIMD.normal3 * gamma) / depth;
-SIMDVec2 texUV = (triSIMD.tex1 * alpha + triSIMD.tex2 * beta + triSIMD.tex3 * gamma) / depth;
+                                            // 
+            // g.AddMeshInstance(meshCopy);
 
-float r, g, b;
-
-if (pixel.mask.GetBit(0))
-{
-    texture.Sample(texUV.x[0], texUV.y[0], r, g, b);
-    m_color.SetColor(
-        pixel.position.x[0], pixel.position.y[0], r, g, b);
-}
-
-if (pixel.mask.GetBit(1))
-{
-    texture.Sample(texUV.x[1], texUV.y[1], r, g, b);
-    m_color.SetColor(
-        pixel.position.x[1], pixel.position.y[1], r, g, b);
-}
-
-if (pixel.mask.GetBit(2))
-{
-    texture.Sample(texUV.x[2], texUV.y[2], r, g, b);
-    m_color.SetColor(
-        pixel.position.x[2], pixel.position.y[2], r, g, b);
-}
-
-if (pixel.mask.GetBit(3))
-{
-    texture.Sample(texUV.x[3], texUV.y[3], r, g, b);
-    m_color.SetColor(
-        pixel.position.x[3], pixel.position.y[3], r, g, b);
-}
-
-if (pixel.mask.GetBit(4))
-{
-    texture.Sample(texUV.x[4], texUV.y[4], r, g, b);
-    m_color.SetColor(
-        pixel.position.x[4], pixel.position.y[4], r, g, b);
-}
-
-if (pixel.mask.GetBit(5))
-{
-    texture.Sample(texUV.x[5], texUV.y[5], r, g, b);
-    m_color.SetColor(
-        pixel.position.x[5], pixel.position.y[5], r, g, b);
-}
-
-if (pixel.mask.GetBit(6))
-{
-    texture.Sample(texUV.x[6], texUV.y[6], r, g, b);
-    m_color.SetColor(
-        pixel.position.x[6], pixel.position.y[6], r, g, b);
-}
-
-if (pixel.mask.GetBit(7))
-{
-    texture.Sample(texUV.x[7], texUV.y[7], r, g, b);
-    m_color.SetColor(
-        pixel.position.x[7], pixel.position.y[7], r, g, b);
-}
-
-                               
-
-                             
+            // Entity e = gCoordinator.CreateEntity();
+            // auto mesh_obj = Mesh(meshCopy);
+            // auto t2 = Transform(Vec3(x * 2, 0, 10), Quat(Vec3(1, 0, 0), 0.0)); // 3.14 / 2));
+            // auto texture = SimpleTexture("./Assets/spot_texture.png",
+            //                              Vec3(0, 0, 0),
+            //                              Vec3(0, 0, 0),
+            //                              Vec3(0, 0, 0), 0.0);
+            // // 
+            // gCoordinator.AddComponent<Mesh>(e, mesh_obj);
+            // gCoordinator.AddComponent<Transform>(e, t2);
+            // gCoordinator.AddComponent<SimpleTexture>(e, texture);

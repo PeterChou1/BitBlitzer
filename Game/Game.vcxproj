@@ -186,6 +186,13 @@
     <ClInclude Include="App\SimpleController.h" />
     <ClInclude Include="App\SimpleSound.h" />
     <ClInclude Include="App\SimpleSprite.h" />
+    <ClInclude Include="src\Assets.h" />
+    <ClInclude Include="src\GameManager.h" />
+    <ClInclude Include="src\AssetServer.h" />
+    <ClInclude Include="src\Point.h" />
+    <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\SIMDDepthBuffer.h" />
     <ClInclude Include="src\SIMDPixel.h" />
     <ClInclude Include="src\SIMD.h" />
     <ClInclude Include="src\Clipper.h" />
@@ -199,13 +206,15 @@
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\EntityManager.h" />
-    <ClInclude Include="src\GameManager.h" />
-    <ClInclude Include="src\RendererM.h" />
+    <ClInclude Include="src\Scene.h" />
+    <ClInclude Include="src\RendererAVX.h" />
+    <ClInclude Include="src\SIMDPixelBuffer.h" />
+    <ClInclude Include="src\SIMDTriangle.h" />
     <ClInclude Include="src\System.h" />
-    <ClInclude Include="src\SimpleTexture.h" />
-    <ClInclude Include="src\GraphicsBuffer.h" />
+    <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Tile.h" />
-    <ClInclude Include="src\UpdateModel.h" />
+    <ClInclude Include="src\Triangle.h" />
+    <ClInclude Include="src\Vertex.h" />
     <ClInclude Include="src\VisitorManager.h" />
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\Mat2.h" />
@@ -213,7 +222,7 @@
     <ClInclude Include="src\Mat4.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Quat.h" />
-    <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\RendererSimple.h" />
     <ClInclude Include="src\stdafx.h" />
     <ClInclude Include="src\targetver.h" />
     <ClInclude Include="src\Utils.h" />
@@ -232,27 +241,29 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Clipper.cpp" />
     <ClCompile Include="src\DebugCamera.cpp" />
-    <ClCompile Include="src\RendererM.cpp" />
-    <ClCompile Include="src\SIMD.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\RendererAVX.cpp" />
+    <ClCompile Include="src\GameManager.cpp" />
+    <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\SIMDPixel.cpp" />
-    <ClCompile Include="src\SimpleTexture.cpp" />
+    <ClCompile Include="src\SIMDTriangle.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\GameManager.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\Mat2.cpp" />
     <ClCompile Include="src\Mat3.cpp" />
     <ClCompile Include="src\Mat4.cpp" />
-    <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Quat.cpp" />
-    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\RendererSimple.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\UpdateModel.cpp" />
+    <ClCompile Include="src\Triangle.cpp" />
     <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\Vec2.cpp" />
     <ClCompile Include="src\Vec3.cpp" />

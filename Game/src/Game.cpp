@@ -2,7 +2,6 @@
 // GameTest.cpp
 //------------------------------------------------------------------------
 #include "stdafx.h"
-#define STB_IMAGE_IMPLEMENTATION
 //------------------------------------------------------------------------
 #include <windows.h>
 #include <math.h>
@@ -10,18 +9,12 @@
 #include <fstream>
 //------------------------------------------------------------------------
 #include "../app/app.h"
-#include "Renderer.h"
-#include "GameManager.h"
+#include "Scene.h"
 //------------------------------------------------------------------------
 
-// RendererCPU renderer;
-// Coordinator gCoordinator;
-// Renderer rendererSys;
 
 Coordinator gCoordinator;
 Scene manager;
-
-constexpr int imageSize = APP_VIRTUAL_WIDTH * APP_VIRTUAL_HEIGHT * 3;
 
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.

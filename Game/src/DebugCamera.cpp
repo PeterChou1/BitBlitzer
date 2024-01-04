@@ -11,9 +11,7 @@ extern Coordinator gCoordinator;
 void DebugCamera::Move(float deltaTime)
 {
     Camera& cam = GetFirstComponent<Camera>(gCoordinator);
-
-    Vec3& delta = Vec3(0, 0, 0);
-    const Vec3& target = cam.forward;
+    Vec3 delta = Vec3(0, 0, 0);
     Quat r = Quat(cam.up, 0);
 
     float speed = 5 * (deltaTime / 1000);

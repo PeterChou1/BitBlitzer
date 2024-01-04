@@ -236,12 +236,12 @@ std::string Vec3::ToString() const
 
 Vec3 IntersectPlane(const Vec3& point, const Vec3& normal, Vec3& start, Vec3& end, float& scale)
 {
-    assert(normal.GetMagnitude() == 1.0);
+    assert(normal.GetMagnitude() == 1.0 && "magnitude not 1");
     const float planeDot = -normal.Dot(point);
     const float ad = start.Dot(normal);
     const float bd = end.Dot(normal);
     const float t = (-planeDot - ad) / (bd - ad);
-    assert(bd - ad != 0, "line parallel to line");
+    assert(bd - ad != 0 && "line parallel to line");
     const Vec3 start2End = (end - start) * t;
     scale = t;
     return start + start2End;

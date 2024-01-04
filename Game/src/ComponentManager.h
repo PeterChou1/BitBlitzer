@@ -2,7 +2,6 @@
 
 #include "ComponentArray.h"
 #include "Entity.h"
-#include <any>
 #include <memory>
 #include <unordered_map>
 
@@ -79,6 +78,13 @@ public:
 
             component->EntityDestroyed(entity);
         }
+    }
+
+    void Clear()
+    {
+        mComponentTypes.clear();
+        mComponentArrays.clear();
+        mNextComponentType = 0;
     }
 
 private:

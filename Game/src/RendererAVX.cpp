@@ -1,39 +1,45 @@
 #include "stdafx.h"
-#include "RendererM.h"
+
+#include <algorithm>
+#include <thread>
+#include <numeric>
+
+#include "RendererAVX.h"
 #include "../App/app.h"
 #include "Clipper.h"
 #include "Concurrency.h"
 #include "SIMD.h"
-#include <algorithm>
-#include <thread>
+#include "Camera.h"
+#include "AssetServer.h"
+#include "SIMDTriangle.h"
+
+constexpr float epsilon = -std::numeric_limits<float>::epsilon();
 
 extern Coordinator gCoordinator;
 
-RendererM::RendererM(GraphicsBuffer& g,
-                     Camera& cam,
-                     ColorBuffer& color,
-                     DepthBufferSIMD& depth,
-                     TextureList& textureList,
-                     SIMDPixelBuffer& pixel)
-    : m_vertexBuffer(g.GetVertexBuffer())
-      , m_indexBuffer(g.GetIndexBuffer())
-      , m_projectedVertexBuffer(g.GetProjectedVertex())
-      , m_projectedClip(g.GetProjectedClipped())
-      , m_tiles(g.GetTiles())
-      , m_textureList(textureList)
-      , m_cam(cam)
-      , m_color(color)
-      , m_depth(depth)
-      , m_pixelbuffer(pixel)
+RendererAVX::RendererAVX(const int width, const int height) : Renderer(width, height)
 {
-    m_coreCount = std::thread::hardware_concurrency();
-    m_coreInterval = (g.GetTriangleCount() + m_coreCount - 1) / m_coreCount;
-    m_coreIds.resize(m_coreCount);
-    std::iota(m_coreIds.begin(), m_coreIds.end(), 0);
+    m_DepthBuffer = SIMDDepthBuffer(width, height);
+    m_PixelBuffer = SIMDPixelBuffer(width, height);
+    m_CoreCount = std::thread::hardware_concurrency();
+    m_CoreInterval = 0;
+    m_CoreIds.resize(m_CoreCount);
+    m_ProjectedClip.resize(m_CoreCount);
+    std::iota(m_CoreIds.begin(), m_CoreIds.end(), 0);
+    for (int y = 0; y < TileCountY; ++y)
+    {
+        for (int x = 0; x < TileCountX; ++x)
+        {
+            auto max = Vec2((std::min)((x + 1) * TileSizeX, width), (std::min)((y + 1) * TileSizeY, height));
+            auto min = Vec2((std::min)(x * TileSizeX, width), (std::min)(y * TileSizeY, height));
+            auto t = Tile(min, max);
+            m_Tiles.push_back(t);
+        }
+    }
 }
 
 void
-RendererM::Render()
+RendererAVX::Render()
 {
     VertexShaderStage();
     ClippingStage();
@@ -44,43 +50,45 @@ RendererM::Render()
     ClearBuffer();
 }
 
+
 void
-RendererM::VertexShaderStage()
+RendererAVX::VertexShaderStage()
 {
-    Concurrency::ForEach(m_vertexBuffer.begin(), m_vertexBuffer.end(), [&](Vertex& v)
+    Camera& m_cam = GetFirstComponent<Camera>(gCoordinator);
+
+    Concurrent::ForEach(m_VertexBuffer.begin(), m_VertexBuffer.end(), [&](Vertex& v)
     {
-        // Transform modelTransform = gCoordinator.GetComponent<Transform>(v.id);
         Vertex projected = v;
-        // projected.pos = modelTransform.TransformVec3(projected.pos);
-        // projected.normal = modelTransform.TransformNormal(projected.normal);
         projected.proj = m_cam.proj * Vec4(m_cam.WorldToCamera(projected.pos));
-        m_projectedVertexBuffer[v.index] = projected;
+        m_ProjectedVertexBuffer[v.index] = projected;
     });
 }
 
 void
-RendererM::ClippingStage()
+RendererAVX::ClippingStage()
 {
-    // std::cout << "clipping start" << std::endl;
-    Concurrency::ForEach(m_coreIds.begin(), m_coreIds.end(), [&](int binID)
-    {
-        int start = binID * m_coreInterval;
-        int end = (binID + 1) * m_coreInterval;
+    Camera& m_cam = GetFirstComponent<Camera>(gCoordinator);
+    m_CoreInterval = (m_TriangleCount + m_CoreCount - 1) / m_CoreCount;
 
-        std::vector<Triangle>& binProjectedClip = m_projectedClip[binID];
+    Concurrent::ForEach(m_CoreIds.begin(), m_CoreIds.end(), [&](int binID)
+    {
+        int start = binID * m_CoreInterval;
+        int end = (binID + 1) * m_CoreInterval;
+
+        std::vector<Triangle>& binProjectedClip = m_ProjectedClip[binID];
 
         for (int i = start; i < end; i++)
         {
-            if (3 * i + 2 > m_indexBuffer.size())
+            if (3 * i + 2 > m_IndexBuffer.size())
                 break;
 
-            assert(m_indexBuffer[3 * i] < m_projectedVertexBuffer.size());
-            assert(m_indexBuffer[3 * i + 1] < m_projectedVertexBuffer.size());
-            assert(m_indexBuffer[3 * i + 2] < m_projectedVertexBuffer.size());
+            assert(m_IndexBuffer[3 * i] < m_ProjectedVertexBuffer.size());
+            assert(m_IndexBuffer[3 * i + 1] < m_ProjectedVertexBuffer.size());
+            assert(m_IndexBuffer[3 * i + 2] < m_ProjectedVertexBuffer.size());
 
-            Vertex v1 = m_projectedVertexBuffer[m_indexBuffer[3 * i]];
-            Vertex v2 = m_projectedVertexBuffer[m_indexBuffer[3 * i + 1]];
-            Vertex v3 = m_projectedVertexBuffer[m_indexBuffer[3 * i + 2]];
+            Vertex v1 = m_ProjectedVertexBuffer[m_IndexBuffer[3 * i]];
+            Vertex v2 = m_ProjectedVertexBuffer[m_IndexBuffer[3 * i + 1]];
+            Vertex v3 = m_ProjectedVertexBuffer[m_IndexBuffer[3 * i + 2]];
             // back face culling
             auto t = Triangle(v1, v2, v3);
 
@@ -104,11 +112,11 @@ RendererM::ClippingStage()
 }
 
 void
-RendererM::TiledRasterizationStage()
+RendererAVX::TiledRasterizationStage()
 {
-    Concurrency::ForEach(m_coreIds.begin(), m_coreIds.end(), [&](int bin)
+    Concurrent::ForEach(m_CoreIds.begin(), m_CoreIds.end(), [&](int bin)
     {
-        std::vector<Triangle>& binProjectedClip = m_projectedClip[bin];
+        std::vector<Triangle>& binProjectedClip = m_ProjectedClip[bin];
         for (auto& tri : binProjectedClip)
         {
             // iterate through triangle bounding box
@@ -124,10 +132,10 @@ RendererM::TiledRasterizationStage()
                 {
                     const int index = y * TileCountX + x;
 
-                    if (index >= m_tiles.size())
+                    if (index >= m_Tiles.size())
                         continue;
 
-                    Tile& t = m_tiles[index];
+                    Tile& t = m_Tiles[index];
 
                     Vec2 corner0 = t.GetCorner(tri.rejectIndex0);
                     Vec2 corner1 = t.GetCorner(tri.rejectIndex1);
@@ -150,9 +158,9 @@ RendererM::TiledRasterizationStage()
 }
 
 void
-RendererM::RasterizationStage()
+RendererAVX::RasterizationStage()
 {
-    Concurrency::ForEach(m_tiles.begin(), m_tiles.end(), [&](Tile& tile)
+    Concurrent::ForEach(m_Tiles.begin(), m_Tiles.end(), [&](Tile& tile)
     {
         std::vector<std::vector<Triangle>>& binTriangles = tile.GetBinTriangle();
 
@@ -163,6 +171,7 @@ RendererM::RasterizationStage()
         {
             for (auto& tri : binTriangle)
             {
+                // construct the triangles bounding box to loop through this faster
                 auto minPt =
                     Vec2((std::min)((std::max)(tileMin.x, static_cast<float>(tri.minX)),
                                     static_cast<float>(tri.maxX)),
@@ -188,8 +197,6 @@ RendererM::RasterizationStage()
                     std::ceil(maxPt.y / SIMDPixel::PIXEL_HEIGHT) * SIMDPixel::PIXEL_HEIGHT;
 
                 SIMDTriangle triSIMD(tri);
-
-                SimpleTexture& texture = m_textureList.textureList[tri.verts[0].tex_id];
 
                 SIMDFloat posX = SIMDPixel::PixelOffsetX + minPt.x;
                 SIMDFloat posY = SIMDPixel::PixelOffsetY + minPt.y;
@@ -228,76 +235,15 @@ RendererM::RasterizationStage()
 
                             int pixelX = x / SIMDPixel::PIXEL_WIDTH;
                             int pixelY = y / SIMDPixel::PIXEL_HEIGHT;
-                            SIMDFloat visible = m_depth.DepthTest(pixelX, pixelY, depth, inTriangle);
+                            SIMDFloat visible = m_DepthBuffer.DepthTest(pixelX, pixelY, depth, inTriangle);
 
                             if (SIMD::Any(visible))
                             {
-                                m_depth.UpdateBuffer(pixelX, pixelY, visible, depth);
+                                m_DepthBuffer.UpdateBuffer(pixelX, pixelY, visible, depth);
                                 SIMDPixel pixel = SIMDPixel(SIMDVec2(posX, posY), depth, alpha, beta, gamma, tri.BinID,
                                                             tri.BinIndex);
-                                pixel.mask = visible;
-                                m_pixelbuffer.SetBuffer(pixelX, pixelY, pixel);
-
-                                // SIMDVec3 normal = (triSIMD.normal1 * alpha + triSIMD.normal1 * beta + triSIMD.normal3 * gamma) / depth;
-                                // SIMDVec2 texUV = (triSIMD.tex1 * alpha + triSIMD.tex2 * beta + triSIMD.tex3 * gamma) / depth;
-                                // 
-                                // float r, g, b;
-                                // 
-                                // if (visible.GetBit(0))
-                                // {
-                                //     texture.Sample(texUV.x[0], texUV.y[0], r, g, b);
-                                //     m_color.SetColor(
-                                //         pixel.position.x[0], pixel.position.y[0], r, g, b);
-                                // }
-                                // 
-                                // if (visible.GetBit(1))
-                                // {
-                                //     texture.Sample(texUV.x[1], texUV.y[1], r, g, b);
-                                //     m_color.SetColor(
-                                //         pixel.position.x[1], pixel.position.y[1], r, g, b);
-                                // }
-                                // 
-                                // if (visible.GetBit(2))
-                                // {
-                                //     texture.Sample(texUV.x[2], texUV.y[2], r, g, b);
-                                //     m_color.SetColor(
-                                //         pixel.position.x[2], pixel.position.y[2], r, g, b);
-                                // }
-                                // 
-                                // if (visible.GetBit(3))
-                                // {
-                                //     texture.Sample(texUV.x[3], texUV.y[3], r, g, b);
-                                //     m_color.SetColor(
-                                //         pixel.position.x[3], pixel.position.y[3], r, g, b);
-                                // }
-                                // 
-                                // if (visible.GetBit(4))
-                                // {
-                                //     texture.Sample(texUV.x[4], texUV.y[4], r, g, b);
-                                //     m_color.SetColor(
-                                //         pixel.position.x[4], pixel.position.y[4], r, g, b);
-                                // }
-                                // 
-                                // if (visible.GetBit(5))
-                                // {
-                                //     texture.Sample(texUV.x[5], texUV.y[5], r, g, b);
-                                //     m_color.SetColor(
-                                //         pixel.position.x[5], pixel.position.y[5], r, g, b);
-                                // }
-                                // 
-                                // if (visible.GetBit(6))
-                                // {
-                                //     texture.Sample(texUV.x[6], texUV.y[6], r, g, b);
-                                //     m_color.SetColor(
-                                //         pixel.position.x[6], pixel.position.y[6], r, g, b);
-                                // }
-                                // 
-                                // if (visible.GetBit(7))
-                                // {
-                                //     texture.Sample(texUV.x[7], texUV.y[7], r, g, b);
-                                //     m_color.SetColor(
-                                //         pixel.position.x[7], pixel.position.y[7], r, g, b);
-                                // }
+                                // We deferred the shading to the fragment shading stage
+                                m_PixelBuffer.SetBuffer(pixelX, pixelY, pixel, visible);
                             }
                         }
                         deltaXe1 = deltaXe1 + deltaX0;
@@ -313,89 +259,102 @@ RendererM::RasterizationStage()
             }
         }
     });
-    m_pixelbuffer.AccumulatePixel(m_depth);
+
+    m_PixelBuffer.AccumulatePixel(m_DepthBuffer);
 }
 
 void
-RendererM::FragmentShaderStage()
+RendererAVX::FragmentShaderStage()
 {
-    Concurrency::ForEach(m_pixelbuffer.begin(), m_pixelbuffer.end(), [&](SIMDPixel& pixel)
+
+    AssetServer& loader = AssetServer::GetInstance();
+
+    Concurrent::ForEach(m_PixelBuffer.begin(), m_PixelBuffer.end(), [&](SIMDPixel& pixel)
     {
-        Triangle& triangle = m_projectedClip[pixel.binId][pixel.binIndex];
+        Triangle& triangle = m_ProjectedClip[pixel.binId][pixel.binIndex];
         pixel.Interpolate(triangle);
-        SimpleTexture& texture = m_textureList.textureList[triangle.verts[0].tex_id];
+        Texture& texture = loader.GetTexture(triangle.verts[0].tex_id);
         SIMDVec2 texUV = pixel.textureCoord;
-
         float r, g, b;
-
+        
         if (pixel.mask.GetBit(0))
         {
             texture.Sample(texUV.x[0], texUV.y[0], r, g, b);
-            m_color.SetColor(pixel.position.x[0], pixel.position.y[0], r, g, b);
+            m_ColorBuffer.SetColor(pixel.position.x[0], pixel.position.y[0], r, g, b);
         }
-
+        
         if (pixel.mask.GetBit(1))
         {
             texture.Sample(texUV.x[1], texUV.y[1], r, g, b);
-            m_color.SetColor(pixel.position.x[1], pixel.position.y[1], r, g, b);
+            m_ColorBuffer.SetColor(pixel.position.x[1], pixel.position.y[1], r, g, b);
         }
-
+        
         if (pixel.mask.GetBit(2))
         {
             texture.Sample(texUV.x[2], texUV.y[2], r, g, b);
-            m_color.SetColor(pixel.position.x[2], pixel.position.y[2], r, g, b);
+            m_ColorBuffer.SetColor(pixel.position.x[2], pixel.position.y[2], r, g, b);
         }
-
+        
         if (pixel.mask.GetBit(3))
         {
             texture.Sample(texUV.x[3], texUV.y[3], r, g, b);
-            m_color.SetColor(pixel.position.x[3], pixel.position.y[3], r, g, b);
+            m_ColorBuffer.SetColor(pixel.position.x[3], pixel.position.y[3], r, g, b);
         }
-
+        
         if (pixel.mask.GetBit(4))
         {
             texture.Sample(texUV.x[4], texUV.y[4], r, g, b);
-            m_color.SetColor(pixel.position.x[4], pixel.position.y[4], r, g, b);
+            m_ColorBuffer.SetColor(pixel.position.x[4], pixel.position.y[4], r, g, b);
         }
-
+        
         if (pixel.mask.GetBit(5))
         {
             texture.Sample(texUV.x[5], texUV.y[5], r, g, b);
-            m_color.SetColor(pixel.position.x[5], pixel.position.y[5], r, g, b);
+            m_ColorBuffer.SetColor(pixel.position.x[5], pixel.position.y[5], r, g, b);
         }
-
+        
         if (pixel.mask.GetBit(6))
         {
             texture.Sample(texUV.x[6], texUV.y[6], r, g, b);
-            m_color.SetColor(pixel.position.x[6], pixel.position.y[6], r, g, b);
+            m_ColorBuffer.SetColor(pixel.position.x[6], pixel.position.y[6], r, g, b);
         }
-
+        
         if (pixel.mask.GetBit(7))
         {
             texture.Sample(texUV.x[7], texUV.y[7], r, g, b);
-            m_color.SetColor(pixel.position.x[7], pixel.position.y[7], r, g, b);
+            m_ColorBuffer.SetColor(pixel.position.x[7], pixel.position.y[7], r, g, b);
         }
     });
 }
 
 void
-RendererM::UpdateFrameBuffer()
+RendererAVX::UpdateFrameBuffer()
 {
-    App::RenderTexture(m_color.GetBuffer());
+    App::RenderTexture(m_ColorBuffer.GetBuffer());
 }
 
 void
-RendererM::ClearBuffer()
+RendererAVX::ClearBuffer()
 {
-    m_depth.Clear();
-    m_color.Clear();
-    m_pixelbuffer.Clear();
-    Concurrency::ForEach(m_tiles.begin(), m_tiles.end(), [&](Tile& tile)
+    m_DepthBuffer.Clear();
+    m_ColorBuffer.Clear();
+    m_PixelBuffer.Clear();
+    for (int i = 0; i < m_Tiles.size(); i++)
     {
-        tile.Clear();
-    });
-    Concurrency::ForEach(m_coreIds.begin(), m_coreIds.end(), [&](int bin)
+        m_Tiles[i].Clear();
+    }
+
+    for (int i = 0; i < m_CoreIds.size(); i++)
     {
-        m_projectedClip[bin].clear();
-    });
+        m_ProjectedClip[i].clear();
+    }
+    // threading makes this slower surprisingly
+    // Concurrency::ForEach(m_tiles.begin(), m_tiles.end(), [&](Tile& tile)
+    // {
+    //     tile.Clear();
+    // });
+    // Concurrency::ForEach(m_coreIds.begin(), m_coreIds.end(), [&](int bin)
+    // {
+    //     m_projectedClip[bin].clear();
+    // });
 }

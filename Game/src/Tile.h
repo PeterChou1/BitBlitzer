@@ -1,9 +1,12 @@
 #pragma once
-#include "Vec2.h"
-#include "Mesh.h"
-#include "../App/app.h"
+
 #include <thread>
 #include <vector>
+
+#include "../App/app.h"
+#include "Vec2.h"
+#include "Mesh.h"
+#include "Triangle.h"
 
 
 constexpr int TileSizeX = 32;
@@ -18,12 +21,12 @@ class Tile
 public:
     Tile(Vec2& min, Vec2& max) : minRaster(min), maxRaster(max)
     {
-        int numCores = std::thread::hardware_concurrency();
+        const unsigned numCores = std::thread::hardware_concurrency();
         binTriangles.resize(numCores);
         // 4 corners of the tile
     };
 
-    void Add(std::uint32_t bin, Triangle tri)
+    void Add(std::uint32_t bin, Triangle& tri)
     {
         binTriangles[bin].push_back(tri);
     }
@@ -66,6 +69,11 @@ public:
         return maxRaster;
     }
 
+    int GetID()
+    {
+        return id;
+    }
+
     Vec2 GetCorner(int index)
     {
         return minRaster + CornerIndex[index];
@@ -77,6 +85,7 @@ public:
     }
 
 private:
+    int id;
     Vec2 minRaster;
     Vec2 maxRaster;
     std::vector<std::vector<Triangle>> binTriangles;

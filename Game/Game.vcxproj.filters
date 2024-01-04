@@ -31,9 +31,6 @@
     <ClCompile Include="src\Vec4.cpp">
       <Filter>src\Math</Filter>
     </ClCompile>
-    <ClCompile Include="src\Mesh.cpp">
-      <Filter>src\Geometry</Filter>
-    </ClCompile>
     <ClCompile Include="src\Mat3.cpp">
       <Filter>src\Math</Filter>
     </ClCompile>
@@ -43,10 +40,7 @@
     <ClCompile Include="src\Game.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\GameManager.cpp">
-      <Filter>src\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer.cpp">
+    <ClCompile Include="src\RendererSimple.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Utils.cpp">
@@ -55,22 +49,16 @@
     <ClCompile Include="src\Camera.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Transform.cpp">
-      <Filter>src\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\stdafx.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\DebugCamera.cpp">
-      <Filter>src\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\SimpleTexture.cpp">
+    <ClCompile Include="src\Texture.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="stb_image\stb_image.cpp">
       <Filter>stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\RendererM.cpp">
+    <ClCompile Include="src\RendererAVX.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Tile.cpp">
@@ -79,10 +67,28 @@
     <ClCompile Include="src\Clipper.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\UpdateModel.cpp">
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Transform.cpp">
+      <Filter>src\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DebugCamera.cpp">
+      <Filter>src\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GameManager.cpp">
+      <Filter>src\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
+      <Filter>src\Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Renderer.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\SIMD.cpp">
+    <ClCompile Include="src\Triangle.cpp">
+      <Filter>src\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SIMDTriangle.cpp">
       <Filter>src\SIMD</Filter>
     </ClCompile>
     <ClCompile Include="src\SIMDPixel.cpp">
@@ -90,51 +96,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="App\main.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\stdafx.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mat2.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vec3.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vec2.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vec4.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mat3.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mat4.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Quat.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Mesh.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Renderer.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Utils.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Camera.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Transform.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Entity.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="App\app.h">
       <Filter>NextAPI</Filter>
     </ClInclude>
@@ -153,82 +114,148 @@
     <ClInclude Include="App\SimpleController.h">
       <Filter>NextAPI</Filter>
     </ClInclude>
-    <ClInclude Include="src\EntityManager.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\VisitorManager.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ComponentArray.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ComponentManager.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\System.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Coordinator.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GameManager.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Visitor.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DebugCamera.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SimpleTexture.h">
-      <Filter>include</Filter>
-    </ClInclude>
     <ClInclude Include="stb_image\stb_image.h">
       <Filter>stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Concurrency.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GraphicsBuffer.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RendererM.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DepthBuffer.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Tile.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\Camera.h">
+      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Clipper.h">
-      <Filter>include</Filter>
+      <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\ColorBuffer.h">
-      <Filter>include</Filter>
+    <ClInclude Include="src\ComponentArray.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ComponentManager.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityManager.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Coordinator.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VisitorManager.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Visitor.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mat4.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mat3.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mat2.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Quat.h">
+      <Filter>src\Math</Filter>
     </ClInclude>
     <ClInclude Include="src\SIMD.h">
-      <Filter>include</Filter>
-    </ClInclude>
-    <ClInclude Include="src\UpdateModel.h">
-      <Filter>include</Filter>
+      <Filter>src\SIMD</Filter>
     </ClInclude>
     <ClInclude Include="src\SIMDPixel.h">
-      <Filter>include</Filter>
+      <Filter>src\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RendererSimple.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RendererAVX.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tile.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Texture.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorBuffer.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DepthBuffer.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vec2.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vec3.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vec4.h">
+      <Filter>src\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utils.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\System.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entity.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Concurrency.h">
+      <Filter>src\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Transform.h">
+      <Filter>src\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader.h">
+      <Filter>src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AssetServer.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Assets.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DebugCamera.h">
+      <Filter>src\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="App\main.h">
+      <Filter>NextAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\stdafx.h">
+      <Filter>NextAPI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameManager.h">
+      <Filter>src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene.h">
+      <Filter>src\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vertex.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Renderer.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Point.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Triangle.h">
+      <Filter>src\Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMDTriangle.h">
+      <Filter>src\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMDDepthBuffer.h">
+      <Filter>src\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SIMDPixelBuffer.h">
+      <Filter>src\SIMD</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="include">
-      <UniqueIdentifier>{19e5bf67-3360-45e5-b97c-557c91e85473}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src">
       <UniqueIdentifier>{71069bac-0b76-4803-a768-6cc95719bc2b}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Math">
       <UniqueIdentifier>{0e20d3c2-2284-432d-9ce9-1128679c7076}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Geometry">
-      <UniqueIdentifier>{f0853b4a-1c3e-4886-b491-9677e53ec78f}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Manager">
       <UniqueIdentifier>{63e12452-ef8d-4307-9b96-e0da3dab4610}</UniqueIdentifier>
@@ -253,6 +280,18 @@
     </Filter>
     <Filter Include="src\Shader">
       <UniqueIdentifier>{32223a4c-7084-47ba-9a00-0b80c4245c9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\ECS">
+      <UniqueIdentifier>{cc89431e-e5aa-4c72-a704-d6a7c958994f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Systems">
+      <UniqueIdentifier>{3b2ec598-d7bc-4362-9907-bcac94066a6a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Components">
+      <UniqueIdentifier>{345de288-70a3-48fc-900e-693bde0ebbed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Scene">
+      <UniqueIdentifier>{bf9ec9a4-d3ac-40fb-b4f6-1b82f22a4bbe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

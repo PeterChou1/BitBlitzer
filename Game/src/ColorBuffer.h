@@ -31,7 +31,7 @@ public:
 
     void Clear()
     {
-        Concurrency::ForEach(m_buffer.begin(), m_buffer.end(), [&](unsigned char& color)
+        Concurrent::ForEach(m_buffer.begin(), m_buffer.end(), [&](unsigned char& color)
         {
             color = 0.0f;
         });

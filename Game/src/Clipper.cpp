@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include <cassert>
 #include "Clipper.h"
+#include "Point.h"
 
 float Dot(uint8_t planeId, const Vec4& v)
 {

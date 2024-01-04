@@ -7,6 +7,8 @@
 class System
 {
 public:
+    //virtual ~System();
+
     template <typename... Ts>
     std::set<Entity> Visit(Coordinator c)
     {
@@ -34,3 +36,4 @@ public:
         return c.GetComponent<T>(*visitSet.begin());
     }
 };
+

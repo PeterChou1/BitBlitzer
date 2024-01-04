@@ -5,105 +5,12 @@
 #include <sstream>
 #include <unordered_map>
 #include <vector>
+#include "Triangle.h"
 
 
-bool Utils::LoadFromObjectFile(std::string filename, Mesh& mesh, bool UV,
-                               bool Normal)
-{
-    std::ifstream file(filename);
-    if (!file.is_open())
-    {
-        return false;
-    }
-
-    std::vector<Vec3> temp_vertices;
-    std::vector<Vec2> temp_uvs;
-    std::vector<Vec3> temp_normals;
-
-    std::string line;
-    while (std::getline(file, line))
-    {
-        std::stringstream ss(line);
-        std::string prefix;
-        ss >> prefix;
-
-        if (prefix == "v")
-        {
-            Vec3 vertex;
-            ss >> vertex.x >> vertex.y >> vertex.z;
-            temp_vertices.push_back(vertex);
-        }
-        else if (prefix == "vt" && UV)
-        {
-            Vec2 uv;
-            ss >> uv.x >> uv.y;
-            temp_uvs.push_back(uv);
-        }
-        else if (prefix == "vn" && Normal)
-        {
-            Vec3 normal;
-            ss >> normal.x >> normal.y >> normal.z;
-            temp_normals.push_back(normal);
-        }
-        else if (prefix == "f")
-        {
-            std::string vertex1, vertex2, vertex3;
-            ss >> vertex1 >> vertex2 >> vertex3;
-
-            // Process each vertex of the triangle
-            Triangle triangle;
-            for (int i = 0; i < 3; i++)
-            {
-                std::string vertex = (i == 0) ? vertex1 : (i == 1) ? vertex2 : vertex3;
-
-                std::istringstream vertexStream(vertex);
-                std::string vertexIndex, uvIndex, normalIndex;
-
-                std::getline(vertexStream, vertexIndex, '/');
-                if (UV)
-                {
-                    std::getline(vertexStream, uvIndex, '/');
-                }
-                if (Normal)
-                {
-                    if (!UV)
-                    {
-                        // Skip over the uv index if UVs are not being loaded
-                        vertexStream.ignore(std::numeric_limits<std::streamsize>::max(), '/');
-                    }
-                    std::getline(vertexStream, normalIndex, '/');
-                }
-
-                int vIndex = std::stoi(vertexIndex) - 1;
-                triangle.verts[i].pos = temp_vertices[vIndex];
-
-                if (UV && !uvIndex.empty())
-                {
-                    int uvIdx = std::stoi(uvIndex) - 1;
-                    triangle.verts[i].uv.x = temp_uvs[uvIdx].x;
-                    triangle.verts[i].uv.y = std::abs(temp_uvs[uvIdx].y - 1);
-                }
-
-                if (Normal && !normalIndex.empty())
-                {
-                    int nIdx = std::stoi(normalIndex) - 1;
-                    triangle.verts[i].normal = temp_normals[nIdx];
-                }
-            }
-
-            mesh.tris.push_back(triangle);
-        }
-    }
-
-    file.close();
-    return true;
-}
-
-
-bool
-Utils::LoadInstance(std::string filename,
+bool Utils::LoadInstance(std::string filename,
                     MeshInstance& mesh,
-                    TextureList& texList)
+                    std::vector<Texture>& textureList)
 {
     std::ifstream file(filename);
     if (!file.is_open())
@@ -117,6 +24,7 @@ Utils::LoadInstance(std::string filename,
     bool UV = false, Normal = false;
     size_t cur_texID = -1;
     std::string line;
+    std::unordered_map<std::string, size_t> textureIDs;
 
     while (std::getline(file, line))
     {
@@ -131,17 +39,17 @@ Utils::LoadInstance(std::string filename,
             std::string directory = filename.substr(0, lastSlash + 1);
             std::string mtlfilepath = directory + mtlfilename;
             // fail to load mtl return
-            if (!LoadMTLFile(mtlfilepath, texList)) return false;
+            if (!LoadMTLFile(mtlfilepath, textureList, textureIDs)) return false;
         }
         else if (prefix == "usemtl")
         {
             std::string matname;
             ss >> matname;
             // fail to find material in mtl file
-            if (texList.textureIDs.find(matname) == texList.textureIDs.end())
+            if (textureIDs.find(matname) == textureIDs.end())
                 return false;
 
-            cur_texID = texList.textureIDs[matname];
+            cur_texID = textureIDs[matname];
         }
         else if (prefix == "v")
         {
@@ -194,7 +102,7 @@ Utils::LoadInstance(std::string filename,
                 }
 
                 int vIndex = std::stoi(vertexIndex) - 1;
-                v.pos = temp_vertices[vIndex];
+                v.localPosition = temp_vertices[vIndex];
 
                 if (UV && !uvIndex.empty())
                 {
@@ -206,19 +114,19 @@ Utils::LoadInstance(std::string filename,
                 if (Normal && !normalIndex.empty())
                 {
                     int nIdx = std::stoi(normalIndex) - 1;
-                    v.normal = temp_normals[nIdx];
+                    v.localNormal = temp_normals[nIdx];
                 }
             }
 
             if (!Normal)
             {
-                Vec3 lineA = vertarray[0].pos - vertarray[1].pos;
-                Vec3 lineB = vertarray[0].pos - vertarray[2].pos;
+                Vec3 lineA = vertarray[0].localPosition - vertarray[1].localPosition;
+                Vec3 lineB = vertarray[0].localPosition - vertarray[2].localPosition;
                 Vec3 normal = lineA.Cross(lineB);
                 normal.Normalize();
-                vertarray[0].normal = normal;
-                vertarray[1].normal = normal;
-                vertarray[2].normal = normal;
+                vertarray[0].localNormal = normal;
+                vertarray[1].localNormal = normal;
+                vertarray[2].localNormal = normal;
             }
 
             for (int i = 0; i < 3; i++)
@@ -245,7 +153,7 @@ Utils::LoadInstance(std::string filename,
 }
 
 bool
-Utils::LoadMTLFile(const std::string& filename, TextureList& texList)
+Utils::LoadMTLFile(const std::string& filename, std::vector<Texture>& textureList, std::unordered_map<std::string, size_t>& textureIDs)
 {
     std::ifstream file(filename);
     if (!file.is_open())
@@ -269,9 +177,8 @@ Utils::LoadMTLFile(const std::string& filename, TextureList& texList)
             // Handle new material - save the previous material if it exists
             if (!textureFilename.empty() && !textureName.empty())
             {
-                texList.textureIDs[textureName] =
-                    texList.textureList.size();
-                texList.textureList.emplace_back(textureFilename.c_str(),
+                textureIDs[textureName] = textureList.size();
+                textureList.emplace_back(textureFilename.c_str(),
                                                  ambient,
                                                  diffuse,
                                                  specular,
@@ -305,14 +212,13 @@ Utils::LoadMTLFile(const std::string& filename, TextureList& texList)
             // Diffuse texture map
             iss >> textureFilename;
         }
-        // ... Handle other properties as needed ...
     }
 
     // Handle the last material
     if (!textureFilename.empty())
     {
-        texList.textureIDs[textureName] = texList.textureList.size();
-        texList.textureList.emplace_back(
+        textureIDs[textureName] = textureList.size();
+        textureList.emplace_back(
             textureFilename.c_str(), ambient, diffuse, specular, highlight);
     }
 

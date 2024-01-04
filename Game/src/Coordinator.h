@@ -64,6 +64,7 @@ public:
         m_VisitorManager->EntitySignatureChanged(entity, signature);
     }
 
+
     template <typename T>
     void RemoveComponent(Entity entity)
     {

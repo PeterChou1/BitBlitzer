@@ -1,4 +1,5 @@
 #pragma once
+
 #include "Vec3.h"
 #include "Quat.h"
 #include "Mat4.h"
@@ -6,12 +7,11 @@
 
 struct Transform
 {
-    Vec3 position;
-    Quat rotation;
-    Mat4 affine;
-    Mat4 inverse;
-    // used to update models
-    bool isdirty;
+    Vec3 Position;
+    Quat Rotation;
+    Mat4 Affine;
+    Mat4 Inverse;
+    bool IsDirty{};
 
     Transform();
 
@@ -25,7 +25,7 @@ struct Transform
 
     void Update(const Vec3& delta, const Quat& rot);
 
-    Vec3& TransformVec3(const Vec3& point) const;
+    Vec3 TransformVec3(const Vec3& point) const;
 
-    Vec3& TransformNormal(const Vec3& normal) const;
+    Vec3 TransformNormal(const Vec3& normal) const;
 };

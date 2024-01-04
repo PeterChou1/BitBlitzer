@@ -1,16 +1,15 @@
 #include "stdafx.h"
 #include "Camera.h"
 #include <iostream>
-#include "../App/AppSettings.h"
 #include <cassert>
 
 
-Camera::Camera(Vec3& pos, Vec3& target, Vec3& up,
+Camera::Camera(Vec3 pos, Vec3 target, Vec3 up,
                float width, float height,
                float fov, float aspect_ratio,
                float nearplane, float farplane) :
-    screenHeight(height), screenWidth(width),
-    pos(pos), target(target), up(up), nearplane(nearplane), farplane(farplane)
+    pos(pos), target(target),
+    up(up), nearplane(nearplane), farplane(farplane), screenHeight(height), screenWidth(width)
 {
     forward = (target - pos).Normalize() * -1;
     transform = Transform(pos, target, up);
@@ -22,7 +21,7 @@ void Camera::UpdatePos(const Vec3& delta, const Quat& rot)
     forward = rot.RotatePoint(forward);
     pos += delta;
     target = pos - forward;
-    transform = Transform(pos, target, up);
+    transform.Update(delta, rot);
 }
 
 void Camera::ToRasterSpace(Vec4& point)
@@ -35,10 +34,10 @@ void Camera::ToRasterSpace(Vec4& point)
 
 Vec3 Camera::CameraToWorld(const Vec3& point)
 {
-    return transform.affine * point;
+    return transform.Affine * point;
 }
 
 Vec3 Camera::WorldToCamera(const Vec3& point)
 {
-    return transform.inverse * point;
+    return transform.Inverse * point;
 }

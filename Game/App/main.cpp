@@ -91,7 +91,7 @@ private:
 CProfiler gUserRenderProfiler;
 CProfiler gUserUpdateProfiler;
 CProfiler gUpdateDeltaTime;
-bool gRenderUpdateTimes = true; // APP_RENDER_UPDATE_TIMES;
+bool gRenderUpdateTimes = true;// APP_RENDER_UPDATE_TIMES;
 
 /* Initialize OpenGL Graphics */
 void InitGL()
@@ -173,11 +173,14 @@ void CheckMemCallback()
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine,
                       _In_ int nCmdShow)
 {
+
+#ifdef _DEBUG
     // attach a console for debugging
     if (!AttachConsole(ATTACH_PARENT_PROCESS))
     {
         AllocConsole();
     }
+#endif
 
     FILE* dummy;
     freopen_s(&dummy, "CONOUT$", "w", stdout);
@@ -217,8 +220,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     // Shutdown sound system.
     CSimpleSound::GetInstance().Shutdown();
 
+#ifdef _DEBUG
     // free console
     FreeConsole();
+#endif
 
     // And we are done.
     return 0;

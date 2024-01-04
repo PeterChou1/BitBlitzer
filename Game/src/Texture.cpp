@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "../stb_image/stb_image.h"
-#include "SimpleTexture.h"
+#include "Texture.h"
 #include <utility>
 #include <cassert>
 #include <iostream>
@@ -16,7 +16,7 @@ struct STBImageDeleter
 };
 
 
-SimpleTexture::SimpleTexture(const char* fileName,
+Texture::Texture(const char* fileName,
                              Vec3 ambient,
                              Vec3 diffuse,
                              Vec3 specular,
@@ -29,7 +29,7 @@ SimpleTexture::SimpleTexture(const char* fileName,
 }
 
 
-void SimpleTexture::Sample(float u, float v, float& r, float& g, float& b)
+void Texture::Sample(float u, float v, float& r, float& g, float& b)
 {
     u = std::min(1.0f, std::max(0.0f, u));
     v = std::min(1.0f, std::max(0.0f, v));
@@ -46,7 +46,7 @@ void SimpleTexture::Sample(float u, float v, float& r, float& g, float& b)
     b = texture[offset + 2];
 }
 
-bool SimpleTexture::LoadTexture(const char* filename)
+bool Texture::LoadTexture(const char* filename)
 {
     int channels;
     unsigned char* data = stbi_load(filename, &mtexWidth, &mtexHeight, &channels, 4);

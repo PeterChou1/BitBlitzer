@@ -64,26 +64,26 @@ Vec3& Mat3::operator[](const int i)
 
 Mat3 Mat3::FromQuat(const Quat& q)
 {
-    double x = q.x;
-    double y = q.y;
-    double z = q.z;
-    double w = q.w;
+    float x = q.x;
+    float y = q.y;
+    float z = q.z;
+    float w = q.w;
 
-    double xx = x * x;
-    double xy = x * y;
-    double xz = x * z;
-    double xw = x * w;
+    float xx = x * x;
+    float xy = x * y;
+    float xz = x * z;
+    float xw = x * w;
 
-    double yy = y * y;
-    double yz = y * z;
-    double yw = y * w;
+    float yy = y * y;
+    float yz = y * z;
+    float yw = y * w;
 
-    double zz = z * z;
-    double zw = z * w;
+    float zz = z * z;
+    float zw = z * w;
 
     Mat3 m;
 
-    m[0][0] = 1 - 2 * (yy + zz);
+    m[0][0] = 1.0f - 2.0f * (yy + zz);
     m[0][1] = 2 * (xy - zw);
     m[0][2] = 2 * (xz + yw);
 

@@ -1,22 +1,10 @@
 #pragma once
-#include "Coordinator.h"
-#include "Renderer.h"
-#include "DebugCamera.h"
-#include "RendererM.h"
+#include "stdafx.h"
 
-class Scene
+/**
+ * \brief The game manager is responsible for managing all scenes in the game
+ */
+class GameManager
 {
-public:
-    Scene() = default;
-
-    void Setup();
-
-    void Render();
-
-    void Update(float deltaTime);
-
-private:
-    std::shared_ptr<Renderer> renderer;
-    std::shared_ptr<RendererM> rendererM;
-    std::shared_ptr<DebugCamera> debugCam;
+    
 };
