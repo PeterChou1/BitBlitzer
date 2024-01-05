@@ -175,11 +175,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
 {
 
 #ifdef _DEBUG
-    // attach a console for debugging
-    if (!AttachConsole(ATTACH_PARENT_PROCESS))
-    {
-        AllocConsole();
-    }
+  // attach a console for debugging
+  if (!AttachConsole(ATTACH_PARENT_PROCESS))
+  {
+      AllocConsole();
+  }
 #endif
 
     FILE* dummy;
@@ -221,8 +221,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance
     CSimpleSound::GetInstance().Shutdown();
 
 #ifdef _DEBUG
-    // free console
-    FreeConsole();
+  // free console
+  FreeConsole();
 #endif
 
     // And we are done.

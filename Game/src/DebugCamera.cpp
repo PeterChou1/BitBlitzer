@@ -13,7 +13,7 @@ void DebugCamera::Move(float deltaTime)
     Quat r = Quat(m_cam.up, 0);
 
     float speed = 5 * (deltaTime / 1000);
-    float rotation = 3.141 / 2 * (deltaTime / 1000);
+    float rotation = 3.141f / 2.0f * (deltaTime / 1000.0f);
     // 
     if (App::GetController().GetLeftThumbStickX() > 0.5f)
     {

@@ -19,7 +19,7 @@ public:
             workers.emplace_back(
                 [this]
                 {
-                    for (;;)
+                    while (!stop)
                     {
                         std::function<void()> task;
 

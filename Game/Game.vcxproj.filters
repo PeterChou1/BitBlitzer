@@ -94,6 +94,9 @@
     <ClCompile Include="src\SIMDPixel.cpp">
       <Filter>src\SIMD</Filter>
     </ClCompile>
+    <ClCompile Include="src\DebugMesh.cpp">
+      <Filter>src\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\app.h">
@@ -245,6 +248,9 @@
     </ClInclude>
     <ClInclude Include="src\SIMDPixelBuffer.h">
       <Filter>src\SIMD</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DebugMesh.h">
+      <Filter>src\Systems</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -21,9 +21,9 @@ void Scene::Setup()
                       APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT, 90.0f,
                       ASPECT_RATIO, 0.1f, 100);
 
-    for (int x = 0; x < 1; x++)
+    for (int x = 0; x < 10; x++)
     {
-        for (int z = 0; z < 1; z++)
+        for (int z = 0; z < 10; z++)
         {
             Entity meshEntity = ECS.CreateEntity();
             auto modelTransform = Transform(Vec3(x * 2, 0, 5 + z * 2), Quat(Vec3(1, 0, 0), 0.0));
@@ -43,17 +43,20 @@ void Scene::Setup()
             ECS.GetComponent<Camera>(camEntity)
         )
     );
+    debugMesh = std::make_shared<DebugMesh>(
+        DebugMesh()
+    );
 }
 
 void Scene::Render()
 {
     rendererM->Render();
-    //renderer->Render();
     debugCam->Render();
 }
 
 void Scene::Update(float deltaTime)
 {
     debugCam->Move(deltaTime);
+    debugMesh->Update(deltaTime);
     rendererM->Update();
 }

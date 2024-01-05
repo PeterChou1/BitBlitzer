@@ -7,6 +7,7 @@
 #include "Entity.h"
 #include "Mesh.h"
 #include "Vertex.h"
+#include "../App/app.h"
 
 using BufferRange = std::pair<int, int>;
 
@@ -14,7 +15,11 @@ using BufferRange = std::pair<int, int>;
 class Renderer
 {
 public:
-    Renderer(int width, int height, Camera& cam) : m_cam(cam), m_ColorBuffer(ColorBuffer(width, height)) {}
+    Renderer(int width, int height, Camera& cam) : m_cam(cam), m_ColorBuffer(ColorBuffer(width, height))
+    {
+        // Setup OpenGL texture to render to
+        App::SetupGL();
+    }
 
     void Update();
 

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Renderer.h"
 
+#include <iostream>
+
 #include "AssetServer.h"
 #include "Coordinator.h"
 #include "Utils.h"
@@ -95,6 +97,8 @@ void Renderer::DeleteMeshes(const std::vector<Entity>& entities)
     std::sort(vertexRangesToRemove.begin(), vertexRangesToRemove.end(), rangeComparer);
     std::sort(indexRangesToRemove.begin(), indexRangesToRemove.end(), rangeComparer);
 
+
+
     for (auto& pair : m_EntityToVertexRange)
     {
         int adjustment = 0;
@@ -106,14 +110,19 @@ void Renderer::DeleteMeshes(const std::vector<Entity>& entities)
                 adjustment += removedRange.second - removedRange.first;
             }
         }
-        range.first -= adjustment;
-        range.second -= adjustment;
         if (adjustment > 0)
         {
             for (int i = range.first; i < range.second; i++)
             {
-                m_VertexBuffer[i].index = i;
+                m_VertexBuffer[i].index -= adjustment;
             }
+            auto& indexRange = m_EntityToIndexRange[pair.first];
+            for (int i = indexRange.first; i < indexRange.second; i++)
+            {
+                m_IndexBuffer[i] -= adjustment;
+            }
+            range.first -= adjustment;
+            range.second -= adjustment;
         }
     }
 
@@ -128,16 +137,15 @@ void Renderer::DeleteMeshes(const std::vector<Entity>& entities)
                 adjustment += removedRange.second - removedRange.first;
             }
         }
-        range.first -= adjustment;
-        range.second -= adjustment;
         if (adjustment > 0)
         {
-            for (int i = range.first; i < range.second; i++)
-            {
-                m_IndexBuffer[i] -= adjustment;
-            }
+            range.first -= adjustment;
+            range.second -= adjustment;
         }
     }
+
+    Utils::EraseRanges(vertexRangesToRemove, m_VertexBuffer);
+    Utils::EraseRanges(indexRangesToRemove, m_IndexBuffer);
 
     m_TriangleCount = m_IndexBuffer.size() / 3;
     m_ProjectedVertexBuffer.resize(m_VertexBuffer.size());
@@ -164,5 +172,10 @@ void Renderer::AddMesh(Entity entity, Mesh mesh, Transform& transform)
     }
     m_TriangleCount = m_IndexBuffer.size() / 3;
     m_ProjectedVertexBuffer.resize(m_VertexBuffer.size());
+
+    assert(m_EntityToVertexRange[entity].first < m_VertexBuffer.size());
+    assert(m_EntityToVertexRange[entity].second <= m_VertexBuffer.size());
+    assert(m_EntityToIndexRange[entity].first < m_IndexBuffer.size());
+    assert(m_EntityToIndexRange[entity].second <= m_IndexBuffer.size());
 
 }

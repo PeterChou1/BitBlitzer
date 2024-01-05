@@ -21,7 +21,6 @@ Scene manager;
 //------------------------------------------------------------------------
 void Init()
 {
-    App::SetupGL();
     ECS.Init();
     manager.Setup();
 }

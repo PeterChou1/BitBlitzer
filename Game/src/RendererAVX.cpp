@@ -88,9 +88,10 @@ RendererAVX::ClippingStage()
             // back face culling
             auto t = Triangle(v1, v2, v3);
 
+            //Triangle clip = t;
             if (v1.normal.Dot(v1.pos - m_cam.pos) < 0)
             {
-                std::vector<Triangle> clipped = Clip(t);
+                 std::vector<Triangle> clipped = Clip(t);
                 // Output projected position to raster space
                 for (Triangle& clip : clipped)
                 {
