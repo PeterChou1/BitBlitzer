@@ -1,9 +1,8 @@
 #pragma once
 #include "ECSManager.h"
-#include "RendererSimple.h"
+#include "Renderer.h"
 #include "DebugCamera.h"
 #include "DebugMesh.h"
-#include "RendererAVX.h"
 
 class Scene
 {
@@ -17,10 +16,7 @@ public:
     void Update(float deltaTime);
 
 private:
-
-    std::shared_ptr<RendererSimple> renderer;
-    std::shared_ptr<RendererAVX> rendererM;
+    std::shared_ptr<Renderer> rendererM;
     std::shared_ptr<DebugCamera> debugCam;
     std::shared_ptr<DebugMesh> debugMesh;
-
 };

@@ -21,6 +21,6 @@ inline std::string LookUpFilePath(ObjAsset asset)
     case Furina:
         return "./Assets/furina.obj";
     default:
-        assert(false && "No possible");
+        assert(false && "Not possible");
     }
 }

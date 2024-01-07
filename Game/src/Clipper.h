@@ -1,10 +1,19 @@
 #pragma once
 #include <cstdint>
 #include <vector>
+
+#include "Camera.h"
 #include "Triangle.h"
 
-constexpr uint8_t LEFT_PLANE = 1 << 0, RIGHT_PLANE = 1 << 1, DOWN_PLANE = 1 << 2, UP_PLANE = 1 << 3, NEAR_PLANE = 1 << 4
-                  , FAR_PLANE = 1 << 5;
 
+namespace Rendering
+{
+    void Clip(
+        Camera& cam,
+        std::vector<std::vector<Triangle>>& projectedClippedTriangle,
+        std::vector<Vertex>& projectedVertexBuffer,
+        std::vector<std::uint32_t>& indexBuffer,
+        int binID, int start, int end
+    );
+}
 
-std::vector<Triangle> Clip(Triangle& clip);

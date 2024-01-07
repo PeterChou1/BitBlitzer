@@ -2,7 +2,7 @@
 #include "Camera.h"
 #include "SIMDShader.h"
 
-class BlingPhongSIMD : public SIMDShader
+class BlinnPhongSIMD : public SIMDShader
 {
 public:
     void Shade(SIMDPixel& pixel, 
@@ -10,5 +10,5 @@ public:
                Texture& texture,
                Camera& camera) override;
 
-    ~BlingPhongSIMD() override = default;
+    ~BlinnPhongSIMD() override = default;
 };

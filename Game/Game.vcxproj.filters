@@ -40,9 +40,6 @@
     <ClCompile Include="src\Game.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\RendererSimple.cpp">
-      <Filter>src\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\Utils.cpp">
       <Filter>src\Utils</Filter>
     </ClCompile>
@@ -54,9 +51,6 @@
     </ClCompile>
     <ClCompile Include="stb_image\stb_image.cpp">
       <Filter>stb_image</Filter>
-    </ClCompile>
-    <ClCompile Include="src\RendererAVX.cpp">
-      <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Tile.cpp">
       <Filter>src\Renderer</Filter>
@@ -96,6 +90,9 @@
     </ClCompile>
     <ClCompile Include="src\Camera.cpp">
       <Filter>src\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Rasterizer.cpp">
+      <Filter>src\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -146,12 +143,6 @@
     </ClInclude>
     <ClInclude Include="src\SIMDPixel.h">
       <Filter>src\SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RendererSimple.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\RendererAVX.h">
-      <Filter>src\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Tile.h">
       <Filter>src\Renderer</Filter>
@@ -263,6 +254,12 @@
     </ClInclude>
     <ClInclude Include="src\TypeID.h">
       <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Rasterizer.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Unlit.h">
+      <Filter>src\Shader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

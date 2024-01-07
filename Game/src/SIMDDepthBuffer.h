@@ -1,4 +1,7 @@
 #pragma once
+
+#include <cassert>
+
 #include "SIMD.h"
 #include "SIMDPixel.h"
 

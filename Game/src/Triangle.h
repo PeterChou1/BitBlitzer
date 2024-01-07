@@ -26,6 +26,10 @@ struct Triangle
     {
     }
 
+    size_t GetTextureID()
+    {
+        return verts[0].tex_id;
+    }
 
     void PerspectiveDivision();
 

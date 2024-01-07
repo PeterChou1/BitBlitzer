@@ -11,9 +11,7 @@ struct Color
 class ColorBuffer
 {
 public:
-    ColorBuffer()
-    {
-    }
+    ColorBuffer() = default;
 
     ColorBuffer(int width, int height) : m_height(height), m_width(width)
     {

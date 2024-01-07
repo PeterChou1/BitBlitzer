@@ -42,6 +42,16 @@ public:
         }
     }
 
+    size_t size()
+    {
+        return m_PixelScreenSpace.size();
+    }
+
+    SIMDPixel& operator[] (int i)
+    {
+        return m_PixelScreenSpace[i];
+    }
+
     std::vector<SIMDPixel>::iterator begin()
     {
         return m_PixelScreenSpace.begin();

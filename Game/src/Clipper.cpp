@@ -3,6 +3,9 @@
 #include "Clipper.h"
 #include "Point.h"
 
+
+constexpr uint8_t LEFT_PLANE = 1 << 0, RIGHT_PLANE = 1 << 1, DOWN_PLANE = 1 << 2, UP_PLANE = 1 << 3, NEAR_PLANE = 1 << 4, FAR_PLANE = 1 << 5;
+
 float Dot(uint8_t planeId, const Vec4& v)
 {
     switch (planeId)
@@ -54,7 +57,7 @@ uint8_t OutCode(const Vec4& v)
     return outcode;
 }
 
-__forceinline std::vector<Point>
+std::vector<Point>
 ClipPlane(uint32_t planeid, std::vector<Point>& points)
 {
     std::vector<Point> outPoints;
@@ -99,7 +102,7 @@ ClipPlane(uint32_t planeid, std::vector<Point>& points)
 }
 
 
-std::vector<Triangle> Clip(Triangle& clip)
+std::vector<Triangle> ClipAgainstPlane(Triangle& clip)
 {
     uint8_t clipcode1 = OutCode(clip.verts[0].proj);
     uint8_t clipcode2 = OutCode(clip.verts[1].proj);
@@ -178,4 +181,50 @@ std::vector<Triangle> Clip(Triangle& clip)
     }
     // o/w trivial reject
     return clipped;
+}
+
+
+void Rendering::Clip(Camera& cam, 
+    std::vector<std::vector<Triangle>>& projectedClippedTriangle, 
+    std::vector<Vertex>& projectedVertexBuffer,
+    std::vector<std::uint32_t>& indexBuffer,
+    int binID, int start, int end)
+{
+    std::vector<Triangle>& binProjectedClip = projectedClippedTriangle[binID];
+
+    for (int i = start; i < end; i++)
+    {
+        if (3 * i + 2 > indexBuffer.size())
+            break;
+
+        assert(indexBuffer[3 * i] < projectedVertexBuffer.size());
+        assert(indexBuffer[3 * i + 1] < projectedVertexBuffer.size());
+        assert(indexBuffer[3 * i + 2] < projectedVertexBuffer.size());
+
+        Vertex v1 = projectedVertexBuffer[indexBuffer[3 * i]];
+        Vertex v2 = projectedVertexBuffer[indexBuffer[3 * i + 1]];
+        Vertex v3 = projectedVertexBuffer[indexBuffer[3 * i + 2]];
+        // back face culling
+        auto t = Triangle(v1, v2, v3);
+
+        Vec3 normal = (v1.normal + v2.normal + v3.normal) / 3;
+
+
+        if (normal.Dot(v1.pos - cam.pos) < 0.0)
+        {
+            std::vector<Triangle> clipped = ClipAgainstPlane(t);
+            // Output projected screenSpacePosition to raster space
+            for (Triangle& clip : clipped)
+            {
+                cam.ToRasterSpace(clip.verts[0].proj);
+                cam.ToRasterSpace(clip.verts[1].proj);
+                cam.ToRasterSpace(clip.verts[2].proj);
+                if (clip.Setup(binID, binProjectedClip.size()))
+                {
+                    binProjectedClip.push_back(clip);
+                }
+            }
+        }
+    }
+
 }

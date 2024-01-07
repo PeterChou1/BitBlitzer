@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "BlingPhong.h"
 
-void BlingPhongSIMD::Shade(SIMDPixel& pixel, 
+void BlinnPhongSIMD::Shade(SIMDPixel& pixel, 
                            std::vector<PointLight>& lights, 
                            Texture& texture,
                            Camera& cam)
@@ -27,10 +27,9 @@ void BlingPhongSIMD::Shade(SIMDPixel& pixel,
     SIMDFloat diff = normal.Dot(lightDir);
 
     diff = SIMD::Max(diff, SIMD::ZERO);
-    // reflection component of phong model
-    // SIMDVec3 reflect =  lightDir - normal * lightDir.Dot(normal) * 2;
 
-    // Bling Phong Model
+
+    // Blinn Phong Model
     SIMDVec3 halfwayDir = (lightDir + viewDir).Normalize();
     SIMDFloat spec = SIMD::Max(normal.Dot(halfwayDir), SIMD::ZERO);
     spec.pow(shininess);

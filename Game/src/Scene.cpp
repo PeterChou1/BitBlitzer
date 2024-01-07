@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "AssetServer.h"
 #include "Mesh.h"
+#include "Renderer.h"
 
 extern ECSManager ECS;
 
@@ -39,8 +40,8 @@ void Scene::Setup()
     debugCam = std::make_shared<DebugCamera>(
         DebugCamera(ECS.GetComponent<Camera>(camEntity))
     );
-    rendererM = std::make_shared<RendererAVX>(
-        RendererAVX(
+    rendererM = std::make_shared<Renderer>(
+        Renderer(
             APP_VIRTUAL_WIDTH, 
             APP_VIRTUAL_HEIGHT, 
             ECS.GetComponent<Camera>(camEntity)

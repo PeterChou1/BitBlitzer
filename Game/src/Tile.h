@@ -9,11 +9,11 @@
 #include "Triangle.h"
 
 
-constexpr int TileSizeX = 32;
-constexpr int TileSizeY = 32;
+static constexpr int TILE_SIZE_X = 32;
+static constexpr int TILE_SIZE_Y = 32;
 
-constexpr int TileCountX = APP_VIRTUAL_WIDTH / TileSizeX;
-constexpr int TileCountY = APP_VIRTUAL_HEIGHT / TileSizeY;
+static constexpr int TILE_COUNT_X = APP_VIRTUAL_WIDTH / TILE_SIZE_X;
+static constexpr int TILE_COUNT_Y = APP_VIRTUAL_HEIGHT / TILE_SIZE_Y;
 
 
 class Tile
@@ -23,8 +23,7 @@ public:
     {
         const unsigned numCores = std::thread::hardware_concurrency();
         binTriangles.resize(numCores);
-        // 4 corners of the tile
-    };
+    }
 
     void Add(std::uint32_t bin, Triangle& tri)
     {
