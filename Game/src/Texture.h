@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "SIMD.h"
 #include "Vec3.h"
 
 class Texture
@@ -15,6 +16,8 @@ public:
     Texture(const char* fileName, Vec3 ambient, Vec3 diffuse, Vec3 specular, float highlight);
 
     void Sample(float u, float v, float& r, float& g, float& b);
+
+    void SampleSIMD(SIMDVec2& tex, SIMDFloat& r, SIMDFloat& g, SIMDFloat& b);
 
     Vec3 ambient{};
     Vec3 diffuse{};

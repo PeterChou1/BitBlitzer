@@ -2,14 +2,14 @@
 #include <algorithm>
 #include "RendererSimple.h"
 #include "Utils.h"
-#include "Coordinator.h"
+#include "ECSManager.h"
 #include "Clipper.h"
 #include "Vertex.h"
 #include "../App/AppSettings.h"
 #include "../app/app.h"
 
 
-extern Coordinator ECS;
+extern ECSManager ECS;
 
 constexpr double ASPECT_RATIO = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
 
@@ -126,12 +126,10 @@ void FillTop(Vertex& v1, Vertex& v2, Vertex& v3, Texture& tex, DepthBuffer& dept
 void RendererSimple::RenderTriangle(Triangle& tri, Texture& tex)
 {
     // Sort vertices by y-coordinate
-    std::sort(std::begin(tri.verts), std::end(tri.verts),
-              [](const Vertex& a, const Vertex& b)
-              {
-                  return a.pos.y < b.pos.y;
-              }
-    );
+    std::sort(std::begin(tri.verts), std::end(tri.verts), 
+        [](const Vertex& a, const Vertex& b) {
+        return a.pos.y < b.pos.y;
+    });
 
     Vertex& v1 = tri.verts[0];
     Vertex& v2 = tri.verts[1];
@@ -186,10 +184,10 @@ void RendererSimple::Render()
     // Texture tex;
     // 
     // // Geometric pipeline
-    // for (Entity const& e : Visit<Mesh, Transform, Texture>(ECS))
+    // for (Entity const& e : Visit<Mesh, Transform, Texture>(ECSManager))
     // {
-    //     Mesh& mesh = ECS.GetComponent<Mesh>(e);
-    //     tex = ECS.GetComponent<Texture>(e);
+    //     Mesh& mesh = ECSManager.GetComponent<Mesh>(e);
+    //     tex = ECSManager.GetComponent<Texture>(e);
     // 
     //     for (Triangle& tri : mesh.tris)
     //     {

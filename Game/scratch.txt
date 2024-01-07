@@ -511,3 +511,72 @@ std::vector<Triangle> Renderer::ClipTriangle(Vec3& planePoint, Vec3& planeNormal
             // gCoordinator.AddComponent<Mesh>(e, mesh_obj);
             // gCoordinator.AddComponent<Transform>(e, t2);
             // gCoordinator.AddComponent<SimpleTexture>(e, texture);
+
+
+                    Triangle& triangle = m_ProjectedClip[pixel.binId][pixel.binIndex];
+        pixel.Interpolate(triangle);
+        Texture& texture = loader.GetTexture(triangle.verts[0].tex_id);
+
+        SIMDVec2 texUV = pixel.textureCoord;
+
+        float r, g, b;
+        
+        if (pixel.mask.GetBit(0))
+        {
+            texture.Sample(texUV.x[0], texUV.y[0], r, g, b);
+            m_ColorBuffer.SetColor(pixel.screenSpacePosition.x[0], pixel.screenSpacePosition.y[0], r, g, b);
+        }
+        
+        if (pixel.mask.GetBit(1))
+        {
+            texture.Sample(texUV.x[1], texUV.y[1], r, g, b);
+            m_ColorBuffer.SetColor(pixel.screenSpacePosition.x[1], pixel.screenSpacePosition.y[1], r, g, b);
+        }
+        
+        if (pixel.mask.GetBit(2))
+        {
+            texture.Sample(texUV.x[2], texUV.y[2], r, g, b);
+            m_ColorBuffer.SetColor(pixel.screenSpacePosition.x[2], pixel.screenSpacePosition.y[2], r, g, b);
+        }
+        
+        if (pixel.mask.GetBit(3))
+        {
+            texture.Sample(texUV.x[3], texUV.y[3], r, g, b);
+            m_ColorBuffer.SetColor(pixel.screenSpacePosition.x[3], pixel.screenSpacePosition.y[3], r, g, b);
+        }
+        
+        if (pixel.mask.GetBit(4))
+        {
+            texture.Sample(texUV.x[4], texUV.y[4], r, g, b);
+            m_ColorBuffer.SetColor(pixel.screenSpacePosition.x[4], pixel.screenSpacePosition.y[4], r, g, b);
+        }
+        
+        if (pixel.mask.GetBit(5))
+        {
+            texture.Sample(texUV.x[5], texUV.y[5], r, g, b);
+            m_ColorBuffer.SetColor(pixel.screenSpacePosition.x[5], pixel.screenSpacePosition.y[5], r, g, b);
+        }
+        
+        if (pixel.mask.GetBit(6))
+        {
+            texture.Sample(texUV.x[6], texUV.y[6], r, g, b);
+            m_ColorBuffer.SetColor(pixel.screenSpacePosition.x[6], pixel.screenSpacePosition.y[6], r, g, b);
+        }
+        
+        if (pixel.mask.GetBit(7))
+        {
+            texture.Sample(texUV.x[7], texUV.y[7], r, g, b);
+            m_ColorBuffer.SetColor(pixel.screenSpacePosition.x[7], pixel.screenSpacePosition.y[7], r, g, b);
+        }
+
+
+            /**
+     * /brief Get First Component Registered with an Entity useful for getting component we know to be singletons like Cameras
+     */
+    template <typename T>
+    T& GetFirstComponent()
+    {
+        std::set<Entity> visitSet = Visit<T>();
+        assert(visitSet.size() != 0 && "No Entity with component found!");
+        return GetComponent<T>(*visitSet.begin());
+    }

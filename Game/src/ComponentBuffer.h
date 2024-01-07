@@ -6,19 +6,20 @@
 #include "Entity.h"
 
 
-class IComponentArray
+
+class IComponentBuffer
 {
 public:
-    virtual ~IComponentArray() = default;
+    virtual ~IComponentBuffer() = default;
     virtual void EntityDestroyed(Entity entity) = 0;
 };
 
 
 template <typename T>
-class ComponentArray : public IComponentArray
+class ComponentBuffer : public IComponentBuffer
 {
 public:
-    ComponentArray()
+    ComponentBuffer()
     {
     }
 

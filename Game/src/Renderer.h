@@ -6,6 +6,7 @@
 #include "ColorBuffer.h"
 #include "Entity.h"
 #include "Mesh.h"
+#include "MeshInstance.h"
 #include "Vertex.h"
 #include "../App/app.h"
 
@@ -34,6 +35,7 @@ protected:
     void AddMesh(Entity entity, Mesh mesh, Transform& transform);
 
     Camera& m_cam;
+    std::vector<Vec3> m_Lights;
     std::vector<Vertex> m_ProjectedVertexBuffer;
     std::uint32_t m_TriangleCount{};
     std::vector<Vertex> m_VertexBuffer;

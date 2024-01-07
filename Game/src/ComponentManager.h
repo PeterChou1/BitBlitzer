@@ -1,9 +1,11 @@
 #pragma once
 
-#include "ComponentArray.h"
+#include "TypeID.h"
+#include "ComponentBuffer.h"
 #include "Entity.h"
 #include <memory>
 #include <unordered_map>
+
 
 
 class ComponentManager
@@ -12,12 +14,14 @@ public:
     template <typename T>
     void RegisterComponent()
     {
-        const char* typeName = typeid(T).name();
 
-        assert(mComponentTypes.find(typeName) == mComponentTypes.end() && "Registering component type more than once.");
+        ComponentTypeID typeID = TypeID<T>::value;
 
-        mComponentTypes.insert({typeName, mNextComponentType});
-        mComponentArrays.insert({typeName, std::make_shared<ComponentArray<T>>()});
+        assert(mComponentTypes.find(typeID) == mComponentTypes.end() && "Registering component type more than once.");
+        assert(mNextComponentType < MAX_COMPONENTS && "Maximum allowed registered components exceeded");
+
+        mComponentTypes.insert({ typeID, mNextComponentType});
+        mComponentArrays.insert({ typeID, std::make_shared<ComponentBuffer<T>>()});
 
         ++mNextComponentType;
     }
@@ -25,13 +29,13 @@ public:
     template <typename T>
     ComponentType GetComponentType()
     {
-        const char* typeName = typeid(T).name();
-        if (mComponentTypes.find(typeName) == mComponentTypes.end())
+        ComponentTypeID typeID = TypeID<T>::value;
+        if (mComponentTypes.find(typeID) == mComponentTypes.end())
         {
             // component registerd before use
             RegisterComponent<T>();
         }
-        return mComponentTypes[typeName];
+        return mComponentTypes[typeID];
     }
 
     template <typename... Ts>
@@ -49,8 +53,8 @@ public:
     template <typename T>
     void AddComponent(Entity entity, T component)
     {
-        const char* typeName = typeid(T).name();
-        if (mComponentTypes.find(typeName) == mComponentTypes.end())
+        ComponentTypeID typeID = TypeID<T>::value;
+        if (mComponentTypes.find(typeID) == mComponentTypes.end())
         {
             // component registerd before use
             RegisterComponent<T>();
@@ -89,18 +93,18 @@ public:
 
 private:
     // maps type name -> type id 
-    std::unordered_map<const char*, ComponentType> mComponentTypes{};
+    std::unordered_map<ComponentTypeID, ComponentType> mComponentTypes{};
 
     // maps type 
-    std::unordered_map<const char*, std::shared_ptr<IComponentArray>> mComponentArrays{};
+    std::unordered_map<ComponentTypeID, std::shared_ptr<IComponentBuffer>> mComponentArrays{};
     ComponentType mNextComponentType{};
 
 
     template <typename T>
-    std::shared_ptr<ComponentArray<T>> GetComponentArray()
+    std::shared_ptr<ComponentBuffer<T>> GetComponentArray()
     {
-        const char* typeName = typeid(T).name();
-        assert(mComponentTypes.find(typeName) != mComponentTypes.end() && "Component does not exist");
-        return std::static_pointer_cast<ComponentArray<T>>(mComponentArrays[typeName]);
+        ComponentTypeID typeID = TypeID<T>::value;
+        assert(mComponentTypes.find(typeID) != mComponentTypes.end() && "Component does not exist");
+        return std::static_pointer_cast<ComponentBuffer<T>>(mComponentArrays[typeID]);
     }
 };

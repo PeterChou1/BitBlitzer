@@ -4,7 +4,7 @@
 #include "Assets.h"
 #include "Texture.h"
 #include "Utils.h"
-#include "Mesh.h"
+#include "MeshInstance.h"
 
 /*
  * /brief An AssetServer is responsible for handling loading of all obj/textures

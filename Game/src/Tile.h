@@ -5,7 +5,7 @@
 
 #include "../App/app.h"
 #include "Vec2.h"
-#include "Mesh.h"
+#include "MeshInstance.h"
 #include "Triangle.h"
 
 
@@ -40,7 +40,7 @@ public:
     }
 
 
-    int Size()
+    int Size() const
     {
         int size = 0;
         for (auto& binTriangle : binTriangles)
@@ -50,7 +50,7 @@ public:
         return size;
     }
 
-    void DebugDraw(float r, float g, float b)
+    void DebugDraw(float r, float g, float b) const
     {
         App::DrawTriangle(minRaster.x, minRaster.y, maxRaster.x, maxRaster.y, minRaster.x, maxRaster.y, r, g, b);
         App::DrawTriangle(minRaster.x, minRaster.y, maxRaster.x, maxRaster.y, maxRaster.x, minRaster.y, r, g, b);
@@ -59,22 +59,22 @@ public:
         App::DrawLine(maxRaster.x, maxRaster.y, minRaster.x, maxRaster.y);
     }
 
-    Vec2 GetMin()
+    Vec2 GetMin() const
     {
         return minRaster;
     }
 
-    Vec2 GetMax()
+    Vec2 GetMax() const
     {
         return maxRaster;
     }
 
-    int GetID()
+    int GetID() const
     {
         return id;
     }
 
-    Vec2 GetCorner(int index)
+    Vec2 GetCorner(int index) const
     {
         return minRaster + CornerIndex[index];
     }

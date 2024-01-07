@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "DebugMesh.h"
-#include "Coordinator.h"
+#include "ECSManager.h"
 #include "Mesh.h"
+#include "MeshInstance.h"
 #include "Transform.h"
 #include "../App/app.h"
 
-extern Coordinator ECS;
+extern ECSManager ECS;
 
 void DebugMesh::Update(float deltaTime)
 {

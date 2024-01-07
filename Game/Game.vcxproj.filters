@@ -46,9 +46,6 @@
     <ClCompile Include="src\Utils.cpp">
       <Filter>src\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="src\Camera.cpp">
-      <Filter>src\Renderer</Filter>
-    </ClCompile>
     <ClCompile Include="src\stdafx.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -66,9 +63,6 @@
     </ClCompile>
     <ClCompile Include="src\Clipper.cpp">
       <Filter>src\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Shader.cpp">
-      <Filter>src\Shader</Filter>
     </ClCompile>
     <ClCompile Include="src\Transform.cpp">
       <Filter>src\Components</Filter>
@@ -97,6 +91,12 @@
     <ClCompile Include="src\DebugMesh.cpp">
       <Filter>src\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\BlingPhong.cpp">
+      <Filter>src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>src\Components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\app.h">
@@ -120,25 +120,10 @@
     <ClInclude Include="stb_image\stb_image.h">
       <Filter>stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Camera.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Clipper.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\ComponentArray.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ComponentManager.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\EntityManager.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Coordinator.h">
-      <Filter>src\ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="src\VisitorManager.h">
+    <ClInclude Include="src\ComponentBuffer.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\Visitor.h">
@@ -195,7 +180,7 @@
     <ClInclude Include="src\Entity.h">
       <Filter>src\ECS</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mesh.h">
+    <ClInclude Include="src\MeshInstance.h">
       <Filter>src\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\Concurrent.h">
@@ -204,7 +189,7 @@
     <ClInclude Include="src\Transform.h">
       <Filter>src\Components</Filter>
     </ClInclude>
-    <ClInclude Include="src\Shader.h">
+    <ClInclude Include="src\SIMDShader.h">
       <Filter>src\Shader</Filter>
     </ClInclude>
     <ClInclude Include="src\AssetServer.h">
@@ -251,6 +236,33 @@
     </ClInclude>
     <ClInclude Include="src\DebugMesh.h">
       <Filter>src\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lights.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlingPhong.h">
+      <Filter>src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Mesh.h">
+      <Filter>src\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>src\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ECSManager.h">
+      <Filter>src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EntityManager.h">
+      <Filter>src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VisitorManager.h">
+      <Filter>src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ComponentManager.h">
+      <Filter>src\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TypeID.h">
+      <Filter>src\ECS</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

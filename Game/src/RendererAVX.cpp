@@ -11,6 +11,7 @@
 #include "SIMD.h"
 #include "Camera.h"
 #include "AssetServer.h"
+#include "BlingPhong.h"
 #include "SIMDTriangle.h"
 
 constexpr float epsilon = -std::numeric_limits<float>::epsilon();
@@ -18,6 +19,7 @@ constexpr float epsilon = -std::numeric_limits<float>::epsilon();
 
 RendererAVX::RendererAVX(const int width, const int height, Camera& cam) : Renderer(width, height, cam)
 {
+    
     m_DepthBuffer = SIMDDepthBuffer(width, height);
     m_PixelBuffer = SIMDPixelBuffer(width, height);
     m_CoreCount = std::thread::hardware_concurrency();
@@ -35,6 +37,13 @@ RendererAVX::RendererAVX(const int width, const int height, Camera& cam) : Rende
             m_Tiles.push_back(t);
         }
     }
+
+    PointLight light;
+    light.color = {1, 1, 1};
+    light.lightPower = 40.0;
+    light.position = {0.0, 5.0, 5.0};
+
+    m_Lights.push_back(light);
 }
 
 void
@@ -88,11 +97,12 @@ RendererAVX::ClippingStage()
             // back face culling
             auto t = Triangle(v1, v2, v3);
 
+            Vec3 normal = (v1.normal + v2.normal + v3.normal) / 3;
             //Triangle clip = t;
-            if (v1.normal.Dot(v1.pos - m_cam.pos) < 0)
+            if (normal.Dot(v1.pos - m_cam.pos) < epsilon)
             {
                  std::vector<Triangle> clipped = Clip(t);
-                // Output projected position to raster space
+                // Output projected screenSpacePosition to raster space
                 for (Triangle& clip : clipped)
                 {
                     m_cam.ToRasterSpace(clip.verts[0].proj);
@@ -219,8 +229,8 @@ RendererAVX::RasterizationStage()
                     for (int x = minPt.x; x < maxPt.x; x += SIMDPixel::PIXEL_WIDTH)
                     {
                         SIMDFloat inTriangle =
-                            deltaXe1 <= 0.0f & deltaXe2 <= 0.0f & deltaXe3 <= 0.0f &
-                            (deltaXe1 <= epsilon | deltaXe2 <= epsilon | deltaXe3 <= epsilon);
+                            deltaXe1 <= 0.0f & deltaXe2 <= 0.0f & deltaXe3 <= 0.0f; // &
+                            //(deltaXe1 <= epsilon | deltaXe2 <= epsilon | deltaXe3 <= epsilon);
 
 
                         if (SIMD::Any(inTriangle))
@@ -266,61 +276,15 @@ RendererAVX::FragmentShaderStage()
 
     AssetServer& loader = AssetServer::GetInstance();
 
+    BlingPhongSIMD shader;
+
     Concurrent::ForEach(m_PixelBuffer.begin(), m_PixelBuffer.end(), [&](SIMDPixel& pixel)
     {
         Triangle& triangle = m_ProjectedClip[pixel.binId][pixel.binIndex];
         pixel.Interpolate(triangle);
         Texture& texture = loader.GetTexture(triangle.verts[0].tex_id);
-        SIMDVec2 texUV = pixel.textureCoord;
-        float r, g, b;
-        
-        if (pixel.mask.GetBit(0))
-        {
-            texture.Sample(texUV.x[0], texUV.y[0], r, g, b);
-            m_ColorBuffer.SetColor(pixel.position.x[0], pixel.position.y[0], r, g, b);
-        }
-        
-        if (pixel.mask.GetBit(1))
-        {
-            texture.Sample(texUV.x[1], texUV.y[1], r, g, b);
-            m_ColorBuffer.SetColor(pixel.position.x[1], pixel.position.y[1], r, g, b);
-        }
-        
-        if (pixel.mask.GetBit(2))
-        {
-            texture.Sample(texUV.x[2], texUV.y[2], r, g, b);
-            m_ColorBuffer.SetColor(pixel.position.x[2], pixel.position.y[2], r, g, b);
-        }
-        
-        if (pixel.mask.GetBit(3))
-        {
-            texture.Sample(texUV.x[3], texUV.y[3], r, g, b);
-            m_ColorBuffer.SetColor(pixel.position.x[3], pixel.position.y[3], r, g, b);
-        }
-        
-        if (pixel.mask.GetBit(4))
-        {
-            texture.Sample(texUV.x[4], texUV.y[4], r, g, b);
-            m_ColorBuffer.SetColor(pixel.position.x[4], pixel.position.y[4], r, g, b);
-        }
-        
-        if (pixel.mask.GetBit(5))
-        {
-            texture.Sample(texUV.x[5], texUV.y[5], r, g, b);
-            m_ColorBuffer.SetColor(pixel.position.x[5], pixel.position.y[5], r, g, b);
-        }
-        
-        if (pixel.mask.GetBit(6))
-        {
-            texture.Sample(texUV.x[6], texUV.y[6], r, g, b);
-            m_ColorBuffer.SetColor(pixel.position.x[6], pixel.position.y[6], r, g, b);
-        }
-        
-        if (pixel.mask.GetBit(7))
-        {
-            texture.Sample(texUV.x[7], texUV.y[7], r, g, b);
-            m_ColorBuffer.SetColor(pixel.position.x[7], pixel.position.y[7], r, g, b);
-        }
+        shader.Shade(pixel, m_Lights, texture, m_cam);
+        SIMDShader::SetColorBuffer(pixel, m_ColorBuffer);
     });
 }
 

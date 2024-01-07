@@ -1,7 +1,6 @@
 #pragma once
-#include "Mesh.h"
+#include "MeshInstance.h"
 #include "Mat4.h"
-
 
 class Camera
 {

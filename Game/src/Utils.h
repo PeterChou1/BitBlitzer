@@ -2,7 +2,7 @@
 #include <string>
 #include <unordered_set>
 
-#include "Mesh.h"
+#include "MeshInstance.h"
 #include "Entity.h"
 #include "Texture.h"
 
@@ -13,7 +13,7 @@ namespace Utils
      *         Modify to remove ranges instead of individual index
      * \tparam Type
      * \param ranges_to_erase integer ranges of ranges you want to erase
-     * \param vec the vector you want to modify
+     * \param vec vector to erase ranges from
      */
     template <typename Type>
     void EraseRanges(const std::vector<std::pair<int, int>>& ranges_to_erase, std::vector<Type>& vec) {
@@ -47,10 +47,10 @@ namespace Utils
 
     /**
      * \brief Loads an .mtl material file support Ambient, Diffuse, Specular in the Bling-Phong Model
-     *        meant for use by LoadInstance but called independently
+     *        meant for use by LoadInstance but can be called independently
      * \param filename 
-     * \param textureList 
-     * \param textureIDs 
+     * \param textureList loaded list from texture
+     * \param textureIDs map of texture names to index of texture in textureList
      * \return 
      */
     bool LoadMTLFile(const std::string& filename, std::vector<Texture>& textureList, std::unordered_map<std::string, size_t>& textureIDs);

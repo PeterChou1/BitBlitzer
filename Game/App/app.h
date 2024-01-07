@@ -98,7 +98,7 @@ namespace App
     //-------------------------------------------------------------------------------------------
     // void GetMousePos(float &x, float &y);
     //-------------------------------------------------------------------------------------------
-    // Sets the value of the passed in float references to the current position of the mouse pointer.	
+    // Sets the value of the passed in float references to the current screenSpacePosition of the mouse pointer.	
     //-------------------------------------------------------------------------------------------
     void GetMousePos(float& x, float& y);
 
@@ -110,7 +110,7 @@ namespace App
     // e.g.
     // GetController(0).CheckButton(XINPUT_GAMEPAD_A, false); Returns true if the A button of pad 0 was pressed and repeat if held.
     // GetController(0).CheckButton(XINPUT_GAMEPAD_A, true); Returns true if the A button of pad 0 was pressed but DO NOT repeat if held.	
-    // GetController(0).GetLeftThumbStickX(); Returns a float between -1.0f to 1.0f representing the position of the left thumb sticks X Axis.
+    // GetController(0).GetLeftThumbStickX(); Returns a float between -1.0f to 1.0f representing the screenSpacePosition of the left thumb sticks X Axis.
     // See SimpleController.h for more info.
     //-------------------------------------------------------------------------------------------
     const CController& GetController(int pad = 0);

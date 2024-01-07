@@ -4,7 +4,6 @@
 #include <set>
 #include <memory>
 
-
 class VisitorBase
 {
 public:

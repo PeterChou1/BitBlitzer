@@ -1,5 +1,5 @@
 #pragma once
-#include "Coordinator.h"
+#include "ECSManager.h"
 #include "RendererSimple.h"
 #include "DebugCamera.h"
 #include "DebugMesh.h"

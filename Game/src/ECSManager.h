@@ -6,15 +6,23 @@
 #include <memory>
 #include <set>
 
-class Coordinator
+class ECSManager
 {
 public:
+
     void Init()
     {
         // Create pointers to each manager
         m_ComponentManager = std::make_shared<ComponentManager>();
         m_EntityManager = std::make_shared<EntityManager>();
         m_VisitorManager = std::make_shared<VisitorManager>();
+    }
+
+    void Reset()
+    {
+        m_ComponentManager->Clear();
+        m_EntityManager->Clear();
+        m_VisitorManager->Clear();
     }
 
 
@@ -40,16 +48,7 @@ public:
         return v->m_Entities;
     }
 
-    /**
-     * /brief Get First Component Registered with an Entity useful for getting component we know to be singletons like Cameras
-     */
-    template <typename T>
-    T& GetFirstComponent()
-    {
-        std::set<Entity> visitSet = Visit<T>();
-        assert(visitSet.size() != 0 && "No Entity with component found!");
-        return GetComponent<T>(*visitSet.begin());
-    }
+
 
 
     void DestroyEntity(Entity entity)
@@ -62,7 +61,7 @@ public:
     }
 
     template <typename T>
-    bool IsVisitorRegistered()
+    bool IsVisitorRegistered() const
     {
         return m_VisitorManager->IsVisitorRegistered<T>();
     }

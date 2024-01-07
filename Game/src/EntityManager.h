@@ -65,6 +65,13 @@ public:
         return entities;
     }
 
+    void Clear()
+    {
+        //clear queue
+        mAvailableEntities = {};
+        mLivingEntityCount = 0;
+    }
+
 private:
     std::queue<Entity> mAvailableEntities{};
     std::array<Signature, MAX_ENTITIES> mSignatures{};

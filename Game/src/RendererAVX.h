@@ -5,6 +5,8 @@
 #include "SIMDDepthBuffer.h"
 #include "SIMDPixel.h"
 #include "SIMDPixelBuffer.h"
+#include "Lights.h"
+
 
 /*
 * /brief multi threaded renderer
@@ -12,6 +14,7 @@
 class RendererAVX : public Renderer
 {
 public:
+
     RendererAVX(int width, int height, Camera& cam);
 
     void Render() override;
@@ -34,6 +37,7 @@ private:
     std::vector<std::uint32_t> m_CoreIds;
     std::vector<std::vector<Triangle>> m_ProjectedClip;
     std::vector<Tile> m_Tiles;
+    std::vector<PointLight> m_Lights;
     SIMDDepthBuffer m_DepthBuffer;
     SIMDPixelBuffer m_PixelBuffer;
     unsigned int m_CoreCount;

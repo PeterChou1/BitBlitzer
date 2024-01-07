@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Vec3.h"
-#include "Mesh.h"
+#include "MeshInstance.h"
 #include <math.h>
 #include <cassert>
 

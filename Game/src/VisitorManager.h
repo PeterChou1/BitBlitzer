@@ -12,7 +12,9 @@ public:
     template <typename T>
     bool IsVisitorRegistered()
     {
+
         const char* typeName = typeid(T).name();
+
         return mVisitor.find(typeName) != mVisitor.end();
     }
 
@@ -84,6 +86,13 @@ public:
                 system->m_Entities.erase(entity);
             }
         }
+    }
+
+
+    void Clear()
+    {
+        mSignatures.clear();
+        mVisitor.clear();
     }
 
 private:

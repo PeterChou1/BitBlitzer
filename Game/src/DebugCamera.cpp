@@ -2,9 +2,9 @@
 #include "DebugCamera.h"
 #include "Camera.h"
 #include "../App/app.h"
-#include "Coordinator.h"
+#include "ECSManager.h"
 
-extern Coordinator ECS;
+extern ECSManager ECS;
 
 
 void DebugCamera::Move(float deltaTime)

@@ -1,14 +1,14 @@
 #include "stdafx.h"
-#include "Renderer.h"
 
 #include <iostream>
 
+#include "Renderer.h"
 #include "AssetServer.h"
-#include "Coordinator.h"
+#include "ECSManager.h"
 #include "Utils.h"
 
 
-extern Coordinator ECS;
+extern ECSManager ECS;
 
 void Renderer::Update()
 {
@@ -51,23 +51,6 @@ void Renderer::UpdateMesh(Entity entity, Transform& transform)
     transform.IsDirty = false;
 }
 
-void UpdateEntityRanges(std::unordered_map<Entity, BufferRange>& entityToRangeMap, const std::vector<BufferRange>& rangesToRemove)
-{
-    for (auto& pair : entityToRangeMap)
-    {
-        int adjustment = 0;
-        auto& range = pair.second;
-        for (const auto& removedRange : rangesToRemove)
-        {
-            if (removedRange.first < range.first)
-            {
-                adjustment += removedRange.second - removedRange.first;
-            }
-        }
-        range.first -= adjustment;
-        range.second -= adjustment;
-    }
-}
 
 void Renderer::DeleteMeshes(const std::vector<Entity>& entities)
 {
@@ -98,49 +81,45 @@ void Renderer::DeleteMeshes(const std::vector<Entity>& entities)
     std::sort(indexRangesToRemove.begin(), indexRangesToRemove.end(), rangeComparer);
 
 
-
     for (auto& pair : m_EntityToVertexRange)
     {
-        int adjustment = 0;
-        auto& range = pair.second;
+        int vertexAdjustment = 0;
+        int indexAdjustment = 0;
+
+        auto& entity = pair.first;
+        auto& indexRange = m_EntityToIndexRange[entity];
+        auto& vertexRange = m_EntityToVertexRange[entity];
+
+
         for (const auto& removedRange : vertexRangesToRemove)
         {
-            if (removedRange.first < range.first)
+            if (removedRange.first < vertexRange.first)
             {
-                adjustment += removedRange.second - removedRange.first;
+                vertexAdjustment += removedRange.second - removedRange.first;
             }
         }
-        if (adjustment > 0)
-        {
-            for (int i = range.first; i < range.second; i++)
-            {
-                m_VertexBuffer[i].index -= adjustment;
-            }
-            auto& indexRange = m_EntityToIndexRange[pair.first];
-            for (int i = indexRange.first; i < indexRange.second; i++)
-            {
-                m_IndexBuffer[i] -= adjustment;
-            }
-            range.first -= adjustment;
-            range.second -= adjustment;
-        }
-    }
-
-    for (auto& pair : m_EntityToIndexRange)
-    {
-        int adjustment = 0;
-        auto& range = pair.second;
         for (const auto& removedRange : indexRangesToRemove)
         {
-            if (removedRange.first < range.first)
+            if (removedRange.first < indexRange.first)
             {
-                adjustment += removedRange.second - removedRange.first;
+                indexAdjustment += removedRange.second - removedRange.first;
             }
         }
-        if (adjustment > 0)
+
+        if (vertexAdjustment > 0)
         {
-            range.first -= adjustment;
-            range.second -= adjustment;
+            for (int i = vertexRange.first; i < vertexRange.second; i++)
+            {
+                m_VertexBuffer[i].index -= vertexAdjustment;
+            }
+            for (int i = indexRange.first; i < indexRange.second; i++)
+            {
+                m_IndexBuffer[i] -= vertexAdjustment;
+            }
+            vertexRange.first -= vertexAdjustment;
+            vertexRange.second -= vertexAdjustment;
+            indexRange.first -= indexAdjustment;
+            indexRange.second -= indexAdjustment;
         }
     }
 

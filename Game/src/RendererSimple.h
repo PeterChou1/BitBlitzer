@@ -1,6 +1,6 @@
 #pragma once
 #include <vector>
-#include "Mesh.h"
+#include "MeshInstance.h"
 #include "Mat4.h"
 #include "Texture.h"
 #include "DepthBuffer.h"
@@ -9,7 +9,7 @@
 #include "Triangle.h"
 
 /*
-* /brief CPU ECS
+* /brief CPU ECSManager
 */
 
 class RendererSimple
