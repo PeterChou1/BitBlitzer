@@ -1,5 +1,0 @@
-D:/NEXT/Next-Times-The-Charm/CMakeFiles/edit_cache.dir
-D:/NEXT/Next-Times-The-Charm/CMakeFiles/rebuild_cache.dir
-D:/NEXT/Next-Times-The-Charm/Game/CMakeFiles/Game.dir
-D:/NEXT/Next-Times-The-Charm/Game/CMakeFiles/edit_cache.dir
-D:/NEXT/Next-Times-The-Charm/Game/CMakeFiles/rebuild_cache.dir

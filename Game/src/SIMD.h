@@ -2,9 +2,13 @@
 #include <immintrin.h>
 #include "Vec2.h"
 #include "Vec3.h"
+#include <cmath>
+
+#define AVX
 
 
-/* 
+#ifdef AVX
+/*
 * /brief Float based on avx2
 */
 class SIMDFloat
@@ -144,7 +148,188 @@ public:
         float v[8];
     };
 };
+#else
+class SIMDFloat
+{
+public:
+    SIMDFloat()
+    {
+        for (int i = 0; i < 8; ++i) {
+            v[i] = 0.0f;
+        }
+    }
 
+    SIMDFloat(float val)
+    {
+        for (int i = 0; i < 8; ++i) {
+            v[i] = val;
+        }
+    }
+
+    SIMDFloat(const SIMDFloat& rhs)
+    {
+        for (int i = 0; i < 8; ++i) {
+            v[i] = rhs.v[i];
+        }
+    }
+
+    SIMDFloat(float a[8])
+    {
+        for (int i = 0; i < 8; ++i) {
+            v[i] = a[i];
+        }
+    }
+
+    SIMDFloat& operator=(const SIMDFloat& rhs)
+    {
+        for (int i = 0; i < 8; ++i) {
+            v[i] = rhs.v[i];
+        }
+        return *this;
+    }
+
+    SIMDFloat operator*(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i) {
+            result.v[i] = v[i] * rhs.v[i];
+        }
+        return result;
+    }
+
+    SIMDFloat operator+(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i) {
+            result.v[i] = v[i] + rhs.v[i];
+        }
+        return result;
+    }
+
+    SIMDFloat operator-(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i) {
+            result.v[i] = v[i] - rhs.v[i];
+        }
+        return result;
+    }
+
+    SIMDFloat operator/(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i) {
+            result.v[i] = v[i] / rhs.v[i];
+        }
+        return result;
+    }
+
+
+    SIMDFloat operator>=(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i)
+            result.v[i] = v[i] >= rhs.v[i] ? 1.0f : 0.0f;
+        return result;
+    }
+
+    SIMDFloat operator>(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i)
+            result.v[i] = v[i] > rhs.v[i] ? 1.0f : 0.0f;
+        return result;
+    }
+
+    SIMDFloat operator<(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i)
+            result.v[i] = v[i] < rhs.v[i] ? 1.0f : 0.0f;
+        return result;
+    }
+
+    SIMDFloat operator<=(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i)
+            result.v[i] = v[i] <= rhs.v[i] ? 1.0f : 0.0f;
+        return result;
+    }
+
+    SIMDFloat operator==(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i)
+            result.v[i] = v[i] == rhs.v[i] ? 1.0f : 0.0f;
+        return result;
+    }
+
+    // Bitwise operators
+    SIMDFloat operator&(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i)
+            result.v[i] = static_cast<float>(static_cast<int>(v[i]) & static_cast<int>(rhs.v[i]));
+        return result;
+    }
+
+    SIMDFloat operator|(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i)
+            result.v[i] = static_cast<float>(static_cast<int>(v[i]) | static_cast<int>(rhs.v[i]));
+        return result;
+    }
+
+    // Mathematical functions
+    SIMDFloat floor() const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i)
+            result.v[i] = std::floor(v[i]);
+        return result;
+    }
+
+    SIMDFloat sqrt() const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i)
+            result.v[i] = std::sqrt(v[i]);
+        return result;
+    }
+
+    SIMDFloat pow(const SIMDFloat& rhs) const
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i)
+            result.v[i] = std::pow(v[i], rhs.v[i]);
+        return result;
+    }
+
+    bool GetBit(const size_t i) const
+    {
+        return v[i] == 1.0f; // Check the sign bit (most significant bit)
+    }
+
+    // Accessor
+    float operator[](const size_t i) const
+    {
+        return v[i];
+    }
+
+    float& operator[](const size_t i)
+    {
+        return v[i];
+    }
+
+    // Other methods as needed
+
+private:
+    float v[8];
+};
+
+#endif
 
 class SIMDVec2
 {
@@ -166,7 +351,7 @@ public:
 
     SIMDVec2 operator+(const SIMDVec2& rhs) const
     {
-        return {x + rhs.x, y + rhs.y};
+        return { x + rhs.x, y + rhs.y };
     }
 
     SIMDVec2 operator-(const SIMDVec2& rhs) const
@@ -176,12 +361,12 @@ public:
 
     SIMDVec2 operator*(const SIMDFloat& rhs) const
     {
-        return {x * rhs, y * rhs};
+        return { x * rhs, y * rhs };
     }
 
     SIMDVec2 operator/(const SIMDFloat& rhs) const
     {
-        return {x / rhs, y / rhs};
+        return { x / rhs, y / rhs };
     }
 
     SIMDFloat length() const
@@ -192,7 +377,7 @@ public:
 
     SIMDFloat Dot(const SIMDVec2& rhs)
     {
-        return x * rhs.x + y * rhs.y; 
+        return x * rhs.x + y * rhs.y;
     }
 
     SIMDVec2 Normalize()
@@ -222,12 +407,12 @@ public:
 
     SIMDVec3 operator+(const SIMDVec3& rhs) const
     {
-        return {x + rhs.x, y + rhs.y, z + rhs.z};
+        return { x + rhs.x, y + rhs.y, z + rhs.z };
     }
 
     SIMDVec3 operator*(const SIMDVec3& rhs) const
     {
-        return {x * rhs.x, y * rhs.y, z * rhs.z};
+        return { x * rhs.x, y * rhs.y, z * rhs.z };
     }
 
     SIMDVec3 operator-(const SIMDVec3& rhs) const
@@ -237,12 +422,12 @@ public:
 
     SIMDVec3 operator*(const SIMDFloat& rhs) const
     {
-        return {x * rhs, y * rhs, z * rhs};
+        return { x * rhs, y * rhs, z * rhs };
     }
 
     SIMDVec3 operator/(const SIMDFloat& rhs) const
     {
-        return {x / rhs, y / rhs, z / rhs};
+        return { x / rhs, y / rhs, z / rhs };
     }
 
     SIMDFloat length() const
@@ -271,6 +456,7 @@ namespace SIMD
     static SIMDFloat ONE = 1.0;
     static SIMDFloat ZERO = 0.0;
 
+#ifdef AVX 
     inline bool All(const SIMDFloat& rhs)
     {
         return _mm256_movemask_ps(rhs.m_avx) == 255;
@@ -298,7 +484,55 @@ namespace SIMD
     {
         return Select(a > b, a, b);
     }
+#else
+    inline bool All(const SIMDFloat& rhs)
+    {
+        for (int i = 0; i < 8; ++i) {
+            if (rhs[i] == 0.0f) {
+                return false;
+            }
+        }
+        return true;
+    }
 
+    inline bool Any(const SIMDFloat& rhs)
+    {
+        for (int i = 0; i < 8; ++i) {
+            if (rhs[i] != 0.0f) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    inline SIMDFloat Select(const SIMDFloat& mask, const SIMDFloat& a, const SIMDFloat& b)
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i) {
+            result[i] = (mask[i] != 0.0f) ? a[i] : b[i];
+        }
+        return result;
+    }
+
+    inline SIMDFloat Max(const SIMDFloat& a, const SIMDFloat& b)
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i) {
+            result[i] = (a[i] > b[i]) ? a[i] : b[i];
+        }
+        return result;
+    }
+
+    inline SIMDFloat Min(const SIMDFloat& a, const SIMDFloat& b)
+    {
+        SIMDFloat result;
+        for (int i = 0; i < 8; ++i) {
+            result[i] = (a[i] < b[i]) ? a[i] : b[i];
+        }
+        return result;
+    }
+
+#endif
     // clamp c between a and b
     // require: a < b
     inline SIMDFloat Clamp(SIMDFloat a, SIMDFloat b, SIMDFloat c)
