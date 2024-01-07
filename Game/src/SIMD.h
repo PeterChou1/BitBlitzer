@@ -4,10 +4,10 @@
 #include "Vec3.h"
 #include <cmath>
 
-#define AVX
+// -- uncomment this if your processor does not support AVX2 --
+#define SIMD
 
-
-#ifdef AVX
+#ifdef SIMD
 /*
 * /brief Float based on avx2
 */
@@ -149,6 +149,8 @@ public:
     };
 };
 #else
+
+// SIMDFloat polyfill
 class SIMDFloat
 {
 public:
@@ -509,7 +511,7 @@ namespace SIMD
     {
         SIMDFloat result;
         for (int i = 0; i < 8; ++i) {
-            result[i] = (mask[i] != 0.0f) ? a[i] : b[i];
+            result[i] = (mask[i] != 0.0f) ? b[i] : a[i];
         }
         return result;
     }
