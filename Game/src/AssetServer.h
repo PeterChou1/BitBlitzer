@@ -2,13 +2,15 @@
 #include <unordered_map>
 #include <set>
 #include "Assets.h"
-#include "Texture.h"
+#include "BlingPhong.h"
+#include "Material.h"
 #include "Utils.h"
 #include "MeshInstance.h"
+#include "UnlitSIMD.h"
 
 /*
- * /brief An AssetServer is responsible for handling loading of all obj/textures
- *          files in the game
+ * /brief An AssetServer is responsible for handling loading of all
+ *       obj/textures/shader files in the game
  */
 class AssetServer
 {
@@ -25,6 +27,7 @@ public:
         return instance;
     }
 
+
     void LoadLevelAssets(const std::set<ObjAsset>& AssetList)
     {
         // clear previous loaded assets
@@ -39,10 +42,19 @@ public:
         }
     }
 
-    Texture& GetTexture(unsigned int texID)
+    Material& GetMaterial(int texID)
     {
         assert(texID <= textureList.size() && "texID does not exist");
+
+        if (texID == -1)
+            return Material::DefaultMaterial;
+
         return textureList[texID];
+    }
+
+    SIMDShader* GetShader(ShaderAsset shaderID)
+    {
+        return LookUpShader(shaderID);
     }
 
     MeshInstance& GetObj(ObjAsset objID)
@@ -52,7 +64,40 @@ public:
     }
 
 private:
-    std::vector<Texture> textureList;
+
+    std::string LookUpFilePath(ObjAsset asset)
+    {
+        switch (asset)
+        {
+        case Spot:
+            return "./Assets/spotWithTextures.obj";
+        case Furina:
+            return "./Assets/furina.obj";
+        case Pacman:
+            return "./Assets/MazeTriangulated.obj";
+        }
+        assert(false && "not possible");
+    }
+
+    SIMDShader* LookUpShader(ShaderAsset asset)
+    {
+        static BlinnPhongSIMD BlinnPhongShaderInstance = BlinnPhongSIMD();
+        static UnlitSIMD UnlitShaderInstance = UnlitSIMD();
+
+        switch (asset)
+        {
+        case DefaultShader:
+            // The Default Shader is an Unlit Shader
+            return &UnlitShaderInstance;
+        case BlinnPhong:
+            return &BlinnPhongShaderInstance;
+        }
+
+        assert(false && "not possible");
+    }
+
+
+    std::vector<Material> textureList;
     std::unordered_map<ObjAsset, MeshInstance> assets;
 
 };

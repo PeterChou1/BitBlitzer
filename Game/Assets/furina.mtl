@@ -10,8 +10,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd ./Assets/textures/a.png
-map_d ./Assets/textures/a.png
+map_Kd textures/a.png
+map_d textures/a.png
 
 newmtl 肌
 Ns 1000.000000
@@ -22,8 +22,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd ./Assets/textures/b.png
-map_d ./Assets/textures/b.png
+map_Kd textures/b.png
+map_d textures/b.png
 
 newmtl 裙2+
 Ns 1000.000000
@@ -34,8 +34,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd ./Assets/textures/c.png
-map_d ./Assets/textures/c.png
+map_Kd textures/c.png
+map_d textures/c.png
 
 newmtl 髮+
 Ns 1000.000000
@@ -46,8 +46,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd ./Assets/textures/b.png
-map_d ./Assets/textures/b.png
+map_Kd textures/b.png
+map_d textures/b.png
 
 newmtl 髮2
 Ns 1000.000000
@@ -58,5 +58,5 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 1
-map_Kd ./Assets/textures/b2.png
-map_d ./Assets/textures/b2.png
+map_Kd textures/b2.png
+map_d textures/b2.png

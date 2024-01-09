@@ -24,7 +24,7 @@ public:
 
     void Render();
 
-protected:
+private:
     void CreateTile(int width, int height);
 
     void VertexTransform();
@@ -43,25 +43,31 @@ protected:
 
     void DeleteMeshes(const std::vector<Entity>& entities);
 
-    void UpdateMesh(Entity entity, Transform& transform);
+    void UpdateMeshTransform(Entity entity, Transform& transform);
 
-    void AddMesh(Entity entity, Mesh mesh, Transform& transform);
+    void UpdateMeshShader(Entity entity, ShaderAsset shaderID);
+
+    void AddMesh(Entity entity, Mesh mesh, Transform& transform, ShaderAsset shaderID);
 
     Camera& m_cam;
-
     std::vector<std::uint32_t> m_CoreIds;
     std::vector<PointLight> m_Lights;
     std::vector<Vertex> m_VertexBuffer;
     std::vector<std::uint32_t> m_IndexBuffer;
-    std::vector<Vertex> m_ProjectedVertexBuffer;
+    // std::vector<Vertex> m_ProjectedVertexBuffer;
     std::vector<std::vector<Triangle>> m_ProjectedClip;
     std::vector<Tile> m_Tiles;
     SIMDDepthBuffer m_DepthBuffer;
     SIMDPixelBuffer m_PixelBuffer;
     ColorBuffer m_ColorBuffer;
+    // track which entity map to which assets
+
+    // --- Resources --
+    std::unordered_map<Entity, ShaderAsset> m_EntityToShaderAssets;
     std::unordered_map<Entity, BufferRange> m_EntityToVertexRange;
     std::unordered_map<Entity, BufferRange> m_EntityToIndexRange;
     int m_CoreInterval{};
     unsigned int m_CoreCount;
     std::uint32_t m_TriangleCount{};
+    // --- ---
 };

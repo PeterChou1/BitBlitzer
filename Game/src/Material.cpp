@@ -1,9 +1,10 @@
 #include "stdafx.h"
 #include "../stb_image/stb_image.h"
-#include "Texture.h"
+#include "Material.h"
 #include <utility>
 #include <cassert>
 #include <iostream>
+#include "Material.h"
 
 
 // Custom deleter function for stbi_image_free
@@ -15,38 +16,43 @@ struct STBImageDeleter
     }
 };
 
+Material Material::DefaultMaterial = Material({ 0, 0, 0 }, { 1.0, 1.0, 1.0 }, { 1.0, 1.0, 1.0 }, 10.0);
 
-Texture::Texture(const char* fileName,
+Material::Material(Vec3 ambient, Vec3 diffuse, Vec3 specular, float highlight)
+    : ambient(ambient),
+      diffuse(diffuse),
+      specular(specular),
+      highlight(highlight),
+      hasTexture(false)
+{
+}
+
+Material::Material(const char* fileName,
                              Vec3 ambient,
                              Vec3 diffuse,
                              Vec3 specular,
                              float highlight)
-    : ambient(ambient)
-      , diffuse(diffuse), specular(specular), highlight(highlight)
+    : ambient(ambient),
+      diffuse(diffuse),
+      specular(specular),
+      highlight(highlight),
+      hasTexture(true)
 {
     const bool texLoaded = LoadTexture(fileName);
-    assert(texLoaded && "Failed to Load Texture");
+    assert(texLoaded && "Failed to Load Material");
 }
 
 
-void Texture::Sample(float u, float v, float& r, float& g, float& b)
+void Material::SampleSIMD(SIMDVec2& tex, SIMDFloat& r, SIMDFloat& g, SIMDFloat& b) const
 {
-    u = std::min(1.0f, std::max(0.0f, u));
-    v = std::min(1.0f, std::max(0.0f, v));
-    // Convert u and v to pixel coordinates
-    const int x = static_cast<int>(u * (mtexWidth - 1));
-    const int y = static_cast<int>(v * (mtexHeight - 1));
+    if (!hasTexture)
+    {
+        r = 255 * diffuse[0];
+        g = 255 * diffuse[1];
+        b = 255 * diffuse[2];
+        return;
+    }
 
-    // Calculate the offset for the pixel
-    const int offset = (y * mtexWidth + x) * 4; // 4 channels per pixel (RGBA)
-    // Extract the RGB values
-    r = texture[offset];
-    g = texture[offset + 1];
-    b = texture[offset + 2];
-}
-
-void Texture::SampleSIMD(SIMDVec2& tex, SIMDFloat& r, SIMDFloat& g, SIMDFloat& b)
-{
     SIMDFloat u = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, tex.x);
     SIMDFloat v = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, tex.y);
 
@@ -72,7 +78,7 @@ void Texture::SampleSIMD(SIMDVec2& tex, SIMDFloat& r, SIMDFloat& g, SIMDFloat& b
 
 }
 
-bool Texture::LoadTexture(const char* filename)
+bool Material::LoadTexture(const char* filename)
 {
     int channels;
     unsigned char* data = stbi_load(filename, &mtexWidth, &mtexHeight, &channels, 4);
@@ -83,3 +89,4 @@ bool Texture::LoadTexture(const char* filename)
     }
     return false;
 }
+

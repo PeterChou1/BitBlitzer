@@ -2,13 +2,12 @@
 
 #include <iostream>
 #include <numeric>
-#include <omp.h>
 
 #include "Renderer.h"
 #include "AssetServer.h"
-#include "BlingPhong.h"
 #include "ECSManager.h"
 #include "Rasterizer.h"
+#include "Shader.h"
 #include "SIMDShader.h"
 #include "Triangle.h"
 #include "Utils.h"
@@ -55,22 +54,35 @@ void Renderer::Update()
     {
         auto& mesh = ECS.GetComponent<Mesh>(e);
         auto& transform = ECS.GetComponent<Transform>(e);
+        ShaderAsset shaderID = DefaultShader;
+
+        if (ECS.HasComponent<Shader>(e))
+        {
+            shaderID = ECS.GetComponent<Shader>(e).shaderID;
+        }
 
         if (!mesh.loaded)
         {
-            AddMesh(e, mesh, transform);
+            AddMesh(e, mesh, transform, shaderID);
             mesh.loaded = true;
         }
         else if (mesh.markedForDeletion)
         {
             MarkedForDeletion.push_back(e);
         }
-
-        if (transform.IsDirty)
+        else if (transform.IsDirty)
         {
-            UpdateMesh(e, transform);
+            UpdateMeshTransform(e, transform);
         }
+
+        if (m_EntityToShaderAssets.count(e) != 0 &&
+            m_EntityToShaderAssets[e] != shaderID)
+        {
+            UpdateMeshShader(e, shaderID);
+        }
+
     }
+
     if (!MarkedForDeletion.empty()) 
         DeleteMeshes(MarkedForDeletion);
 }
@@ -92,9 +104,10 @@ void Renderer::VertexTransform()
 
     Concurrent::ForEach(m_VertexBuffer.begin(), m_VertexBuffer.end(), [&](Vertex& v)
     {
-        Vertex projected = v;
-        projected.proj = m_cam.proj * Vec4(m_cam.WorldToCamera(projected.pos));
-        m_ProjectedVertexBuffer[v.index] = projected;
+        //Vertex projected = v;
+        v.proj = m_cam.proj * Vec4(m_cam.WorldToCamera(v.pos));
+
+        //m_ProjectedVertexBuffer[v.index] = projected;
     });
 }
 
@@ -107,7 +120,7 @@ void Renderer::ClipTriangle()
         Rendering::Clip(
             m_cam,
             m_ProjectedClip, 
-            m_ProjectedVertexBuffer,
+            m_VertexBuffer,
             m_IndexBuffer,
             binID,
             start,
@@ -139,14 +152,15 @@ void Renderer::FragmentShade()
 {
     AssetServer& loader = AssetServer::GetInstance();
 
-    BlinnPhongSIMD shader;
+    //BlinnPhongSIMD shader;
 
     Concurrent::ForEach(m_PixelBuffer.begin(), m_PixelBuffer.end(), [&](SIMDPixel& pixel)
     {
         Triangle& triangle = m_ProjectedClip[pixel.binId][pixel.binIndex];
         pixel.Interpolate(triangle);
-        Texture& texture = loader.GetTexture(triangle.GetTextureID());
-        shader.Shade(pixel, m_Lights, texture, m_cam);
+        Material& texture = loader.GetMaterial(triangle.GetTextureID());
+        SIMDShader* shader = loader.GetShader(triangle.GetShaderID());
+        shader->Shade(pixel, m_Lights, texture, m_cam);
         SIMDShader::SetColorBuffer(pixel, m_ColorBuffer);
     });
 }
@@ -173,7 +187,7 @@ void Renderer::ClearBuffer()
 
 }
 
-void Renderer::UpdateMesh(Entity entity, Transform& transform)
+void Renderer::UpdateMeshTransform(Entity entity, Transform& transform)
 {
     BufferRange range = m_EntityToVertexRange[entity];
     auto begin = m_VertexBuffer.begin() + range.first;
@@ -186,12 +200,24 @@ void Renderer::UpdateMesh(Entity entity, Transform& transform)
     transform.IsDirty = false;
 }
 
+void Renderer::UpdateMeshShader(Entity entity, ShaderAsset shaderID)
+{
+    BufferRange range = m_EntityToVertexRange[entity];
+    auto begin = m_VertexBuffer.begin() + range.first;
+    auto end = m_VertexBuffer.begin() + range.second;
+    std::for_each(begin, end, [&](Vertex& v)
+    {
+        v.shader_id = shaderID;
+    });
+}
+
 
 
 void Renderer::DeleteMeshes(const std::vector<Entity>& entities)
 {
     std::vector<BufferRange> vertexRangesToRemove;
     std::vector<BufferRange> indexRangesToRemove;
+    
 
 
     for (const auto& entity : entities)
@@ -206,6 +232,11 @@ void Renderer::DeleteMeshes(const std::vector<Entity>& entities)
         {
             indexRangesToRemove.push_back(m_EntityToIndexRange[entity]);
             m_EntityToIndexRange.erase(entity);
+        }
+
+        if (m_EntityToShaderAssets.count(entity))
+        {
+            m_EntityToShaderAssets.erase(entity);
         }
 
         ECS.RemoveComponent<Mesh>(entity);
@@ -244,10 +275,6 @@ void Renderer::DeleteMeshes(const std::vector<Entity>& entities)
 
         if (vertexAdjustment > 0)
         {
-            for (int i = vertexRange.first; i < vertexRange.second; i++)
-            {
-                m_VertexBuffer[i].index -= vertexAdjustment;
-            }
             for (int i = indexRange.first; i < indexRange.second; i++)
             {
                 m_IndexBuffer[i] -= vertexAdjustment;
@@ -263,23 +290,27 @@ void Renderer::DeleteMeshes(const std::vector<Entity>& entities)
     Utils::EraseRanges(indexRangesToRemove, m_IndexBuffer);
 
     m_TriangleCount = m_IndexBuffer.size() / 3;
-    m_ProjectedVertexBuffer.resize(m_VertexBuffer.size());
+    //m_ProjectedVertexBuffer.resize(m_VertexBuffer.size());
     m_CoreInterval = (m_TriangleCount + m_CoreCount - 1) / m_CoreCount;
 }
 
 
 
-void Renderer::AddMesh(Entity entity, Mesh mesh, Transform& transform)
+void Renderer::AddMesh(Entity entity, Mesh mesh, Transform& transform, ShaderAsset shaderID)
 {
     MeshInstance instance = AssetServer::GetInstance().GetObj(mesh.MeshType);
+    // Transform Mesh Instance to World Space
     instance.transform(transform);
+    // Get Vertex Buffer Offset
     int offsetVertex = m_VertexBuffer.size();
+
     m_EntityToVertexRange[entity]= {m_VertexBuffer.size(), m_VertexBuffer.size() + instance.vertices.size()};
     m_EntityToIndexRange[entity] = {m_IndexBuffer.size(), m_IndexBuffer.size() + instance.indices.size() };
+    m_EntityToShaderAssets[entity] = shaderID;
 
     for (auto& vertex : instance.vertices)
     {
-        vertex.index = offsetVertex + vertex.index;
+        vertex.shader_id = shaderID;
         m_VertexBuffer.push_back(vertex);
     }
     for (const auto id : instance.indices)
@@ -288,6 +319,6 @@ void Renderer::AddMesh(Entity entity, Mesh mesh, Transform& transform)
     }
 
     m_TriangleCount = m_IndexBuffer.size() / 3;
-    m_ProjectedVertexBuffer.resize(m_VertexBuffer.size());
+    // m_ProjectedVertexBuffer.resize(m_VertexBuffer.size());
     m_CoreInterval = (m_TriangleCount + m_CoreCount - 1) / m_CoreCount;
 }

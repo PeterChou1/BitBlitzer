@@ -69,6 +69,13 @@ public:
     }
 
     template <typename T>
+    bool HasComponent(Entity entity)
+    {
+        ComponentTypeID typeID = TypeID<T>::value;
+        return mComponentTypes.find(typeID) != mComponentTypes.end();
+    }
+
+    template <typename T>
     T& GetComponent(Entity entity)
     {
         return GetComponentArray<T>()->GetData(entity);

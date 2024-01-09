@@ -6,28 +6,28 @@
 #include "SIMD.h"
 #include "Vec3.h"
 
-class Texture
+class Material
 {
 public:
-    Texture() : mtexWidth(0), mtexHeight(0), texture(nullptr)
-    {
-    }
 
-    Texture(const char* fileName, Vec3 ambient, Vec3 diffuse, Vec3 specular, float highlight);
+    Material(Vec3 ambient, Vec3 diffuse, Vec3 specular, float highlight);
 
-    void Sample(float u, float v, float& r, float& g, float& b);
+    Material(const char* fileName, Vec3 ambient, Vec3 diffuse, Vec3 specular, float highlight);
 
-    void SampleSIMD(SIMDVec2& tex, SIMDFloat& r, SIMDFloat& g, SIMDFloat& b);
+    void SampleSIMD(SIMDVec2& tex, SIMDFloat& r, SIMDFloat& g, SIMDFloat& b) const;
 
     Vec3 ambient{};
     Vec3 diffuse{};
     Vec3 specular{};
     float highlight{};
+    bool hasTexture;
+
+    static Material DefaultMaterial;
 
 private:
     bool LoadTexture(const char* filename);
-    int mtexWidth;
-    int mtexHeight;
+    int mtexWidth{};
+    int mtexHeight{};
     std::shared_ptr<unsigned char[]> texture;
 };
 
@@ -35,8 +35,8 @@ private:
 /*
  * /brief stores every single texture in the game
  */
-struct TextureList
+struct MaterialList
 {
     std::unordered_map<std::string, size_t> textureIDs;
-    std::vector<Texture> textureList;
+    std::vector<Material> textureList;
 };

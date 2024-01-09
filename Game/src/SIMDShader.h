@@ -2,14 +2,15 @@
 #include "ColorBuffer.h"
 #include "Lights.h"
 #include "SIMDPixel.h"
-#include "Texture.h"
+#include "Material.h"
+#include "Camera.h"
 
 class SIMDShader
 {
 public:
     virtual ~SIMDShader() = default;
 
-    virtual void Shade(SIMDPixel& pixel, std::vector<PointLight>& lights, Texture& texture, Camera& camera) = 0;
+    virtual void Shade(SIMDPixel& pixel, std::vector<PointLight>& lights, Material& texture, Camera& camera) = 0;
 
     static void SetColorBuffer(SIMDPixel& pixel, ColorBuffer& colorBuffer)
     {

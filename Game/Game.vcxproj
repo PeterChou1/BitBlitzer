@@ -121,6 +121,7 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>Default</LanguageStandard>
+      <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -189,6 +190,7 @@
     <ClInclude Include="src\Assets.h" />
     <ClInclude Include="src\BlingPhong.h" />
     <ClInclude Include="src\Rasterizer.h" />
+    <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\TypeID.h" />
     <ClInclude Include="src\DebugMesh.h" />
     <ClInclude Include="src\GameManager.h" />
@@ -215,10 +217,10 @@
     <ClInclude Include="src\Scene.h" />
     <ClInclude Include="src\SIMDPixelBuffer.h" />
     <ClInclude Include="src\SIMDTriangle.h" />
-    <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\Triangle.h" />
-    <ClInclude Include="src\Unlit.h" />
+    <ClInclude Include="src\UnlitSIMD.h" />
     <ClInclude Include="src\Vertex.h" />
     <ClInclude Include="src\VisitorManager.h" />
     <ClInclude Include="src\Transform.h" />
@@ -252,7 +254,7 @@
     <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\SIMDPixel.cpp" />
     <ClCompile Include="src\SIMDTriangle.cpp" />
-    <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -268,6 +270,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Triangle.cpp" />
+    <ClCompile Include="src\UnlitSIMD.cpp" />
     <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\Vec2.cpp" />
     <ClCompile Include="src\Vec3.cpp" />

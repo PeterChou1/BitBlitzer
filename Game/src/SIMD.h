@@ -272,7 +272,7 @@ public:
     {
         SIMDFloat result;
         for (int i = 0; i < 8; ++i)
-            result.v[i] = static_cast<float>(static_cast<int>(v[i]) & static_cast<int>(rhs.v[i]));
+            result.v[i] = static_cast<float>(static_cast<int>(v[i]) && static_cast<int>(rhs.v[i]));
         return result;
     }
 
@@ -280,7 +280,7 @@ public:
     {
         SIMDFloat result;
         for (int i = 0; i < 8; ++i)
-            result.v[i] = static_cast<float>(static_cast<int>(v[i]) | static_cast<int>(rhs.v[i]));
+            result.v[i] = static_cast<float>(static_cast<int>(v[i]) || static_cast<int>(rhs.v[i]));
         return result;
     }
 
@@ -458,7 +458,7 @@ namespace SIMD
     static SIMDFloat ONE = 1.0;
     static SIMDFloat ZERO = 0.0;
 
-#ifdef AVX 
+#ifdef SIMD 
     inline bool All(const SIMDFloat& rhs)
     {
         return _mm256_movemask_ps(rhs.m_avx) == 255;
@@ -486,6 +486,7 @@ namespace SIMD
     {
         return Select(a > b, a, b);
     }
+
 #else
     inline bool All(const SIMDFloat& rhs)
     {

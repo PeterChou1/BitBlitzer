@@ -9,7 +9,7 @@
 #include <thread>
 
 
-//#define PARALLEL
+#define PARALLEL
 
 class ThreadPool {
 public:

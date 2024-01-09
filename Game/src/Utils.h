@@ -4,7 +4,7 @@
 
 #include "MeshInstance.h"
 #include "Entity.h"
-#include "Texture.h"
+#include "Material.h"
 
 namespace Utils
 {
@@ -45,7 +45,7 @@ namespace Utils
      *                    index pointing to a texture on this list
      * \return 
      */
-    bool LoadInstance(std::string filename, MeshInstance& mesh, std::vector<Texture>& textureList);
+    bool LoadInstance(std::string filename, MeshInstance& mesh, std::vector<Material>& textureList);
 
     /**
      * \brief Loads an .mtl material file support Ambient, Diffuse, Specular in the Bling-Phong Model
@@ -55,5 +55,5 @@ namespace Utils
      * \param textureIDs map of texture names to index of texture in textureList
      * \return 
      */
-    bool LoadMTLFile(const std::string& filename, std::vector<Texture>& textureList, std::unordered_map<std::string, size_t>& textureIDs);
+    bool LoadMTLFile(const std::string& directory, const std::string& filename, std::vector<Material>& textureList, std::unordered_map<std::string, size_t>& textureIDs);
 }

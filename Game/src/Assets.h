@@ -1,26 +1,15 @@
 #pragma once
-#include <cassert>
-#include <string>
 
 // define graphics assets
-
-
 enum ObjAsset
 {
     Spot,
-    Furina
+    Furina,
+    Pacman
 };
 
-
-inline std::string LookUpFilePath(ObjAsset asset)
+enum ShaderAsset
 {
-    switch (asset)
-    {
-    case Spot:
-        return "./Assets/spot.obj";
-    case Furina:
-        return "./Assets/furina.obj";
-    default:
-        assert(false && "Not possible");
-    }
-}
+    DefaultShader,
+    BlinnPhong
+};

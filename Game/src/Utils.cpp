@@ -11,9 +11,12 @@
 
 bool Utils::LoadInstance(std::string filename,
                     MeshInstance& mesh,
-                    std::vector<Texture>& textureList)
+                    std::vector<Material>& textureList)
 {
     std::ifstream file(filename);
+    size_t lastSlash = filename.find_last_of("/\\");
+    std::string directory = filename.substr(0, lastSlash + 1);
+
     if (!file.is_open())
     {
         return false;
@@ -23,7 +26,7 @@ bool Utils::LoadInstance(std::string filename,
     std::vector<Vec3> temp_normals;
     std::unordered_map<Vertex, uint32_t> vertexMap;
     bool UV = false, Normal = false;
-    size_t cur_texID = -1;
+    int cur_texID = -1;
     std::string line;
     std::unordered_map<std::string, size_t> textureIDs;
 
@@ -36,11 +39,9 @@ bool Utils::LoadInstance(std::string filename,
         {
             std::string mtlfilename;
             ss >> mtlfilename;
-            size_t lastSlash = filename.find_last_of("/\\");
-            std::string directory = filename.substr(0, lastSlash + 1);
             std::string mtlfilepath = directory + mtlfilename;
             // fail to load mtl return
-            if (!LoadMTLFile(mtlfilepath, textureList, textureIDs)) return false;
+            if (!LoadMTLFile(directory, mtlfilepath, textureList, textureIDs)) return false;
         }
         else if (prefix == "usemtl")
         {
@@ -138,7 +139,6 @@ bool Utils::LoadInstance(std::string filename,
                 if (vertexMap.find(v) == vertexMap.end())
                 {
                     vertexMap[v] = mesh.vertices.size();
-                    v.index = mesh.vertices.size();
                     mesh.vertices.push_back(v);
                     mesh.indices.push_back(vertexMap[v]);
                 }
@@ -154,7 +154,12 @@ bool Utils::LoadInstance(std::string filename,
 }
 
 bool
-Utils::LoadMTLFile(const std::string& filename, std::vector<Texture>& textureList, std::unordered_map<std::string, size_t>& textureIDs)
+Utils::LoadMTLFile(
+    const std::string& directory,
+    const std::string& filename, 
+    std::vector<Material>& textureList, 
+    std::unordered_map<std::string, size_t>& textureIDs
+)
 {
     std::ifstream file(filename);
     if (!file.is_open())
@@ -179,12 +184,25 @@ Utils::LoadMTLFile(const std::string& filename, std::vector<Texture>& textureLis
             if (!textureFilename.empty() && !textureName.empty())
             {
                 textureIDs[textureName] = textureList.size();
-                textureList.emplace_back(textureFilename.c_str(),
-                                                 ambient,
-                                                 diffuse,
-                                                 specular,
-                                                 highlight);
+                textureList.emplace_back(
+                    textureFilename.c_str(),
+                    ambient,
+                    diffuse,
+                    specular,
+                    highlight
+                );
                 textureFilename.clear();
+            }
+            // material does not have a texture use alternate constructor
+            else if (!textureName.empty())
+            {
+                textureIDs[textureName] = textureList.size();
+                textureList.emplace_back(
+                    ambient,
+                    diffuse,
+                    specular,
+                    highlight
+                );
             }
             iss >> textureName;
         }
@@ -212,6 +230,7 @@ Utils::LoadMTLFile(const std::string& filename, std::vector<Texture>& textureLis
         {
             // Diffuse texture map
             iss >> textureFilename;
+            textureFilename = directory + textureFilename;
         }
     }
 
@@ -220,7 +239,22 @@ Utils::LoadMTLFile(const std::string& filename, std::vector<Texture>& textureLis
     {
         textureIDs[textureName] = textureList.size();
         textureList.emplace_back(
-            textureFilename.c_str(), ambient, diffuse, specular, highlight);
+            textureFilename.c_str(), 
+            ambient, 
+            diffuse, 
+            specular, 
+            highlight
+        );
+    }
+    else if (!textureName.empty())
+    {
+        textureIDs[textureName] = textureList.size();
+        textureList.emplace_back(
+            ambient,
+            diffuse,
+            specular,
+            highlight
+        );
     }
 
     file.close();

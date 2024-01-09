@@ -3,14 +3,14 @@
 #include "Vec3.h"
 #include "Vec2.h"
 #include "Vec4.h"
-
+#include "Assets.h"
 
 struct Vertex
 {
+    // Shader ID of this vertex
+    ShaderAsset shader_id{};
     // texture ID of the texture that shade this vertex
-    size_t tex_id{};
-    // index of vertex in vertex buffer
-    std::uint32_t index{};
+    int tex_id{};
     // texture uv
     Vec2 uv{};
     // local data
@@ -20,7 +20,7 @@ struct Vertex
     Vec3 pos{};
     // vertex normal
     Vec3 normal{};
-    // 4d homogenous coordiates output by vertex shader 
+    // 4d homogenous coordinates output by vertex shader 
     Vec4 proj{};
     // inverse w used for perspective corrected interpolation
     float invW{};

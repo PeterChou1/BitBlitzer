@@ -46,7 +46,7 @@
     <ClCompile Include="src\stdafx.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\Texture.cpp">
+    <ClCompile Include="src\Material.cpp">
       <Filter>src\Graphics</Filter>
     </ClCompile>
     <ClCompile Include="stb_image\stb_image.cpp">
@@ -93,6 +93,9 @@
     </ClCompile>
     <ClCompile Include="src\Rasterizer.cpp">
       <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UnlitSIMD.cpp">
+      <Filter>src\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -147,7 +150,7 @@
     <ClInclude Include="src\Tile.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Texture.h">
+    <ClInclude Include="src\Material.h">
       <Filter>src\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="src\ColorBuffer.h">
@@ -258,8 +261,11 @@
     <ClInclude Include="src\Rasterizer.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
-    <ClInclude Include="src\Unlit.h">
+    <ClInclude Include="src\UnlitSIMD.h">
       <Filter>src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader.h">
+      <Filter>src\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -304,6 +310,9 @@
     </Filter>
     <Filter Include="src\Scene">
       <UniqueIdentifier>{bf9ec9a4-d3ac-40fb-b4f6-1b82f22a4bbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Physics">
+      <UniqueIdentifier>{ebcce2a7-0109-46ce-b636-342cdb6f5f02}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

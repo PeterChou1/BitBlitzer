@@ -13,7 +13,7 @@ constexpr double ASPECT_RATIO = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
 void Scene::Setup()
 {
     // Loaded all asset that the current scene needs
-    std::set<ObjAsset> levelAssets({Furina});
+    std::set<ObjAsset> levelAssets({Furina, Pacman, Spot});
     AssetServer& loader = AssetServer::GetInstance();
     loader.LoadLevelAssets(levelAssets);
     
@@ -30,7 +30,7 @@ void Scene::Setup()
             Entity meshEntity = ECS.CreateEntity();
             auto modelTransform = Transform(Vec3(x * 2, 0, 5 + z * 2), Quat(Vec3(1, 0, 0), 0.0));
             ECS.AddComponent<Transform>(meshEntity, modelTransform);
-            ECS.AddComponent<Mesh>(meshEntity, Mesh(Furina));
+            ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
         }
     }
     
@@ -40,6 +40,7 @@ void Scene::Setup()
     debugCam = std::make_shared<DebugCamera>(
         DebugCamera(ECS.GetComponent<Camera>(camEntity))
     );
+
     rendererM = std::make_shared<Renderer>(
         Renderer(
             APP_VIRTUAL_WIDTH, 
@@ -47,9 +48,11 @@ void Scene::Setup()
             ECS.GetComponent<Camera>(camEntity)
         )
     );
+
     debugMesh = std::make_shared<DebugMesh>(
         DebugMesh()
     );
+
 }
 
 void Scene::Render()

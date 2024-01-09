@@ -3,7 +3,7 @@
 
 void BlinnPhongSIMD::Shade(SIMDPixel& pixel, 
                            std::vector<PointLight>& lights, 
-                           Texture& texture,
+                           Material& texture,
                            Camera& cam)
 {
     // setup 
@@ -27,7 +27,6 @@ void BlinnPhongSIMD::Shade(SIMDPixel& pixel,
     SIMDFloat diff = normal.Dot(lightDir);
 
     diff = SIMD::Max(diff, SIMD::ZERO);
-
 
     // Blinn Phong Model
     SIMDVec3 halfwayDir = (lightDir + viewDir).Normalize();

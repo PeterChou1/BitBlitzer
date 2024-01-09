@@ -10,7 +10,8 @@ void Triangle::PerspectiveDivision()
 
 bool Triangle::Setup(int id, int index)
 {
-    BinIndex = index, BinID = id;
+    BinIndex = index;
+    BinID = id;
 
     B0 = static_cast<int>(verts[1].proj.y - verts[0].proj.y);
     C0 = static_cast<int>(verts[1].proj.x - verts[0].proj.x);

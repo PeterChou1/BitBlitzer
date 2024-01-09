@@ -91,7 +91,7 @@ private:
 
     std::vector<sAnimation> m_animations;
 
-    // Texture management.
+    // Material management.
     struct sTextureDef
     {
         unsigned int m_width;
