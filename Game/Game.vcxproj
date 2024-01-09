@@ -190,6 +190,7 @@
     <ClInclude Include="src\Assets.h" />
     <ClInclude Include="src\BlingPhong.h" />
     <ClInclude Include="src\Rasterizer.h" />
+    <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\TypeID.h" />
     <ClInclude Include="src\DebugMesh.h" />
@@ -222,6 +223,7 @@
     <ClInclude Include="src\Triangle.h" />
     <ClInclude Include="src\UnlitSIMD.h" />
     <ClInclude Include="src\Vertex.h" />
+    <ClInclude Include="src\VertexShader.h" />
     <ClInclude Include="src\VisitorManager.h" />
     <ClInclude Include="src\Transform.h" />
     <ClInclude Include="src\Mat2.h" />

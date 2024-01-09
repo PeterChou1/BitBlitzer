@@ -101,13 +101,9 @@ void Renderer::Render()
 
 void Renderer::VertexTransform()
 {
-
     Concurrent::ForEach(m_VertexBuffer.begin(), m_VertexBuffer.end(), [&](Vertex& v)
     {
-        //Vertex projected = v;
         v.proj = m_cam.proj * Vec4(m_cam.WorldToCamera(v.pos));
-
-        //m_ProjectedVertexBuffer[v.index] = projected;
     });
 }
 
@@ -179,12 +175,10 @@ void Renderer::ClearBuffer()
     {
         m_Tiles[i].Clear();
     }
-
     for (int i = 0; i < m_CoreIds.size(); i++)
     {
         m_ProjectedClip[i].clear();
     }
-
 }
 
 void Renderer::UpdateMeshTransform(Entity entity, Transform& transform)

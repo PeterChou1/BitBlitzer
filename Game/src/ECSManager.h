@@ -6,6 +6,8 @@
 #include <memory>
 #include <set>
 
+#include "Resource.h"
+
 class ECSManager
 {
 public:
@@ -16,6 +18,7 @@ public:
         m_ComponentManager = std::make_shared<ComponentManager>();
         m_EntityManager = std::make_shared<EntityManager>();
         m_VisitorManager = std::make_shared<VisitorManager>();
+
     }
 
     void Reset()
@@ -23,6 +26,10 @@ public:
         m_ComponentManager->Clear();
         m_EntityManager->Clear();
         m_VisitorManager->Clear();
+        for (auto resource: m_Resources)
+        {
+             resource->ClearResource();
+        }
     }
 
 
@@ -49,8 +56,6 @@ public:
     }
 
 
-
-
     void DestroyEntity(Entity entity)
     {
         m_EntityManager->DestroyEntity(entity);
@@ -72,12 +77,6 @@ public:
         return m_VisitorManager->GetVisitor<T>();
     }
 
-    // Component methods
-    template <typename T>
-    void RegisterComponent()
-    {
-        m_ComponentManager->RegisterComponent<T>();
-    }
 
     template <typename T>
     void AddComponent(Entity entity, T component)
@@ -122,6 +121,38 @@ public:
         return m_ComponentManager->GetComponentType<T>();
     }
 
+    template <typename T>
+    void RegisterResource(T resource)
+    {
+        static_assert(std::is_base_of<Resource, T>::value, "T must derive from resource");
+        const char* typeName = typeid(T).name();
+        m_ResourceToIndex[typeName] = m_Resources.size();
+        m_Resources.push_back(std::make_shared<Resource>(resource));
+    }
+
+    template <typename T>
+    std::shared_ptr<T> GetResource()
+    {
+        static_assert(std::is_base_of<Resource, T>::value, "T must derive from resource");
+        assert(m_ResourceToIndex.find(typeid(T).name()) != m_ResourceToIndex.end() && "Resource Not Registered");
+        return std::dynamic_pointer_cast<T>(m_Resources[0]);
+    }
+
+
+    template <typename... Ts>
+    Signature GetSignature()
+    {
+        return m_ComponentManager->GetSignature<Ts>();
+    }
+
+private:
+
+    // Component methods
+    template <typename T>
+    void RegisterComponent()
+    {
+        m_ComponentManager->RegisterComponent<T>();
+    }
 
     // System methods
     template <typename T>
@@ -135,14 +166,10 @@ public:
         return visitor;
     }
 
-    template <typename... Ts>
-    Signature GetSignature()
-    {
-        return m_ComponentManager->GetSignature<Ts>();
-    }
 
-private:
     std::shared_ptr<ComponentManager> m_ComponentManager;
     std::shared_ptr<EntityManager> m_EntityManager;
     std::shared_ptr<VisitorManager> m_VisitorManager;
+    std::unordered_map<const char*, size_t> m_ResourceToIndex;
+    std::vector<std::shared_ptr<Resource>> m_Resources;
 };

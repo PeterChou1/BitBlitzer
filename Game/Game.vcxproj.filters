@@ -267,6 +267,12 @@
     <ClInclude Include="src\Shader.h">
       <Filter>src\Components</Filter>
     </ClInclude>
+    <ClInclude Include="src\Resource.h">
+      <Filter>src\ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VertexShader.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -313,6 +319,9 @@
     </Filter>
     <Filter Include="src\Physics">
       <UniqueIdentifier>{ebcce2a7-0109-46ce-b636-342cdb6f5f02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Resources">
+      <UniqueIdentifier>{018a4750-bbc1-4d79-b63b-defb0811a64e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
