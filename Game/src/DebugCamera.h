@@ -1,16 +1,16 @@
 #pragma once
+#include <memory>
+
 #include "Camera.h"
 
 class DebugCamera 
 {
 public:
-    DebugCamera(Camera& cam) : m_cam(cam)
-    {
-    }
+    DebugCamera();
 
     void Move(float deltaTime);
     void Render();
 
 private:
-    Camera& m_cam;
+    std::shared_ptr<Camera> m_cam;
 };

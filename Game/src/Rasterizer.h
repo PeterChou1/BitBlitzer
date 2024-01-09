@@ -1,24 +1,26 @@
 #pragma once
-#include <vector>
-
-#include "SIMDPixelBuffer.h"
-#include "Tile.h"
-#include "Triangle.h"
-
+#include "ClippedTriangleBuffer.h"
+#include "PixelBuffer.h"
+#include "RenderConstants.h"
+#include "Tiles.h"
 
 
-namespace Rendering
+class Rasterizer
 {
+public:
+    Rasterizer();
 
-    void AssignTile(
-        int binID, 
-        std::vector<std::vector<Triangle>>& ProjectedClip,
-        std::vector<Tile>& Tiles
-    );
+    void Rasterize();
 
-    void RasterizeTile(
-        Tile& tile,
-        SIMDPixelBuffer& pixelBuffer,
-        SIMDDepthBuffer& depthBuffer
-    );
-}
+private:
+
+    void AssignTile();
+
+    void RasterizeTiles();
+
+    std::shared_ptr<ClippedTriangleBuffer> m_ClippedTriangle;
+    std::shared_ptr<Tiles> m_Tiles;
+    std::shared_ptr<PixelBuffer> m_PixelBuffer;
+    std::shared_ptr<DepthBuffer> m_DepthBuffer;
+    std::shared_ptr<RenderConstants> m_RenderConstants;
+};

@@ -1,20 +1,15 @@
 //------------------------------------------------------------------------
-// GameTest.cpp
+// Game.cpp
 //------------------------------------------------------------------------
 #include "stdafx.h"
 //------------------------------------------------------------------------
-#include <windows.h>
-#include <math.h>
-#include <iostream>
-#include <fstream>
-//------------------------------------------------------------------------
-#include "../app/app.h"
-#include "Scene.h"
+#include "ECSManager.h"
+#include "GameManager.h"
 //------------------------------------------------------------------------
 
 
 ECSManager ECS;
-Scene manager;
+GameManager manager;
 
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.

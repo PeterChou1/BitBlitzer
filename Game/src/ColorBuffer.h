@@ -2,13 +2,9 @@
 #include <vector>
 #include <cassert>
 #include "Concurrent.h"
+#include "Resource.h"
 
-struct Color
-{
-    unsigned char r, g, b;
-};
-
-class ColorBuffer
+class ColorBuffer : public Resource
 {
 public:
     ColorBuffer() = default;
@@ -27,7 +23,7 @@ public:
         m_buffer[(y * m_width + x) * 3 + 2] = b;
     }
 
-    void Clear()
+    void ResetResource() override
     {
         Concurrent::ForEach(m_buffer.begin(), m_buffer.end(), [&](unsigned char& color)
         {

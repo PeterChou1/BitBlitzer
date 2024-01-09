@@ -4,13 +4,11 @@
 #include <cassert>
 
 
-Camera::Camera(Vec3 pos, Vec3 target, Vec3 up,
-               float width, float height,
-               float fov, float aspect_ratio,
-               float nearplane, float farplane) :
-    pos(pos), target(target),
-    up(up), nearplane(nearplane), farplane(farplane), screenHeight(height), screenWidth(width)
+void Camera::SetPosition(Vec3 camPos, Vec3 camTarget, Vec3 camUp)
 {
+    pos = camPos;
+    target = camTarget;
+    up = camUp;
     forward = (target - pos).Normalize() * -1;
     transform = Transform(pos, target, up);
     proj.PerspectiveOpenGL(fov, aspect_ratio, nearplane, farplane);
@@ -31,6 +29,7 @@ void Camera::ToRasterSpace(Vec4& point)
     assert(0 <= point.x && point.x <= screenWidth);
     assert(0 <= point.y && point.y <= screenHeight);
 }
+
 
 Vec3 Camera::CameraToWorld(const Vec3& point)
 {

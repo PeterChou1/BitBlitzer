@@ -61,17 +61,11 @@
     <ClCompile Include="src\Transform.cpp">
       <Filter>src\Components</Filter>
     </ClCompile>
-    <ClCompile Include="src\DebugCamera.cpp">
-      <Filter>src\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="src\GameManager.cpp">
       <Filter>src\Manager</Filter>
     </ClCompile>
     <ClCompile Include="src\Scene.cpp">
       <Filter>src\Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Renderer.cpp">
-      <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Triangle.cpp">
       <Filter>src\Graphics</Filter>
@@ -82,20 +76,35 @@
     <ClCompile Include="src\SIMDPixel.cpp">
       <Filter>src\SIMD</Filter>
     </ClCompile>
-    <ClCompile Include="src\DebugMesh.cpp">
-      <Filter>src\Systems</Filter>
-    </ClCompile>
     <ClCompile Include="src\BlingPhong.cpp">
       <Filter>src\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Camera.cpp">
-      <Filter>src\Components</Filter>
     </ClCompile>
     <ClCompile Include="src\Rasterizer.cpp">
       <Filter>src\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\UnlitSIMD.cpp">
       <Filter>src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DebugCamera.cpp">
+      <Filter>src\Systems\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DebugMesh.cpp">
+      <Filter>src\Systems\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Tiles.cpp">
+      <Filter>src\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\VertexShader.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>src\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FragmentShader.cpp">
+      <Filter>src\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MeshHandler.cpp">
+      <Filter>src\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -153,12 +162,6 @@
     <ClInclude Include="src\Material.h">
       <Filter>src\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\ColorBuffer.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DepthBuffer.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Vec2.h">
       <Filter>src\Math</Filter>
     </ClInclude>
@@ -192,9 +195,6 @@
     <ClInclude Include="src\Assets.h">
       <Filter>src\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\DebugCamera.h">
-      <Filter>src\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="App\main.h">
       <Filter>NextAPI</Filter>
     </ClInclude>
@@ -210,9 +210,6 @@
     <ClInclude Include="src\Vertex.h">
       <Filter>src\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer.h">
-      <Filter>src\Renderer</Filter>
-    </ClInclude>
     <ClInclude Include="src\Point.h">
       <Filter>src\Graphics</Filter>
     </ClInclude>
@@ -222,15 +219,6 @@
     <ClInclude Include="src\SIMDTriangle.h">
       <Filter>src\SIMD</Filter>
     </ClInclude>
-    <ClInclude Include="src\SIMDDepthBuffer.h">
-      <Filter>src\SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\SIMDPixelBuffer.h">
-      <Filter>src\SIMD</Filter>
-    </ClInclude>
-    <ClInclude Include="src\DebugMesh.h">
-      <Filter>src\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="src\Lights.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
@@ -238,9 +226,6 @@
       <Filter>src\Shader</Filter>
     </ClInclude>
     <ClInclude Include="src\Mesh.h">
-      <Filter>src\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Camera.h">
       <Filter>src\Components</Filter>
     </ClInclude>
     <ClInclude Include="src\ECSManager.h">
@@ -271,6 +256,45 @@
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\VertexShader.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DebugCamera.h">
+      <Filter>src\Systems\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DebugMesh.h">
+      <Filter>src\Systems\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PixelBuffer.h">
+      <Filter>src\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderConstants.h">
+      <Filter>src\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DepthBuffer.h">
+      <Filter>src\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Tiles.h">
+      <Filter>src\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\IndexBuffer.h">
+      <Filter>src\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorBuffer.h">
+      <Filter>src\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\VertexBuffer.h">
+      <Filter>src\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ClippedTriangleBuffer.h">
+      <Filter>src\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>src\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FragmentShader.h">
+      <Filter>src\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MeshHandler.h">
       <Filter>src\Renderer</Filter>
     </ClInclude>
   </ItemGroup>
@@ -322,6 +346,9 @@
     </Filter>
     <Filter Include="src\Resources">
       <UniqueIdentifier>{018a4750-bbc1-4d79-b63b-defb0811a64e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Systems\Debug">
+      <UniqueIdentifier>{53c0005a-3aab-41a3-b8b1-8e59bad99f4c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

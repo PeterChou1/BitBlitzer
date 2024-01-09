@@ -1,14 +1,15 @@
 #pragma once
-#include "SIMDPixel.h"
-#include "SIMDDepthBuffer.h"
+#include <vector>
 
-class SIMDPixelBuffer
+#include "Resource.h"
+#include "DepthBuffer.h"
+#include "SIMDPixel.h"
+
+class PixelBuffer : public Resource
 {
 public:
 
-    SIMDPixelBuffer() = default;
-
-    SIMDPixelBuffer(int width, int height) : m_width(width / SIMDPixel::PIXEL_WIDTH),
+    PixelBuffer(int width, int height) : m_width(width / SIMDPixel::PIXEL_WIDTH),
         m_height(height / SIMDPixel::PIXEL_HEIGHT)
     {
         m_Pixelbuffer.resize(m_height * m_width);
@@ -26,7 +27,7 @@ public:
      * \brief Once pixel has been rasterized accumulate the pixel so we can distribute the pixels evenly across threads
      * \param depth
      */
-    void AccumulatePixel(const SIMDDepthBuffer& depth)
+    void AccumulatePixel(const DepthBuffer& depth)
     {
         for (int i = 0; i < m_Pixelbuffer.size(); i++)
         {
@@ -62,7 +63,7 @@ public:
         return m_PixelScreenSpace.end();
     }
 
-    void Clear()
+    void ResetResource() override
     {
         for (int i = 0; i < m_Pixelbuffer.size(); i++)
         {

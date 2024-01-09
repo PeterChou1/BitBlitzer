@@ -1,0 +1,22 @@
+#include "stdafx.h"
+#include "VertexShader.h"
+
+#include "Concurrent.h"
+#include "ECSManager.h"
+
+extern ECSManager ECS;
+
+VertexShader::VertexShader()
+{
+    m_VertexBuffer = ECS.GetResource<VertexBuffer>();
+    m_cam = ECS.GetResource<Camera>();
+}
+
+void VertexShader::Shade()
+{
+    auto& buffer = m_VertexBuffer->buffer;
+    Concurrent::ForEach(buffer.begin(), buffer.end(), [&](Vertex& v)
+    {
+        v.proj = m_cam->proj * Vec4(m_cam->WorldToCamera(v.pos));
+    });
+}

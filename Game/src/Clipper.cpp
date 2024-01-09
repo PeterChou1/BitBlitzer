@@ -1,8 +1,11 @@
 #include "stdafx.h"
 #include <cassert>
 #include "Clipper.h"
-#include "Point.h"
 
+#include "Concurrent.h"
+#include "ECSManager.h"
+#include "Point.h"
+#include "Triangle.h"
 
 constexpr uint8_t LEFT_PLANE = 1 << 0, RIGHT_PLANE = 1 << 1, DOWN_PLANE = 1 << 2, UP_PLANE = 1 << 3, NEAR_PLANE = 1 << 4, FAR_PLANE = 1 << 5;
 
@@ -184,47 +187,66 @@ std::vector<Triangle> ClipAgainstPlane(Triangle& clip)
 }
 
 
-void Rendering::Clip(Camera& cam, 
-    std::vector<std::vector<Triangle>>& projectedClippedTriangle, 
-    std::vector<Vertex>& projectedVertexBuffer,
-    std::vector<std::uint32_t>& indexBuffer,
-    int binID, int start, int end)
+extern ECSManager ECS;
+
+Clipper::Clipper()
 {
-    std::vector<Triangle>& binProjectedClip = projectedClippedTriangle[binID];
+    m_RenderConstants = ECS.GetResource<RenderConstants>();
+    m_VertexBuffer = ECS.GetResource<VertexBuffer>();
+    m_IndexBuffer = ECS.GetResource<IndexBuffer>();
+    m_ClippedTriangleBuffer = ECS.GetResource<ClippedTriangleBuffer>();
+    m_Cam = ECS.GetResource<Camera>();
+}
 
-    for (int i = start; i < end; i++)
+void Clipper::Clip()
+{
+
+    std::vector<unsigned int> coreID = m_RenderConstants->CoreIds;
+    int coreInterval = m_RenderConstants->CoreInterval;
+    std::vector<Vertex>& vertexBuffer = m_VertexBuffer->buffer;
+    std::vector<std::uint32_t> indexBuffer = m_IndexBuffer->buffer;
+
+
+    Concurrent::ForEach(coreID.begin(), coreID.end(), [&](unsigned int binID)
     {
-        if (3 * i + 2 > indexBuffer.size())
-            break;
+        const int start = binID * coreInterval;
+        const auto end = (binID + 1) * coreInterval;
+        std::vector<Triangle>& binProjectedClip = m_ClippedTriangleBuffer->buffer[binID];
 
-        assert(indexBuffer[3 * i] < projectedVertexBuffer.size());
-        assert(indexBuffer[3 * i + 1] < projectedVertexBuffer.size());
-        assert(indexBuffer[3 * i + 2] < projectedVertexBuffer.size());
-
-        Vertex v1 = projectedVertexBuffer[indexBuffer[3 * i]];
-        Vertex v2 = projectedVertexBuffer[indexBuffer[3 * i + 1]];
-        Vertex v3 = projectedVertexBuffer[indexBuffer[3 * i + 2]];
-        // back face culling
-        auto t = Triangle(v1, v2, v3);
-
-        Vec3 normal = (v1.normal + v2.normal + v3.normal) / 3;
-
-
-        if (normal.Dot(v1.pos - cam.pos) < 0.0)
+        for (int i = start; i < end; i++)
         {
-            std::vector<Triangle> clipped = ClipAgainstPlane(t);
-            // Output projected screenSpacePosition to raster space
-            for (Triangle& clip : clipped)
+            if (3 * i + 2 > m_IndexBuffer->buffer.size())
+                break;
+
+            assert(m_IndexBuffer->buffer[3 * i] < vertexBuffer.size());
+            assert(m_IndexBuffer->buffer[3 * i + 1] < vertexBuffer.size());
+            assert(m_IndexBuffer->buffer[3 * i + 2] < vertexBuffer.size());
+
+            Vertex v1 = vertexBuffer[indexBuffer[3 * i]];
+            Vertex v2 = vertexBuffer[indexBuffer[3 * i + 1]];
+            Vertex v3 = vertexBuffer[indexBuffer[3 * i + 2]];
+            // back face culling
+            auto t = Triangle(v1, v2, v3);
+
+            Vec3 normal = (v1.normal + v2.normal + v3.normal) / 3;
+
+
+            if (normal.Dot(v1.pos - m_Cam->pos) < 0.0)
             {
-                cam.ToRasterSpace(clip.verts[0].proj);
-                cam.ToRasterSpace(clip.verts[1].proj);
-                cam.ToRasterSpace(clip.verts[2].proj);
-                if (clip.Setup(binID, binProjectedClip.size()))
+                std::vector<Triangle> clipped = ClipAgainstPlane(t);
+                // Output projected screenSpacePosition to raster space
+                for (Triangle& clip : clipped)
                 {
-                    binProjectedClip.push_back(clip);
+                    m_Cam->ToRasterSpace(clip.verts[0].proj);
+                    m_Cam->ToRasterSpace(clip.verts[1].proj);
+                    m_Cam->ToRasterSpace(clip.verts[2].proj);
+                    if (clip.Setup(binID, binProjectedClip.size()))
+                    {
+                        binProjectedClip.push_back(clip);
+                    }
                 }
             }
         }
-    }
-
+    });
+   
 }

@@ -189,9 +189,16 @@
     <ClInclude Include="App\SimpleSprite.h" />
     <ClInclude Include="src\Assets.h" />
     <ClInclude Include="src\BlingPhong.h" />
+    <ClInclude Include="src\ClippedTriangleBuffer.h" />
+    <ClInclude Include="src\FragmentShader.h" />
+    <ClInclude Include="src\IndexBuffer.h" />
+    <ClInclude Include="src\MeshHandler.h" />
+    <ClInclude Include="src\PixelBuffer.h" />
     <ClInclude Include="src\Rasterizer.h" />
+    <ClInclude Include="src\RenderConstants.h" />
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Shader.h" />
+    <ClInclude Include="src\Tiles.h" />
     <ClInclude Include="src\TypeID.h" />
     <ClInclude Include="src\DebugMesh.h" />
     <ClInclude Include="src\GameManager.h" />
@@ -199,9 +206,7 @@
     <ClInclude Include="src\Lights.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Point.h" />
-    <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\SIMDShader.h" />
-    <ClInclude Include="src\SIMDDepthBuffer.h" />
     <ClInclude Include="src\SIMDPixel.h" />
     <ClInclude Include="src\SIMD.h" />
     <ClInclude Include="src\Clipper.h" />
@@ -216,13 +221,13 @@
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\EntityManager.h" />
     <ClInclude Include="src\Scene.h" />
-    <ClInclude Include="src\SIMDPixelBuffer.h" />
     <ClInclude Include="src\SIMDTriangle.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\Triangle.h" />
     <ClInclude Include="src\UnlitSIMD.h" />
     <ClInclude Include="src\Vertex.h" />
+    <ClInclude Include="src\VertexBuffer.h" />
     <ClInclude Include="src\VertexShader.h" />
     <ClInclude Include="src\VisitorManager.h" />
     <ClInclude Include="src\Transform.h" />
@@ -251,13 +256,15 @@
     <ClCompile Include="src\Clipper.cpp" />
     <ClCompile Include="src\DebugCamera.cpp" />
     <ClCompile Include="src\DebugMesh.cpp" />
+    <ClCompile Include="src\FragmentShader.cpp" />
+    <ClCompile Include="src\MeshHandler.cpp" />
     <ClCompile Include="src\Rasterizer.cpp" />
-    <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\SIMDPixel.cpp" />
     <ClCompile Include="src\SIMDTriangle.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Tile.cpp" />
+    <ClCompile Include="src\Tiles.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Scene.cpp" />
@@ -277,6 +284,7 @@
     <ClCompile Include="src\Vec2.cpp" />
     <ClCompile Include="src\Vec3.cpp" />
     <ClCompile Include="src\Vec4.cpp" />
+    <ClCompile Include="src\VertexShader.cpp" />
     <ClCompile Include="stb_image\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>

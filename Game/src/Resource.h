@@ -8,5 +8,6 @@ class Resource
 {
 public:
     virtual ~Resource() = default;
-    virtual void ClearResource() = 0;
+    virtual void ResetResource() = 0;
 };
+

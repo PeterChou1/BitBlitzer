@@ -28,7 +28,7 @@ public:
         m_VisitorManager->Clear();
         for (auto resource: m_Resources)
         {
-             resource->ClearResource();
+             resource->ResetResource();
         }
     }
 
@@ -126,16 +126,18 @@ public:
     {
         static_assert(std::is_base_of<Resource, T>::value, "T must derive from resource");
         const char* typeName = typeid(T).name();
+        assert(m_ResourceToIndex.find(typeName) == m_ResourceToIndex.end() && "Resource already registered");
         m_ResourceToIndex[typeName] = m_Resources.size();
-        m_Resources.push_back(std::make_shared<Resource>(resource));
+        m_Resources.push_back(std::make_shared<T>(resource));
     }
 
     template <typename T>
     std::shared_ptr<T> GetResource()
     {
         static_assert(std::is_base_of<Resource, T>::value, "T must derive from resource");
-        assert(m_ResourceToIndex.find(typeid(T).name()) != m_ResourceToIndex.end() && "Resource Not Registered");
-        return std::dynamic_pointer_cast<T>(m_Resources[0]);
+        const char* typeName = typeid(T).name();
+        assert(m_ResourceToIndex.find(typeName) != m_ResourceToIndex.end() && "Resource Not Registered");
+        return std::dynamic_pointer_cast<T>(m_Resources[m_ResourceToIndex[typeName]]);
     }
 
 
