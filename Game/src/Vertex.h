@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "Vec3.h"
 #include "Vec2.h"
 #include "Vec4.h"
@@ -42,6 +44,15 @@ struct Vertex
     {
     }
 
+    // used as a hashing function for when we're loading obj files
+    std::string ToString()
+    {
+        return "{" + std::to_string(tex_id) + 
+                     localPosition.ToString() + 
+                     localNormal.ToString() + 
+                     uv.ToString() + "}" ;
+    }
+
     void PerspectiveDivision()
     {
         invW = 1 / proj.w;
@@ -75,23 +86,5 @@ struct Vertex
     {
         return uv == rhs.uv && normal == rhs.normal &&
             pos == rhs.pos && invW == rhs.invW && tex_id == rhs.tex_id;
-    }
-};
-
-// hash method used: https://en.cppreference.com/w/Talk:cpp/utility/hash
-template <>
-struct std::hash<Vertex>
-{
-    std::size_t operator()(Vertex const& v) const noexcept
-    {
-        std::size_t h1 = std::hash<size_t>{}(v.tex_id);
-        h1 = h1 ^ (std::hash<float>{}(v.uv.x) << 1);
-        h1 = h1 ^ (std::hash<float>{}(v.uv.y) << 2);
-        h1 = h1 ^ (std::hash<float>{}(v.localPosition.x) << 3);
-        h1 = h1 ^ (std::hash<float>{}(v.localPosition.y) << 4);
-        h1 = h1 ^ (std::hash<float>{}(v.localPosition.z) << 5);
-        h1 = h1 ^ (std::hash<float>{}(v.localNormal.x) << 6);
-        h1 = h1 ^ (std::hash<float>{}(v.localNormal.y) << 7);
-        return h1;
     }
 };

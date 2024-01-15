@@ -2,16 +2,16 @@
 #include "Utils.h"
 #include <fstream>
 #include <iostream>
-#include <sstream>
 #include <unordered_map>
+#include <sstream>
 #include <vector>
 #include "Triangle.h"
 
 
 
 bool Utils::LoadInstance(std::string filename,
-                    MeshInstance& mesh,
-                    std::vector<Material>& textureList)
+    MeshInstance& mesh,
+    std::vector<Material>& textureList)
 {
     std::ifstream file(filename);
     size_t lastSlash = filename.find_last_of("/\\");
@@ -24,7 +24,7 @@ bool Utils::LoadInstance(std::string filename,
     std::vector<Vec3> temp_vertices;
     std::vector<Vec2> temp_uvs;
     std::vector<Vec3> temp_normals;
-    std::unordered_map<Vertex, uint32_t> vertexMap;
+    std::unordered_map<std::string, uint32_t> vertexMap;
     bool UV = false, Normal = false;
     int cur_texID = -1;
     std::string line;
@@ -77,8 +77,8 @@ bool Utils::LoadInstance(std::string filename,
         {
             std::string vertex1, vertex2, vertex3;
             ss >> vertex1 >> vertex2 >> vertex3;
-            std::string varray[3] = {vertex1, vertex2, vertex3};
-            Vertex vertarray[3] = {Vertex(), Vertex(), Vertex()};
+            std::string varray[3] = { vertex1, vertex2, vertex3 };
+            Vertex vertarray[3] = { Vertex(), Vertex(), Vertex() };
 
             for (int i = 0; i < 3; i++)
             {
@@ -131,21 +131,16 @@ bool Utils::LoadInstance(std::string filename,
                 vertarray[2].localNormal = normal;
             }
 
-            for (int i = 0; i < 3; i++)
+            for (Vertex& v : vertarray)
             {
-                Vertex& v = vertarray[i];
+                std::string VString = v.ToString();
                 v.tex_id = cur_texID;
-
-                if (vertexMap.find(v) == vertexMap.end())
+                if (vertexMap.find(VString) == vertexMap.end())
                 {
-                    vertexMap[v] = mesh.vertices.size();
+                    vertexMap[VString] = mesh.vertices.size();
                     mesh.vertices.push_back(v);
-                    mesh.indices.push_back(vertexMap[v]);
                 }
-                else
-                {
-                    mesh.indices.push_back(vertexMap[v]);
-                }
+                mesh.indices.push_back(vertexMap[VString]);
             }
         }
     }
