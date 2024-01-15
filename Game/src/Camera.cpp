@@ -30,6 +30,13 @@ void Camera::ToRasterSpace(Vec4& point)
     assert(0 <= point.y && point.y <= screenHeight);
 }
 
+void Camera::ToRasterSpaceDebug(Vec4& point)
+{
+    point.x = static_cast<int>((point.x + 1) * 0.5 * screenWidth);
+    point.y = static_cast<int>((point.y + 1) * 0.5 * screenHeight);
+}
+
+
 
 Vec3 Camera::CameraToWorld(const Vec3& point)
 {

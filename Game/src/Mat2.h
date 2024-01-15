@@ -13,6 +13,7 @@ public:
     Mat2(const float* mat);
     Mat2(const Vec2& row0, const Vec2& row1);
 
+    Vec2 operator*(const Vec2& rhs);
     Mat2& operator=(const Mat2& rhs);
     const Mat2& operator*=(const float rhs);
     const Mat2& operator+=(const Mat2& rhs);

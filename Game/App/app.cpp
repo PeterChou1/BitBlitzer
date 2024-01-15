@@ -41,6 +41,25 @@ namespace App
         glEnd();
     }
 
+    void DrawDot(float sx, float sy, float radius, float r, float g, float b)
+    {
+#if APP_USE_VIRTUAL_RES
+        APP_VIRTUAL_TO_NATIVE_COORDS(sx, sy);
+#endif
+
+        int num_segments = 32;
+
+        glBegin(GL_POLYGON);
+        for (int i = 0; i < num_segments; i++) {
+            float theta = 2.0f * 3.1415926f * float(i) / float(num_segments); // get the current angle 
+            float x = radius * cosf(theta); // calculate the x component 
+            float y = radius * sinf(theta); // calculate the y component
+            glColor3f(r, g, b);
+            glVertex2f(x + sx, y + sy); // output vertex 
+        }
+        glEnd();
+    }
+
 
     void DrawLine(float sx, float sy, float ex, float ey, float r, float g, float b)
     {

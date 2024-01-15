@@ -53,10 +53,10 @@
       <Filter>stb_image</Filter>
     </ClCompile>
     <ClCompile Include="src\Tile.cpp">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Clipper.cpp">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Transform.cpp">
       <Filter>src\Components</Filter>
@@ -80,7 +80,7 @@
       <Filter>src\Shader</Filter>
     </ClCompile>
     <ClCompile Include="src\Rasterizer.cpp">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\UnlitSIMD.cpp">
       <Filter>src\Shader</Filter>
@@ -95,16 +95,31 @@
       <Filter>src\Resources</Filter>
     </ClCompile>
     <ClCompile Include="src\VertexShader.cpp">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera.cpp">
       <Filter>src\Resources</Filter>
     </ClCompile>
     <ClCompile Include="src\FragmentShader.cpp">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\MeshHandler.cpp">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DebugPhysicsRenderer.cpp">
+      <Filter>src\Systems\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicsSystem.cpp">
+      <Filter>src\Systems\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Manifolds.cpp">
+      <Filter>src\Systems\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RigidBody.cpp">
+      <Filter>src\Systems\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Collision.cpp">
+      <Filter>src\Systems\Physics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -130,7 +145,7 @@
       <Filter>stb_image</Filter>
     </ClInclude>
     <ClInclude Include="src\Clipper.h">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\ComponentBuffer.h">
       <Filter>src\ECS</Filter>
@@ -157,7 +172,7 @@
       <Filter>src\SIMD</Filter>
     </ClInclude>
     <ClInclude Include="src\Tile.h">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Material.h">
       <Filter>src\Graphics</Filter>
@@ -220,7 +235,7 @@
       <Filter>src\SIMD</Filter>
     </ClInclude>
     <ClInclude Include="src\Lights.h">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\BlingPhong.h">
       <Filter>src\Shader</Filter>
@@ -244,7 +259,7 @@
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\Rasterizer.h">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\UnlitSIMD.h">
       <Filter>src\Shader</Filter>
@@ -256,7 +271,7 @@
       <Filter>src\ECS</Filter>
     </ClInclude>
     <ClInclude Include="src\VertexShader.h">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\DebugCamera.h">
       <Filter>src\Systems\Debug</Filter>
@@ -292,10 +307,31 @@
       <Filter>src\Resources</Filter>
     </ClInclude>
     <ClInclude Include="src\FragmentShader.h">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\MeshHandler.h">
-      <Filter>src\Renderer</Filter>
+      <Filter>src\Systems\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DebugPhysicsRenderer.h">
+      <Filter>src\Systems\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shape.h">
+      <Filter>src\Systems\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RigidBody.h">
+      <Filter>src\Systems\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\PhysicsSystem.h">
+      <Filter>src\Systems\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Manifolds.h">
+      <Filter>src\Systems\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AABB.h">
+      <Filter>src\Systems\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Collision.h">
+      <Filter>src\Systems\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -307,9 +343,6 @@
     </Filter>
     <Filter Include="src\Manager">
       <UniqueIdentifier>{63e12452-ef8d-4307-9b96-e0da3dab4610}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Renderer">
-      <UniqueIdentifier>{4f97ac51-32ed-4e03-a4ba-7b967f83e964}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Utils">
       <UniqueIdentifier>{9a6dc7e8-5752-400b-907e-e14391272622}</UniqueIdentifier>
@@ -341,14 +374,17 @@
     <Filter Include="src\Scene">
       <UniqueIdentifier>{bf9ec9a4-d3ac-40fb-b4f6-1b82f22a4bbe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Physics">
-      <UniqueIdentifier>{ebcce2a7-0109-46ce-b636-342cdb6f5f02}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Resources">
       <UniqueIdentifier>{018a4750-bbc1-4d79-b63b-defb0811a64e}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Systems\Debug">
       <UniqueIdentifier>{53c0005a-3aab-41a3-b8b1-8e59bad99f4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Systems\Renderer">
+      <UniqueIdentifier>{4f97ac51-32ed-4e03-a4ba-7b967f83e964}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Systems\Physics">
+      <UniqueIdentifier>{ebcce2a7-0109-46ce-b636-342cdb6f5f02}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -53,7 +53,6 @@ public:
     {
         App::DrawTriangle(minRaster.x, minRaster.y, maxRaster.x, maxRaster.y, minRaster.x, maxRaster.y, r, g, b);
         App::DrawTriangle(minRaster.x, minRaster.y, maxRaster.x, maxRaster.y, maxRaster.x, minRaster.y, r, g, b);
-
         App::DrawLine(minRaster.x, minRaster.y, minRaster.x, maxRaster.y);
         App::DrawLine(maxRaster.x, maxRaster.y, minRaster.x, maxRaster.y);
     }

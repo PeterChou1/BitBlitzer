@@ -22,6 +22,14 @@ Mat2::Mat2(const Vec2& row0, const Vec2& row1)
     rows[1] = row1;
 }
 
+Vec2 Mat2::operator*(const Vec2& rhs)
+{
+    Vec2 tmp;
+    tmp[0] = rows[0].Dot(rhs);
+    tmp[1] = rows[1].Dot(rhs);
+    return tmp;
+}
+
 Mat2& Mat2::operator=(const Mat2& rhs)
 {
     rows[0] = rhs.rows[0];

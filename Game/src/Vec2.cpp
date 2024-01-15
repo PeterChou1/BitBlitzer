@@ -32,8 +32,8 @@ Vec2& Vec2::operator=(const Vec2& rhs)
 
 bool Vec2::operator==(const Vec2& rhs) const
 {
-    if (x != rhs.x) return false;
-    if (y != rhs.y) return false;
+    if (std::abs(x - rhs.x) < std::numeric_limits<float>::epsilon()) return false;
+    if (std::abs(y - rhs.y) < std::numeric_limits<float>::epsilon()) return false;
     return true;
 }
 
@@ -81,6 +81,11 @@ Vec2 Vec2::operator*(const float rhs) const
     return temp;
 }
 
+Vec2 Vec2::operator/(float rhs) const
+{
+    return Vec2(x / rhs, y / rhs);
+}
+
 const Vec2& Vec2::operator*=(const float rhs)
 {
     x *= rhs;
@@ -119,11 +124,27 @@ const Vec2& Vec2::Normalize()
     return *this;
 }
 
+float Vec2::Cross(const Vec2& rhs) const
+{
+    return x * rhs.y - y * rhs.x;
+}
+
+
+Vec2 Vec2::Cross(float rhs) const
+{
+    return {y * rhs, x * -rhs};
+}
+
 float Vec2::GetMagnitude() const
 {
     float mag = x * x + y * y;
     mag = sqrtf(mag);
     return mag;
+}
+
+float Vec2::GetMagnitudeSquared() const
+{
+    return x * x + y * y;
 }
 
 bool Vec2::IsValid() const

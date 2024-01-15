@@ -6,8 +6,10 @@
 #include "Clipper.h"
 #include "DebugCamera.h"
 #include "DebugMesh.h"
+#include "DebugPhysicsRenderer.h"
 #include "FragmentShader.h"
 #include "MeshHandler.h"
+#include "PhysicsSystem.h"
 #include "Rasterizer.h"
 #include "VertexShader.h"
 
@@ -34,4 +36,6 @@ private:
     std::unique_ptr<MeshHandler> m_MeshHandler;
     std::unique_ptr<DebugCamera> m_DebugCamera;
     std::unique_ptr<DebugMesh> m_DebugMesh;
+    std::unique_ptr<PhysicsSystem> m_PhysicsSystem;
+    std::unique_ptr<DebugPhysicsRenderer> m_DebugPhysicsRender;
 };

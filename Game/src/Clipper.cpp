@@ -77,8 +77,6 @@ ClipPlane(uint32_t planeid, std::vector<Point>& points)
         Point newpoint{};
         Lerp(points[i], points[j], t, newpoint);
 
-        // is inside
-
         const auto isInsideA = Dot(planeid, Apoint.position) > 0;
         const auto isInsideB = Dot(planeid, Bpoint.position) > 0;
 

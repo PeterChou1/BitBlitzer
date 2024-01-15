@@ -9,6 +9,10 @@
 namespace Utils
 {
 
+    inline float Clamp(float n, float lower, float upper)
+    {
+        return std::max(lower, std::min(n, upper));
+    }
 
     /**
      * \brief  Code adapted from https://stackoverflow.com/questions/33571609/having-trouble-with-vector-erase-and-remove-if

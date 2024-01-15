@@ -59,6 +59,65 @@ Transform::Transform(const Vec3& pos, const Vec3& target, const Vec3& up)
     Inverse = Affine.AffineInverse();
 }
 
+void Transform::SetPosition(const Vec3& pos)
+{
+    Position = pos;
+    Affine.rows[0][3] = Position.x;
+    Affine.rows[1][3] = Position.y;
+    Affine.rows[2][3] = Position.z;
+    Inverse = Affine.AffineInverse();
+    IsDirty = true;
+}
+
+void Transform::SetPosition2D(const Vec2& pos)
+{
+    Position.x = pos.x;
+    Position.y = pos.y;
+    Affine.rows[0][3] = Position.x;
+    Affine.rows[1][3] = Position.y;
+    Inverse = Affine.AffineInverse();
+    IsDirty = true;
+}
+
+void Transform::UpdateRow(float row)
+{
+    Quat q = Quat(Vec3(1, 0, 0), row);
+    Rotation *= q;
+    Mat3 newrot = Mat3::FromQuat(Rotation);
+    Affine.rows[0] = { newrot[0][0], newrot[0][1], newrot[0][2], Position.x };
+    Affine.rows[1] = { newrot[1][0], newrot[1][1], newrot[1][2], Position.y };
+    Affine.rows[2] = { newrot[2][0], newrot[2][1], newrot[2][2], Position.z };
+    Affine.rows[3] = { 0.0, 0.0, 0.0, 1.0 };
+    Inverse = Affine.AffineInverse();
+    IsDirty = true;
+}
+
+void Transform::UpdatePitch(float pitch)
+{
+    Quat q = Quat(Vec3(0, 1, 0), pitch);
+    Rotation *= q;
+    Mat3 newrot = Mat3::FromQuat(Rotation);
+    Affine.rows[0] = { newrot[0][0], newrot[0][1], newrot[0][2], Position.x };
+    Affine.rows[1] = { newrot[1][0], newrot[1][1], newrot[1][2], Position.y };
+    Affine.rows[2] = { newrot[2][0], newrot[2][1], newrot[2][2], Position.z };
+    Affine.rows[3] = { 0.0, 0.0, 0.0, 1.0 };
+    Inverse = Affine.AffineInverse();
+    IsDirty = true;
+}
+
+void Transform::UpdateYaw(float yaw)
+{
+    Quat q = Quat(Vec3(0, 0, 1), yaw);
+    Rotation *= q;
+    Mat3 newrot = Mat3::FromQuat(Rotation);
+    Affine.rows[0] = { newrot[0][0], newrot[0][1], newrot[0][2], Position.x };
+    Affine.rows[1] = { newrot[1][0], newrot[1][1], newrot[1][2], Position.y };
+    Affine.rows[2] = { newrot[2][0], newrot[2][1], newrot[2][2], Position.z };
+    Affine.rows[3] = { 0.0, 0.0, 0.0, 1.0 };
+    Inverse = Affine.AffineInverse();
+    IsDirty = true;
+}
+
 void Transform::Update(const Vec3& delta, const Quat& rot)
 {
     Rotation = Rotation * rot;

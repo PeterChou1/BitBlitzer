@@ -77,5 +77,19 @@ void FragmentShader::Shade()
     });
 
     // Blit to OpenGL Texture
-    App::RenderTexture(m_ColorBuffer->GetBuffer());
+    //App::RenderTexture(m_ColorBuffer->GetBuffer());
+
+    for (int x = 0; x < APP_VIRTUAL_WIDTH; x++)
+    {
+        for (int y = 0; y < APP_VIRTUAL_HEIGHT; y++)
+        {
+            unsigned char r, g, b;
+            m_ColorBuffer->GetColor(x, y, r, g, b);
+            App::DrawPoint(
+                static_cast<float>(x), 
+                static_cast<float>(y), 
+                r / 225.0, g / 255.0, b / 255.0 
+            );
+        }
+    }
 }

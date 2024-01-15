@@ -23,6 +23,14 @@ public:
         m_buffer[(y * m_width + x) * 3 + 2] = b;
     }
 
+    void GetColor(int x, int y, unsigned char& r, unsigned char& g, unsigned char& b)
+    {
+        r = m_buffer[(y * m_width + x) * 3];
+        g = m_buffer[(y * m_width + x) * 3 + 1];
+        b = m_buffer[(y * m_width + x) * 3 + 2];
+    }
+
+
     void ResetResource() override
     {
         Concurrent::ForEach(m_buffer.begin(), m_buffer.end(), [&](unsigned char& color)

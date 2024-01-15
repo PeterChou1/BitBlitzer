@@ -11,6 +11,7 @@ struct Vertex
     ShaderAsset shader_id{};
     // texture ID of the texture that shade this vertex
     int tex_id{};
+    Vec3 color{};
     // texture uv
     Vec2 uv{};
     // local data

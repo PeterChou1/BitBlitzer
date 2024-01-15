@@ -20,7 +20,7 @@ Scene scene;
 void GameManager::Setup()
 {
     // setup opengl rendering instance
-    App::SetupGL();
+    //App::SetupGL();
 
     // Register Resources Required For Rendering
     ECS.RegisterResource(Camera());
@@ -33,6 +33,7 @@ void GameManager::Setup()
     ECS.RegisterResource(ColorBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT));
     ECS.RegisterResource(RenderConstants());
 
+
     // Initialize Render Systems
     m_VertexShader = std::make_unique<VertexShader>(VertexShader());
     m_Clipper = std::make_unique<Clipper>(Clipper());
@@ -41,6 +42,8 @@ void GameManager::Setup()
     m_DebugCamera = std::make_unique<DebugCamera>(DebugCamera());
     m_DebugMesh = std::make_unique<DebugMesh>(DebugMesh());
     m_MeshHandler = std::make_unique<MeshHandler>(MeshHandler());
+    m_PhysicsSystem = std::make_unique<PhysicsSystem>(PhysicsSystem());
+    m_DebugPhysicsRender = std::make_unique<DebugPhysicsRenderer>(DebugPhysicsRenderer());
 
     scene.Setup();
 }
@@ -48,8 +51,9 @@ void GameManager::Setup()
 void GameManager::Update(float deltaTime)
 {
     m_DebugCamera->Move(deltaTime);
-    m_DebugMesh->Update(deltaTime);
+    //m_DebugMesh->Update(deltaTime);
     m_MeshHandler->Update();
+    //m_PhysicsSystem->Update(deltaTime);
 }
 
 void GameManager::Render()
@@ -60,6 +64,8 @@ void GameManager::Render()
     m_Rasterizer->Rasterize();
     m_FragmentShader->Shade();
     m_DebugCamera->Render();
+    //m_DebugPhysicsRender->Render();
+
     // Clear Render Pipeline to get ready for next pass
     ECS.GetResource<ClippedTriangleBuffer>()->ResetResource();
     ECS.GetResource<Tiles>()->ResetResource();

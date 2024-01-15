@@ -19,9 +19,14 @@
 //---------------------------------------------------------------------------------
 namespace App
 {
+
+
     void DrawPoint(float sx, float sy, float r = 1.0f, float g = 1.0f, float b = 1.0f);
-    //
-    //
+
+
+    void DrawDot(float sx, float sy, float radius, float r = 1.0f, float g = 1.0f, float b = 1.0f);
+
+
     void DrawTriangle(float ax, float ay, float bx, float by, float cx, float cy, float r = 1.0f, float g = 1.0f,
                       float b = 1.0f);
 
@@ -31,14 +36,14 @@ namespace App
     //-------------------------------------------------------------------------------------------
     // void DrawLine( float sx, float sy, float ex, float ey, float r = 1.0f, float g = 1.0f, float b = 1.0f );
     //-------------------------------------------------------------------------------------------
-    // Draw a 2D Line from sx,sy to ex, ey using color r = red, g = green, b=blue.
+    // Draw a 2D Line from sx,sy to ex, ey using Color r = red, g = green, b=blue.
     //-------------------------------------------------------------------------------------------
     void DrawLine(float sx, float sy, float ex, float ey, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
     //-------------------------------------------------------------------------------------------
     // void Print(float x, float y, const char *text, float r = 1.0f, float g = 1.0f, float b = 1.0f, void *font = GLUT_BITMAP_HELVETICA_18);
     //-------------------------------------------------------------------------------------------
-    // Print text to screen at x,y coordinates using color r = red, g = green, b=blue using the passed GLUT font. 
+    // Print text to screen at x,y coordinates using Color r = red, g = green, b=blue using the passed GLUT font. 
     // Color values are in the range 0.0f to 1.0f.
     // Available fonts...
     // GLUT_BITMAP_9_BY_15, GLUT_BITMAP_8_BY_13, GLUT_BITMAP_TIMES_ROMAN_10, GLUT_BITMAP_TIMES_ROMAN_24
@@ -114,6 +119,7 @@ namespace App
     // See SimpleController.h for more info.
     //-------------------------------------------------------------------------------------------
     const CController& GetController(int pad = 0);
+
 
 
     void SetupGL();

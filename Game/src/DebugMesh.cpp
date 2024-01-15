@@ -3,6 +3,7 @@
 #include "ECSManager.h"
 #include "Mesh.h"
 #include "MeshInstance.h"
+#include "RigidBody.h"
 #include "Transform.h"
 #include "../App/app.h"
 
@@ -13,7 +14,7 @@ void DebugMesh::Update(float deltaTime)
 
     std::vector<Entity> entities;
 
-    for (auto e : ECS.Visit<Mesh, Transform>())
+    for (auto e : ECS.Visit<RigidBody, Transform>())
     {
         entities.push_back(e);
     }
@@ -21,43 +22,54 @@ void DebugMesh::Update(float deltaTime)
     if (!entities.empty())
     {
 
-        Entity first = entities.front();
-        Entity last = entities.back();
+        Entity first = entities.back();
 
-        auto& meshFirst = ECS.GetComponent<Mesh>(first);
-        auto& meshLast = ECS.GetComponent<Mesh>(last);
+        //auto& meshFirst = ECS.GetComponent<Mesh>(first);
         auto& transformFirst = ECS.GetComponent<Transform>(first);
 
-        float speed = 5.0f * (deltaTime / 1000.0f);
+        float speed = 1.0f * (deltaTime / 1000.0f);
 
-        if (App::IsKeyPressed('Z'))
+        
+
+        //rot *= (deltaTime / 100.0f);
+
+        //if (App::IsKeyPressed('Z'))
+        //{
+        //    // delete the first
+        //    // entities
+        //    meshFirst.markedForDeletion = true;
+        //}
+        if (App::IsKeyPressed('R'))
         {
-            // delete the first
-            // entities
-            meshFirst.markedForDeletion = true;
-            meshLast.markedForDeletion = true;
+            Quat rot = Quat(Vec3(0, 0, 1.0), 1.0 * (deltaTime / 1000.0f));
+            transformFirst.Update({0.0, 0.0, 0.0}, rot);
         }
 
+        if (App::IsKeyPressed('Y'))
+        {
+            Quat rot = Quat(Vec3(0, 0, 1.0), -1.0 * (deltaTime / 1000.0f));
+            transformFirst.Update({ 0.0, 0.0, 0.0 }, rot);
+        }
 
-        if (App::IsKeyPressed('4'))
+        if (App::IsKeyPressed('H'))
         {
             // move first entity -x
             transformFirst.Update({-speed, 0.0, 0.0}, Quat());
         }
 
-        if (App::IsKeyPressed('5'))
+        if (App::IsKeyPressed('G'))
         {
             // move first entity -y
             transformFirst.Update({ 0.0, -speed, 0.0 }, Quat());
         }
 
-        if (App::IsKeyPressed('6'))
+        if (App::IsKeyPressed('F'))
         {
             // move first entity +x
             transformFirst.Update({ speed, 0.0, 0.0 }, Quat());
         }
 
-        if (App::IsKeyPressed('8'))
+        if (App::IsKeyPressed('T'))
         {
             // move first entity +y
             transformFirst.Update({ 0.0, speed, 0.0 }, Quat());

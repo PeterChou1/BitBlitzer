@@ -28,6 +28,7 @@ public:
     const Vec2& operator-=(const Vec2& rhs);
 
     Vec2 operator*(float rhs) const;
+    Vec2 operator/(float rhs) const;
 
     const Vec2& operator*=(float rhs);
     const Vec2& operator/=(float rhs);
@@ -36,7 +37,11 @@ public:
     float& operator[](int idx);
 
     const Vec2& Normalize();
+    Vec2 Cross(float rhs) const;
+    float Cross(const Vec2& rhs) const;
     float GetMagnitude() const;
+    float GetMagnitudeSquared() const;
+
     bool IsValid() const;
 
     std::string ToString() const;

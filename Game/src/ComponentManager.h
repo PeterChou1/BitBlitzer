@@ -31,10 +31,7 @@ public:
     {
         ComponentTypeID typeID = TypeID<T>::value;
         if (mComponentTypes.find(typeID) == mComponentTypes.end())
-        {
-            // component registerd before use
             RegisterComponent<T>();
-        }
         return mComponentTypes[typeID];
     }
 
@@ -55,10 +52,7 @@ public:
     {
         ComponentTypeID typeID = TypeID<T>::value;
         if (mComponentTypes.find(typeID) == mComponentTypes.end())
-        {
-            // component registerd before use
             RegisterComponent<T>();
-        }
         GetComponentArray<T>()->InsertData(entity, component);
     }
 
@@ -72,7 +66,9 @@ public:
     bool HasComponent(Entity entity)
     {
         ComponentTypeID typeID = TypeID<T>::value;
-        return mComponentTypes.find(typeID) != mComponentTypes.end();
+        if (mComponentTypes.find(typeID) != mComponentTypes.end())
+            return GetComponentArray<T>()->HasData(entity);
+        return false;
     }
 
     template <typename T>

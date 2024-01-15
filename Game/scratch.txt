@@ -854,3 +854,318 @@ void RendererSimple::Render()
     // 
     // App::RenderTexture(m_color.GetBuffer());
 }
+    for (auto e : ECS.Visit<Transform, CircleCollider>())
+    {
+        // Transform
+        auto& t = ECS.GetComponent<Transform>(e);
+        auto& c = ECS.GetComponent<CircleCollider>(e);
+        Vec3 newpos = t.TransformVec3(Vec3(c.posOrg.x, c.posOrg.y, 0.0));
+
+        c.collides = false;
+        c.pos.x = newpos.x;
+        c.pos.y = newpos.y;
+    }
+
+    for (auto e : ECS.Visit<Transform, AABB>())
+    {
+        // Transform
+        auto& t = ECS.GetComponent<Transform>(e);
+        auto& aabb = ECS.GetComponent<AABB>(e);
+        Vec3 newmax = t.TransformVec3(Vec3(aabb.maxOrg.x, aabb.maxOrg.y, 0.0));
+        aabb.max.x = newmax.x;
+        aabb.max.y = newmax.y;
+        Vec3 newmin = t.TransformVec3(Vec3(aabb.minOrg.x, aabb.minOrg.y, 0.0));
+
+        aabb.collides = false;
+        aabb.min.x = newmin.x;
+        aabb.min.y = newmin.y;
+    }
+
+    std::vector<Manifold> collisions;
+
+    // Detect Collisions Narrow Phase
+    for (auto bodyA : ECS.Visit<RigidBody>())
+    {
+        for (auto bodyB : ECS.Visit<RigidBody>())
+        {
+            if (bodyA == bodyB || bodyB > bodyA) continue;
+
+
+            Manifold collides;
+
+            if (ECS.HasComponent<CircleCollider>(bodyA) && 
+                ECS.HasComponent<CircleCollider>(bodyB))
+            {
+                collides = Manifold(bodyA, bodyB);
+                CircleCollider& A = ECS.GetComponent<CircleCollider>(bodyA);
+                CircleCollider& B = ECS.GetComponent<CircleCollider>(bodyB);
+
+                if (CircleCollides(collides, A, B))
+                {
+                    // Generate Manifolds
+                    collisions.push_back(collides);
+                    A.collides = true;
+                    B.collides = true;
+                }
+            }
+            else if (ECS.HasComponent<AABB>(bodyA) &&
+                     ECS.HasComponent<AABB>(bodyB))
+            {
+                collides = Manifold(bodyA, bodyB);
+
+                AABB& A = ECS.GetComponent<AABB>(bodyA);
+                AABB& B = ECS.GetComponent<AABB>(bodyB);
+
+                if (AABBCollides(collides, A, B))
+                {
+                    collisions.push_back(collides);
+                    A.collides = true;
+                    B.collides = true;
+                }
+            }
+            else if (ECS.HasComponent<AABB>(bodyA) &&
+                ECS.HasComponent<CircleCollider>(bodyB))
+            {
+                collides = Manifold(bodyA, bodyB);
+
+                AABB& A = ECS.GetComponent<AABB>(bodyA);
+                CircleCollider& B = ECS.GetComponent<CircleCollider>(bodyB);
+                if (AABBCircleCollides(collides, A, B))
+                {
+                    collisions.push_back(collides);
+                    A.collides = true;
+                    B.collides = true;
+                }
+
+            }
+            else if (ECS.HasComponent<CircleCollider>(bodyA) &&
+                     ECS.HasComponent<AABB>(bodyB))
+            {
+                collides = Manifold(bodyB, bodyA);
+
+                AABB& B = ECS.GetComponent<AABB>(bodyB);
+                CircleCollider& A = ECS.GetComponent<CircleCollider>(bodyA);
+                if (AABBCircleCollides(collides, B, A))
+                {
+                    collisions.push_back(collides);
+                    A.collides = true;
+                    B.collides = true;
+                }
+            }
+        }
+    }
+
+    for (auto& manifold : collisions)
+    {
+        // resolve collision
+        auto& t1 = ECS.GetComponent<Transform>(manifold.A);
+        auto& t2 = ECS.GetComponent<Transform>(manifold.B);
+        auto& r1 = ECS.GetComponent<RigidBody>(manifold.A);
+        auto& r2 = ECS.GetComponent<RigidBody>(manifold.B);
+
+        const float percent = 1.0f;
+
+        Vec2 correction = manifold.normal * (manifold.penetration / (r1.invMass + r2.invMass) * percent);
+
+        Vec3 correction1 = Vec3(r1.invMass * correction.x, r2.invMass * correction.y, 0.0);
+
+        Vec3 correction2 = Vec3(r2.invMass * correction.x, r2.invMass * correction.y, 0.0);
+
+        t1.Update(correction1, Quat());
+        t2.Update(correction2 * -1, Quat());
+    }
+
+
+    // inline bool AABBvAABB(AABB& a, AABB& b)
+// {
+//     if (a.max.x < b.min.x || a.min.x > b.max.x) return false;
+//     if (a.max.y < b.min.y || a.min.y > b.max.y) return false;
+//     // No separating axis found, therefor there is at least one overlapping axis
+//     return true;
+// }
+// 
+// inline bool CirclevCircle(CircleCollider& a, CircleCollider& b)
+// {
+//     float r = a.radius + b.radius;
+//     r *= r;
+//     return std::pow(a.pos.x - b.pos.x, 2.0f) + std::pow(a.pos.y - b.pos.y, 2.0f) <= r;
+// }
+// 
+// 
+// inline float SquaredDistance(Vec2 p, AABB box) {
+//     float sqDist = 0.0;
+// 
+//     // For each axis count any excess distance outside box extents
+//     if (p.x < box.min.x) sqDist += (box.min.x - p.x) * (box.min.x - p.x);
+//     if (p.x > box.max.x) sqDist += (p.x - box.max.x) * (p.x - box.max.x);
+//     if (p.y < box.min.y) sqDist += (box.min.y - p.y) * (box.min.y - p.y);
+//     if (p.y > box.max.y) sqDist += (p.y - box.max.y) * (p.y - box.max.y);
+// 
+//     return sqDist;
+// }
+// 
+// inline bool AABBvCircle(AABB& box, CircleCollider& circle)
+// {
+//     float sqDist = SquaredDistance(circle.pos, box);
+//     return sqDist <= circle.radius * circle.radius;
+// }
+// 
+// 
+// bool CircleCollides(Manifold& m, CircleCollider& c1, CircleCollider& c2)
+// {
+//     if (!CirclevCircle(c1, c2))
+//         return false;
+// 
+//     Vec2 n = c1.pos - c2.pos;
+//     float r = c1.radius + c2.radius;
+// 
+//     float distance = n.GetMagnitude();
+// 
+//     if (distance != 0)
+//     {
+//         m.penetration = r - distance;
+//         m.normal = n / distance; 
+//     }
+//     else
+//     {
+//         m.penetration = c1.radius;
+//         m.normal = Vec2(1, 0);
+//     }
+// 
+//     return true;
+// }
+// 
+// bool AABBCollides(Manifold& m, AABB& a1, AABB& a2)
+// {
+//     if (!AABBvAABB(a1, a2))
+//         return false;
+// 
+//     return true;
+// }
+// 
+// bool AABBCircleCollides(Manifold& m, AABB& aabb, CircleCollider& circle)
+// {
+//     if (!AABBvCircle(aabb, circle))
+//         return false;
+// 
+//     
+//     return true;
+// }
+
+
+inline float SquaredDistance(Vec2 boxPos, Vec2 circlePos, Shape& box) {
+    float sqDist = 0.0;
+    Vec2 boxMax = boxPos + box.max;
+    Vec2 boxMin = boxPos + box.min;
+
+    // For each axis count any excess distance outside box extents
+    if (circlePos.x < boxMin.x) sqDist += (boxMin.x - circlePos.x) * (boxMin.x - circlePos.x);
+    if (circlePos.x > boxMax.x) sqDist += (circlePos.x - boxMax.x) * (circlePos.x - boxMax.x);
+    if (circlePos.y < boxMin.y) sqDist += (boxMin.y - circlePos.y) * (boxMin.y - circlePos.y);
+    if (circlePos.y > boxMax.y) sqDist += (circlePos.y - boxMax.y) * (circlePos.y - boxMax.y);
+
+    return sqDist;
+}
+
+inline bool AABB2CircleCollision(Vec2& boxPos, Vec2& circlePos, Shape& box, Shape& circle)
+{
+    float sqDist = SquaredDistance(boxPos, circlePos, box);
+    return sqDist <= circle.radius * circle.radius;
+}
+
+
+//
+    Vec2 edgeA1, edgeA2;
+    Vec2 edgeB1, edgeB2;
+
+    ClosestEdge(m.normal * -1.0f, polyA, edgeA1, edgeA2);
+    ClosestEdge(m.normal, polyB, edgeB1, edgeB2);
+
+    AShape.debugPoints.clear();
+    AShape.debugPoints.push_back(edgeA1);
+    AShape.debugPoints.push_back(edgeA2);
+
+    BShape.debugPoints.clear();
+    BShape.debugPoints.push_back(edgeB1);
+    BShape.debugPoints.push_back(edgeB2);
+
+    Vec2 e1 = edgeA2 - edgeA1;
+    Vec2 e2 = edgeB2 - edgeB1;
+
+    Vec2 refv;
+    Vec2 refv1;
+    Vec2 refv2;
+    Vec2 incv1;
+    Vec2 incv2;
+
+    bool flip = false;
+
+    if (std::abs(e1.Dot(normal)) <= std::abs(e2.Dot(normal)))
+    {
+        refv = e1;
+        refv1 = edgeA1;
+        refv2 = edgeA2;
+        incv1 = edgeB1;
+        incv2 = edgeB2;
+    }
+    else
+    {
+        refv = e2;
+        refv1 = edgeB1;
+        refv2 = edgeB2;
+        incv1 = edgeA1;
+        incv2 = edgeA2;
+        flip = true;
+    }
+
+    refv.Normalize();
+
+    float o1 = refv.Dot(refv1);
+    std::vector<Vec2> cp1 = ClipPoints(incv1, incv2, refv, o1);
+    assert(cp1.size() == 2);
+    float o2 = refv.Dot(refv2);
+    std::vector<Vec2> cp2 = ClipPoints(cp1[0], cp1[1], -refv, -o2);
+    assert(cp2.size() == 2);
+
+
+
+    for (auto& edge : edgeNormals)
+    {
+        float edgeMinA, edgeMaxA;
+        float edgeMinB, edgeMaxB;
+    
+        ProjectShape(polyA, edge, edgeMinA, edgeMaxA);
+        ProjectShape(polyB, edge, edgeMinB, edgeMaxB);
+    
+        // ranges do not overlap imply they do not collide
+        if (edgeMaxA < edgeMinB || edgeMaxB < edgeMinA)
+        {
+            m.collided = false;
+            break; // Exit as soon as a separating axis is found
+        }
+    
+        float overlapStart = (std::max)(edgeMinA, edgeMinB);
+        float overlapEnd = (std::min)(edgeMaxA, edgeMaxB);
+        float test_overlap = overlapEnd - overlapStart;
+    
+        if ((edgeMinA <= edgeMinB && edgeMaxB <= edgeMaxB) ||
+            (edgeMinB <= edgeMinA && edgeMaxA <= edgeMaxB))
+        {
+            float mins = std::abs(edgeMinA - edgeMinB);
+            float maxs = std::abs(edgeMaxA - edgeMaxB);
+            if (mins < maxs) {
+                test_overlap += mins;
+            }
+            else {
+                test_overlap += maxs;
+            }
+        }
+    
+    
+        if (test_overlap < penetration)
+        {
+            penetration = test_overlap;
+            normal = edge;
+    
+        }
+    }

@@ -30,6 +30,9 @@ public:
 
     void ToRasterSpace(Vec4& point);
 
+    // To Raster Space but without safety checks
+    void ToRasterSpaceDebug(Vec4& point);
+
     void ResetResource() override {}
 
     Vec3 CameraToWorld(const Vec3& point);

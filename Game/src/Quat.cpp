@@ -138,6 +138,32 @@ Mat3 Quat::RotateMatrix(const Mat3& rhs) const
     return mat;
 }
 
+
+/**
+ * \brief Code referenced here https://automaticaddison.com/how-to-convert-a-quaternion-into-euler-angles-in-python/
+ * \param roll 
+ * \param pitch 
+ * \param yaw 
+ */
+void Quat::GetEulerAngles(float& roll, float& pitch, float& yaw) const
+{
+    // Calculate roll (rotation around x)
+    float t0 = +2.0f * (w * x + y * z);
+    float t1 = +1.0f - 2.0f * (x * x + y * y);
+    roll = std::atan2(t0, t1);
+
+    // Calculate pitch (rotation around y)
+    float t2 = +2.0f * (w * y - z * x);
+    t2 = (t2 > +1.0f) ? +1.0f : t2;
+    t2 = (t2 < -1.0f) ? -1.0f : t2;
+    pitch = std::asin(t2);
+
+    // Calculate yaw (rotation around z)
+    float t3 = +2.0f * (w * z + x * y);
+    float t4 = +1.0f - 2.0f * (y * y + z * z);
+    yaw = std::atan2(t3, t4);
+}
+
 Mat3 Quat::ToMat3() const
 {
     Mat3 mat;

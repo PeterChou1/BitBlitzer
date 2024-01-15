@@ -23,6 +23,16 @@ struct Transform
 
     Transform(const Vec3& pos, const Vec3& target, const Vec3& up);
 
+    void SetPosition(const Vec3& pos);
+
+    void SetPosition2D(const Vec2& pos);
+
+    void UpdateRow(float row);
+
+    void UpdatePitch(float pitch);
+
+    void UpdateYaw(float yaw);
+
     void Update(const Vec3& delta, const Quat& rot);
 
     Vec3 TransformVec3(const Vec3& point) const;
