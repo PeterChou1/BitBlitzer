@@ -177,7 +177,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
     <Text Include="scratch.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -298,9 +297,6 @@
     <ClCompile Include="src\Vec4.cpp" />
     <ClCompile Include="src\VertexShader.cpp" />
     <ClCompile Include="stb_image\stb_image.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Readme.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
