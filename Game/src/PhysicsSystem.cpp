@@ -32,6 +32,7 @@ void PhysicsSystem::SyncTransform()
         {
             Transform& transform = ECS.GetComponent<Transform>(e);
             rigidbody.SyncTransform(transform, XY);
+            rigidbody.RecomputeAABB();
             if (!rigidbody.Initialized) rigidbody.Initialized = true;
         }
     }
@@ -64,8 +65,8 @@ void PhysicsSystem::Update(float deltaTime)
         for (int i = 0; i < STEP_ITERATION; i++)
         {
             Step();
+            ForwardTransform();
         }
-        ForwardTransform();
         m_Accumulate -= MaxTime;
     }
 
@@ -79,9 +80,6 @@ void PhysicsSystem::Step()
     // Broad Phase Collision
 
     std::vector<Manifold> collisions;
-
-
-    // Generate Collision info
     for (auto& e1 : ECS.Visit<RigidBody>())
     {
         for (auto& e2 : ECS.Visit<RigidBody>())
@@ -92,11 +90,15 @@ void PhysicsSystem::Step()
             // don't bother resolving collision between two infinite mass 
             if (r1.InvMass() == 0.0 && r2.InvMass() == 0.0f) continue;
 
-            Manifold m = Manifold(e1, e2);
-            if (m.Collided) 
-                collisions.push_back(m);
+            if (AABBTest(r1.RigidBodyAABB, r2.RigidBodyAABB))
+            {
+                Manifold m = Manifold(r1, r2);
+                if (m.Collided)
+                    collisions.push_back(m);
+            }
         }
     }
+
     // Integrate Forces
     for (auto& e : ECS.Visit<RigidBody>())
     {
@@ -120,7 +122,7 @@ void PhysicsSystem::Step()
         RigidBody& rigidbody = ECS.GetComponent<RigidBody>(e);
         rigidbody.IntegrateVelocityAngular(deltaTime);
     }
-    
+
     // Correct Position
     for (auto& manifold : collisions)
     {
@@ -129,9 +131,13 @@ void PhysicsSystem::Step()
 
     // Clear All Forces
     // Sync Rigid Body -> Transform
-    for (auto& e : ECS.Visit<RigidBody, Transform>())
+    for (auto& e : ECS.Visit<RigidBody>())
     {
         RigidBody& rigidbody = ECS.GetComponent<RigidBody>(e);
         rigidbody.Force = Vec2(0.0f, 0.0f);
+        rigidbody.RecomputeAABB();
     }
+    
+
+
 }

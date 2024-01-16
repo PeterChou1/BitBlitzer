@@ -1,6 +1,10 @@
 #pragma once
 #include "Assets.h"
 
+
+/**
+ * \brief 
+ */
 struct Mesh
 {
     bool Loaded{};

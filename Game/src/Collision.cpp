@@ -6,7 +6,6 @@
 #include "Utils.h"
 
 
-
 bool Circle2CircleCollision(const Vec2& aPos, const Vec2& bPos, const Shape& a, const Shape& b)
 {
     float r = a.Radius + b.Radius;

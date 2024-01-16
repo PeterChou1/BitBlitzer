@@ -41,8 +41,8 @@ std::vector<Vec2> Utils::TranslatePoints(const std::vector<Vec2>& points, const 
 
     for (int i = 0; i < polySize; i++)
     {
-        Vec2 points = points[i];
-        Vec2 translated = matrix * points + position;
+        Vec2 point = points[i];
+        Vec2 translated = matrix * point + position;
         translatedPolygon.push_back(translated);
     }
     return translatedPolygon;

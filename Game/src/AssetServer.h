@@ -94,7 +94,7 @@ private:
         {
         case DefaultShader:
             // The Default Shader is an Unlit Shader
-            return &ToonShaderInstance;
+            return &BlinnPhongShaderInstance;
         case BlinnPhong:
             return &BlinnPhongShaderInstance;
         case ToonShader:

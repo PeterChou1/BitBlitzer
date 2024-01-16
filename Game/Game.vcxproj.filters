@@ -348,6 +348,9 @@
     <ClInclude Include="src\SAT.h">
       <Filter>src\Systems\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="src\Collider.h">
+      <Filter>src\Systems\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -409,6 +412,9 @@
     </Filter>
     <Filter Include="tests\ECSTest">
       <UniqueIdentifier>{3f977be0-5c1e-4be2-8cab-51ec4c7b26b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests\PhysicsTest">
+      <UniqueIdentifier>{810c59ae-e492-40e4-a5ac-c1383405f2f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

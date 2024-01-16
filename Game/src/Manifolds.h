@@ -2,12 +2,13 @@
 
 #include <vector>
 #include "Entity.h"
+#include "RigidBody.h"
 #include "Vec2.h"
 
 class Manifold
 {
 public:
-    Manifold(Entity A, Entity B);
+    Manifold(RigidBody& A, RigidBody& B);
 
     void ResolveCollision();
 
@@ -15,8 +16,8 @@ public:
 
     void PositionCorrection();
 
-    Entity A;
-    Entity B;
+    RigidBody& A;
+    RigidBody& B;
     bool Collided{};
     float Penetration{};
     Vec2 Normal{};

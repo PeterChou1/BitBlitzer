@@ -7,12 +7,13 @@
 
 struct AABB
 {
-    Vec2 OriginalMax;
-    Vec2 OriginalMin;
+    Vec2 OriginalMax{};
+    Vec2 OriginalMin{};
 
-    Vec2 Max;
-    Vec2 Min;
+    Vec2 Max{};
+    Vec2 Min{};
 
+    AABB() = default;
 
     AABB(float radius)
     {
@@ -21,7 +22,7 @@ struct AABB
     }
 
     // Compute AABB for polygon
-    AABB(std::vector<Vec2> points)
+    AABB(const std::vector<Vec2>& points)
     {
         assert(!points.empty() && "Points Empty");
         ComputeMaxPoints(points, OriginalMax, OriginalMin);
@@ -29,27 +30,38 @@ struct AABB
         Max = OriginalMax;
     }
 
-    void RecomputeAABB(float newPosition, float newAngle)
+    void RecomputeAABB(const Vec2& newPosition, float newAngle, ShapeType shapeType)
     {
         Vec2 topRight = OriginalMax;
         Vec2 topLeft = Vec2(OriginalMin.X, OriginalMax.Y);
         Vec2 bottomLeft = OriginalMin;
         Vec2 bottomRight = Vec2(OriginalMax.X, OriginalMin.Y);
         std::vector<Vec2> points = {topRight, topLeft, bottomLeft, bottomRight};
-        std::vector<Vec2> translated = Utils::TranslatePoints(points, newAngle, newPosition);
-        ComputeMaxPoints(translated, Max, Min);
+        if (shapeType == CircleShape)
+        {
+            points[0] += newPosition;
+            points[1] += newPosition;
+            points[2] += newPosition;
+            points[3] += newPosition;
+        }
+        else
+        {
+            points = Utils::TranslatePoints(points, newAngle, newPosition);
+        }
+        ComputeMaxPoints(points, Max, Min);
     }
 
 
-    static void ComputeMaxPoints(std::vector<Vec2> points, Vec2& maxPoint, Vec2& minPoint)
+    static void ComputeMaxPoints(const std::vector<Vec2>& points, Vec2& maxPoint, Vec2& minPoint)
     {
         maxPoint = points[0];
         minPoint = points[0];
-        for (const Vec2& point : points) {
+        for (const Vec2& point : points) 
+        {
             if (point.X < minPoint.X) minPoint.X = point.X;
             if (point.Y < minPoint.Y) minPoint.Y = point.Y;
             if (point.X > maxPoint.X) maxPoint.X = point.X;
-            if (point.Y > maxPoint.Y) maxPoint.X = point.Y;
+            if (point.Y > maxPoint.Y) maxPoint.Y = point.Y;
         }
     }
 };

@@ -190,6 +190,7 @@
     <ClInclude Include="src\Assets.h" />
     <ClInclude Include="src\BlingPhong.h" />
     <ClInclude Include="src\ClippedTriangleBuffer.h" />
+    <ClInclude Include="src\Collider.h" />
     <ClInclude Include="src\Collision.h" />
     <ClInclude Include="src\SAT.h" />
     <ClInclude Include="src\Shape.h" />

@@ -4,6 +4,7 @@
 #include "Shape.h"
 #include "Concurrent.h"
 #include "ECSManager.h"
+#include "Mesh.h"
 #include "RigidBody.h"
 #include "Transform.h"
 #include "Vertex.h"
@@ -70,6 +71,7 @@ void RenderCircle(std::vector<Vertex>& vertexBuffer, int radius, Vec2 pos, Vec3 
         vertexBuffer.push_back(p1);
         vertexBuffer.push_back(p2);
     }
+
 }
 
 void RenderPolygon(
@@ -130,34 +132,45 @@ DebugPhysicsRenderer::DebugPhysicsRenderer()
     m_Cam = ECS.GetResource<Camera>();
 }
 
-void DebugPhysicsRenderer::Update()
+void DebugPhysicsRenderer::Update(float deltaTime)
 {
+    accumulate += deltaTime / 1000.0f;
 
-    if (App::IsKeyPressed('M'))
+    if (accumulate > 0.100)
     {
-        float x = 0.0f, y = 0.0f;
-        App::GetMousePos(x, y);
-        Vec3 planePoint = Vec3(0, 0, 5);
-        Vec3 planeNormal = Vec3(0, 0, -1);
-        Vec3 point = m_Cam->RasterSpaceToWorldPoint(x, y, planePoint, planeNormal);
-        Entity meshEntity = ECS.CreateEntity();
-        auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
-        ECS.AddComponent<Transform>(meshEntity, modelTransform);
-        ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f));
-    }
+        if (App::IsKeyPressed('M'))
+        {
+            float x = 0.0f, y = 0.0f;
+            App::GetMousePos(x, y);
+            Vec3 planePoint = Vec3(0, 0, 5);
+            Vec3 planeNormal = Vec3(0, 0, -1);
+            Vec3 point = m_Cam->RasterSpaceToWorldPoint(x, y, planePoint, planeNormal);
+            Entity meshEntity = ECS.CreateEntity();
+            auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
+            ECS.AddComponent<Transform>(meshEntity, modelTransform);
+            ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f));
+            ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
+            accumulate = 0.0f;
+        }
 
-    if (App::IsKeyPressed('N'))
-    {
-        float x = 0.0f, y = 0.0f;
-        App::GetMousePos(x, y);
-        Vec3 planePoint = Vec3(0, 0, 5);
-        Vec3 planeNormal = Vec3(0, 0, -1);
-        Vec3 point = m_Cam->RasterSpaceToWorldPoint(x, y, planePoint, planeNormal);
-        Entity meshEntity = ECS.CreateEntity();
-        auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
-        ECS.AddComponent<Transform>(meshEntity, modelTransform);
-        ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f, 1.0f));
-    }
+        if (App::IsKeyPressed('N'))
+        {
+            float x = 0.0f, y = 0.0f;
+            App::GetMousePos(x, y);
+            Vec3 planePoint = Vec3(0, 0, 5);
+            Vec3 planeNormal = Vec3(0, 0, -1);
+            Vec3 point = m_Cam->RasterSpaceToWorldPoint(x, y, planePoint, planeNormal);
+            Entity meshEntity = ECS.CreateEntity();
+            auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
+            ECS.AddComponent<Transform>(meshEntity, modelTransform);
+            ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f, 1.0f));
+            ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
+            accumulate = 0.0f;
+        }
+
+    } 
+
+    
 }
 
 void DebugPhysicsRenderer::Render()
@@ -171,13 +184,12 @@ void DebugPhysicsRenderer::Render()
         RigidBody& r = ECS.GetComponent<RigidBody>(e);
         Shape& shape = r.Shape;
 
+        RenderAABB(debugVertexBuffer, r.RigidBodyAABB.Min, r.RigidBodyAABB.Max, Vec3(0.0, 0.0, 1.0));
+
         switch (shape.GetShapeType())
         {
         case CircleShape:
             RenderCircle(debugVertexBuffer, shape.Radius, r.Position, r.Color);
-            break;
-        case AABB:
-            RenderAABB(debugVertexBuffer, shape.Min + r.Position, shape.Max + r.Position, r.Color);
             break;
         case PolygonShape:
             RenderPolygon(debugVertexBuffer, shape.PolygonPoints, shape.DebugPoints, r.Angular, r.Position, r.Color);

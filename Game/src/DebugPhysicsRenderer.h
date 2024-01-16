@@ -9,12 +9,12 @@ class DebugPhysicsRenderer
 public:
     DebugPhysicsRenderer();
 
-    void Update();
+    void Update(float deltaTime);
 
     void Render();
 
 
 private:
     std::shared_ptr<Camera> m_Cam;
-
+    float accumulate{};
 };

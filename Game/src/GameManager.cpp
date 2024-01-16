@@ -53,7 +53,7 @@ void GameManager::Update(float deltaTime)
     m_DebugMesh->Update(deltaTime);
     m_MeshHandler->Update();
     m_PhysicsSystem->Update(deltaTime);
-    m_DebugPhysicsRender->Update();
+    m_DebugPhysicsRender->Update(deltaTime);
 }
 
 void GameManager::Render()

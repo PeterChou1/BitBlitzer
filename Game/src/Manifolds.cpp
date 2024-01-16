@@ -19,55 +19,46 @@ CollisionCallback CollisionJumpTable[2][2] = {
 
 
 
-Manifold::Manifold(Entity A, Entity B) : A(A), B(B)
+Manifold::Manifold(RigidBody& A, RigidBody& B) : A(A), B(B)
 {
-    assert(ECS.HasComponent<RigidBody>(A) && ECS.HasComponent<RigidBody>(B));
-    RigidBody& ABody = ECS.GetComponent<RigidBody>(A);
-    RigidBody& BBody = ECS.GetComponent<RigidBody>(B);
-    int ShapeAIdx = ABody.Shape.GetShapeType();
-    int ShapeBIdx = BBody.Shape.GetShapeType();
-    CollisionJumpTable[ShapeAIdx][ShapeBIdx](*this, ABody, BBody);
+    int ShapeAIdx = A.Shape.GetShapeType();
+    int ShapeBIdx = B.Shape.GetShapeType();
+    CollisionJumpTable[ShapeAIdx][ShapeBIdx](*this, A, B);
 }
 
 void Manifold::ResolveCollision()
 {
     assert(std::abs(Normal.GetMagnitude() - 1.0) < 0.01);
 
-    RigidBody& ABody = ECS.GetComponent<RigidBody>(A);
-    RigidBody& BBody = ECS.GetComponent<RigidBody>(B);
-
-    float invMassSum = ABody.InvMass() + BBody.InvMass();
+    float invMassSum = A.InvMass() + B.InvMass();
 
     // sanity check
     if (invMassSum == 0.0)
         return;
 
 
-    Vec2 rv = BBody.Velocity - ABody.Velocity;
+    Vec2 rv = B.Velocity - A.Velocity;
     float vNormal = rv.Dot(Normal);
 
     if (vNormal < 0.0f)
         return;
 
-    float e = (std::min)(ABody.Restitution(), BBody.Restitution());
+    float e = (std::min)(A.Restitution(), B.Restitution());
     float j = -(1 + e) * vNormal;
     j /= invMassSum;
 
 
     Vec2 impulse = Normal * j;
 
-    ABody.ApplyImpulse(impulse * -1);
-    BBody.ApplyImpulse(impulse);
+    A.ApplyImpulse(impulse * -1);
+    B.ApplyImpulse(impulse);
 }
 
 void Manifold::ResolveCollisionAngular()
 {
     assert(std::abs(Normal.GetMagnitude() - 1.0) < 0.01);
 
-    RigidBody& ABody = ECS.GetComponent<RigidBody>(A);
-    RigidBody& BBody = ECS.GetComponent<RigidBody>(B);
-
-    float e = (std::min)(ABody.Restitution(), BBody.Restitution());
+    float e = (std::min)(A.Restitution(), B.Restitution());
 
     std::vector<Vec2> impulses;
     std::vector<Vec2> contactA;
@@ -76,17 +67,17 @@ void Manifold::ResolveCollisionAngular()
     for (Vec2& contactPoint : ContactPoints)
     {
 
-        Vec2 ra = contactPoint - ABody.Position;
-        Vec2 rb = contactPoint - BBody.Position;
+        Vec2 ra = contactPoint - A.Position;
+        Vec2 rb = contactPoint - B.Position;
 
         Vec2 raPerp = ra.Cross(-1.0f);
         Vec2 rbPerp = rb.Cross(-1.0f);
 
-        Vec2 angularVelocityA = raPerp * ABody.AngularVelocity;
-        Vec2 angularVelocityB = rbPerp * BBody.AngularVelocity;
+        Vec2 angularVelocityA = raPerp * A.AngularVelocity;
+        Vec2 angularVelocityB = rbPerp * B.AngularVelocity;
 
-        Vec2 combinedVelocityA = ABody.Velocity + angularVelocityA;
-        Vec2 combinedVelocityB = BBody.Velocity + angularVelocityB;
+        Vec2 combinedVelocityA = A.Velocity + angularVelocityA;
+        Vec2 combinedVelocityB = B.Velocity + angularVelocityB;
 
         Vec2 relativeVelocity = combinedVelocityB - combinedVelocityA;
 
@@ -100,9 +91,9 @@ void Manifold::ResolveCollisionAngular()
         float normalA = raPerp.Dot(Normal);
         float normalB = rbPerp.Dot(Normal);
 
-        float denom = ABody.InvMass() + BBody.InvMass()
-                    + (normalA * normalA) * ABody.InvInertia()
-                    + (normalB * normalB) * BBody.InvInertia();
+        float denom = A.InvMass() + B.InvMass()
+                    + (normalA * normalA) * A.InvInertia()
+                    + (normalB * normalB) * B.InvInertia();
 
 
         float j = -(1.0f + e) * vNormal;
@@ -119,8 +110,8 @@ void Manifold::ResolveCollisionAngular()
 
     for (int i = 0; i < ContactPoints.size(); i++)
     {
-        ABody.ApplyImpulseAngular(impulses[i] * -1.0f, contactA[i]);
-        BBody.ApplyImpulseAngular(impulses[i], contactB[i]);
+        A.ApplyImpulseAngular(impulses[i] * -1.0f, contactA[i]);
+        B.ApplyImpulseAngular(impulses[i], contactB[i]);
     }
 
 
@@ -128,10 +119,8 @@ void Manifold::ResolveCollisionAngular()
 
 void Manifold::PositionCorrection()
 {
-    RigidBody& ABody = ECS.GetComponent<RigidBody>(A);
-    RigidBody& BBody = ECS.GetComponent<RigidBody>(B);
     const float percent = 0.8f;
-    Vec2 correction = Normal * (Penetration / (ABody.InvMass() + BBody.InvMass()) * percent);
-    ABody.Position += correction * ABody.InvMass();
-    BBody.Position -= correction * BBody.InvMass();
+    Vec2 correction = Normal * (Penetration / (A.InvMass() + B.InvMass()) * percent);
+    A.Position += correction * A.InvMass();
+    B.Position -= correction * B.InvMass();
 }

@@ -5,8 +5,7 @@
 enum ShapeType
 {
     CircleShape = 0,
-    PolygonShape = 1,
-    AABB = 2
+    PolygonShape = 1
 };
 
 
@@ -30,16 +29,6 @@ public:
         collider.ShapeEnum = CircleShape;
         return collider;
     }
-
-    static Shape CreateAABB(float width, float height)
-    {
-        auto collider = Shape();
-        collider.ShapeEnum = AABB;
-        collider.Min = Vec2(-width/2, -height/2);
-        collider.Max = Vec2(width/2, height/2);
-        return collider;
-    }
-
 
     static Shape CreateRect(float width, float height)
     {

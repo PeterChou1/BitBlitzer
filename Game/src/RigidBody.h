@@ -6,6 +6,7 @@
 #include "Vec3.h"
 #include "Shape.h"
 #include "Transform.h"
+#include "AABB.h"
 
 
 /**
@@ -31,22 +32,24 @@ public:
     RigidBody(float radius)
     {
         Shape = Shape::CreateCircle(radius);
+        RigidBodyAABB = AABB(radius);
         float area = radius * radius * 3.141;
         float mass = DEFAULT_DENSITY * area;
         float inertia = 0.5f * mass * radius * radius;
-        m_InvMass = 1.0 / mass;
-        m_InvInertia = 1.0 / inertia;
+        m_InvMass = 1.0f / mass;
+        m_InvInertia = 1.0f / inertia;
     }
 
     // Square Constructor
     RigidBody(float width, float height)
     {
         Shape = Shape::CreateRect(width, height);
+        RigidBodyAABB = AABB(Shape.PolygonPoints);
         float area = width * height;
         float mass = area * DEFAULT_DENSITY;
         float inertia = (1.0f / 12.0f) * mass * (width * width + height * height);
-        m_InvMass = 1.0 / mass;
-        m_InvInertia = 1.0 / inertia;
+        m_InvMass = 1.0f / mass;
+        m_InvInertia = 1.0f / inertia;
         m_Restitution = DEFAULT_RESTITUTION;
     }
 
@@ -105,6 +108,10 @@ public:
         }
     }
 
+    void RecomputeAABB()
+    {
+        RigidBodyAABB.RecomputeAABB(Position, Angular, Shape.GetShapeType());
+    }
 
     void ApplyForce(const Vec2& f)
     {
@@ -164,10 +171,11 @@ public:
     bool Initialized{};
     // specify if rigid body is a player or controlled by a script
     bool Controlled{};
-    unsigned int bitMaskLayers{};
+    unsigned int BitMaskLayers{};
     // used for debugging
     Vec3 Color{};
     // mutable states
+    AABB RigidBodyAABB{};
     Shape Shape{};
     Vec2 Position{};
     Vec2 Velocity{};

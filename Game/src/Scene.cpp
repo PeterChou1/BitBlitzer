@@ -37,9 +37,9 @@ void Scene::Setup()
     camera->SetPosition(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f));
 
     // Loaded all asset that the current scene needs
-    // std::set<ObjAsset> levelAssets({Pacman});
-    // AssetServer& loader = AssetServer::GetInstance();
-    // loader.LoadLevelAssets(levelAssets);
+    std::set<ObjAsset> levelAssets({Spot});
+    AssetServer& loader = AssetServer::GetInstance();
+    loader.LoadLevelAssets(levelAssets);
     // Ground
     CreateRigidBodyRect(0.0f, -5.0f, 20.0, 1.0, 0.0f);
     // Side walls
@@ -48,12 +48,12 @@ void Scene::Setup()
 
     CreateRigidBodyCircle(0.0f, 0.0f, 2.0f);
 
-    //Entity meshEntity = ECS.CreateEntity();
-    //auto modelTransform = Transform(Vec3(0.0, 0.0, 5.0), Quat(Vec3(0, 0, 1), 0.0));
-    //auto rigidbody = RigidBody(1.0f);
-    //rigidbody.Controlled = true;
-    //ECS.AddComponent<Transform>(meshEntity, modelTransform);
-    //ECS.AddComponent<RigidBody>(meshEntity, rigidbody);
+    // Entity meshEntity = ECS.CreateEntity();
+    // auto modelTransform = Transform(Vec3(0.0, 0.0, 5.0), Quat(Vec3(0, 0, 1), 0.0));
+    // auto rigidbody = RigidBody(1.0f);
+    // rigidbody.Controlled = true;
+    // ECS.AddComponent<Transform>(meshEntity, modelTransform);
+    // ECS.AddComponent<RigidBody>(meshEntity, rigidbody);
 
     
 }
