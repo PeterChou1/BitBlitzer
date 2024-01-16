@@ -9,18 +9,18 @@ class PixelBuffer : public Resource
 {
 public:
 
-    PixelBuffer(int width, int height) : m_width(width / SIMDPixel::PIXEL_WIDTH),
-        m_height(height / SIMDPixel::PIXEL_HEIGHT)
+    PixelBuffer(int width, int height) : m_Width(width / SIMDPixel::PIXEL_WIDTH),
+        m_Height(height / SIMDPixel::PIXEL_HEIGHT)
     {
-        m_Pixelbuffer.resize(m_height * m_width);
+        m_Pixelbuffer.resize(m_Height * m_Width);
     }
 
     void SetBuffer(int x, int y, const SIMDPixel& pixel, SIMDFloat& mask)
     {
         if (SIMD::All(mask)) {
-            m_Pixelbuffer[y * m_width + x].clear();
+            m_Pixelbuffer[y * m_Width + x].clear();
         }
-        m_Pixelbuffer[y * m_width + x].push_back(pixel);
+        m_Pixelbuffer[y * m_Width + x].push_back(pixel);
     }
 
     /**
@@ -33,10 +33,10 @@ public:
         {
             for (SIMDPixel& pixel : m_Pixelbuffer[i])
             {
-                SIMDFloat mask = pixel.depth == depth.GetBuffer(i);
+                SIMDFloat mask = pixel.Depth == depth.GetBuffer(i);
                 if (SIMD::Any(mask))
                 {
-                    pixel.mask = mask;
+                    pixel.Mask = mask;
                     m_PixelScreenSpace.push_back(pixel);
                 }
             }
@@ -76,6 +76,6 @@ public:
 private:
     std::vector<std::vector<SIMDPixel>> m_Pixelbuffer;
     std::vector<SIMDPixel> m_PixelScreenSpace;
-    int m_width{};
-    int m_height{};
+    int m_Width{};
+    int m_Height{};
 };

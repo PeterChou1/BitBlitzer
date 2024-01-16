@@ -13,12 +13,12 @@ bool Triangle::Setup(int id, int index)
     BinIndex = index;
     BinID = id;
 
-    B0 = static_cast<int>(verts[1].proj.y - verts[0].proj.y);
-    C0 = static_cast<int>(verts[1].proj.x - verts[0].proj.x);
-    B1 = static_cast<int>(verts[2].proj.y - verts[1].proj.y);
-    C1 = static_cast<int>(verts[2].proj.x - verts[1].proj.x);
-    B2 = static_cast<int>(verts[0].proj.y - verts[2].proj.y);
-    C2 = static_cast<int>(verts[0].proj.x - verts[2].proj.x);
+    B0 = static_cast<int>(verts[1].proj.Y - verts[0].proj.Y);
+    C0 = static_cast<int>(verts[1].proj.X - verts[0].proj.X);
+    B1 = static_cast<int>(verts[2].proj.Y - verts[1].proj.Y);
+    C1 = static_cast<int>(verts[2].proj.X - verts[1].proj.X);
+    B2 = static_cast<int>(verts[0].proj.Y - verts[2].proj.Y);
+    C2 = static_cast<int>(verts[0].proj.X - verts[2].proj.X);
 
     const int det = C2 * -B1 + C1 * B2;
 
@@ -44,15 +44,15 @@ bool Triangle::Setup(int id, int index)
     Vec2 edgeNoraml3 = Vec2(-B2, C2);
 
     // set up bounding box
-    maxX = static_cast<int>(std::max<float>(std::max<float>(verts[0].proj.x, verts[1].proj.x), verts[2].proj.x));
-    maxY = static_cast<int>(std::max<float>(std::max<float>(verts[0].proj.y, verts[1].proj.y), verts[2].proj.y));
-    minX = static_cast<int>(std::min<float>(std::min<float>(verts[0].proj.x, verts[1].proj.x), verts[2].proj.x));
-    minY = static_cast<int>(std::min<float>(std::min<float>(verts[0].proj.y, verts[1].proj.y), verts[2].proj.y));
+    maxX = static_cast<int>(std::max<float>(std::max<float>(verts[0].proj.X, verts[1].proj.X), verts[2].proj.X));
+    maxY = static_cast<int>(std::max<float>(std::max<float>(verts[0].proj.Y, verts[1].proj.Y), verts[2].proj.Y));
+    minX = static_cast<int>(std::min<float>(std::min<float>(verts[0].proj.X, verts[1].proj.X), verts[2].proj.X));
+    minY = static_cast<int>(std::min<float>(std::min<float>(verts[0].proj.Y, verts[1].proj.Y), verts[2].proj.Y));
 
 
-    if (edgeNormal1.x > 0)
+    if (edgeNormal1.X > 0)
     {
-        if (edgeNormal1.y > 0)
+        if (edgeNormal1.Y > 0)
         {
             rejectIndex0 = 3;
             acceptIndex0 = 0;
@@ -65,7 +65,7 @@ bool Triangle::Setup(int id, int index)
     }
     else
     {
-        if (edgeNormal1.y > 0)
+        if (edgeNormal1.Y > 0)
         {
             rejectIndex0 = 2;
             acceptIndex0 = 1;
@@ -77,9 +77,9 @@ bool Triangle::Setup(int id, int index)
         }
     }
 
-    if (edgeNormal2.x > 0)
+    if (edgeNormal2.X > 0)
     {
-        if (edgeNormal2.y > 0)
+        if (edgeNormal2.Y > 0)
         {
             rejectIndex1 = 3;
             acceptIndex1 = 0;
@@ -92,7 +92,7 @@ bool Triangle::Setup(int id, int index)
     }
     else
     {
-        if (edgeNormal2.y > 0)
+        if (edgeNormal2.Y > 0)
         {
             rejectIndex1 = 2;
             acceptIndex1 = 1;
@@ -104,9 +104,9 @@ bool Triangle::Setup(int id, int index)
         }
     }
 
-    if (edgeNoraml3.x > 0)
+    if (edgeNoraml3.X > 0)
     {
-        if (edgeNoraml3.y > 0)
+        if (edgeNoraml3.Y > 0)
         {
             rejectIndex2 = 3;
             acceptIndex2 = 0;
@@ -119,7 +119,7 @@ bool Triangle::Setup(int id, int index)
     }
     else
     {
-        if (edgeNoraml3.y > 0)
+        if (edgeNoraml3.Y > 0)
         {
             rejectIndex2 = 2;
             acceptIndex2 = 1;

@@ -35,6 +35,5 @@ public:
 
     static Mat3 FromQuat(const Quat& q);
 
-public:
-    Vec3 rows[3];
+    Vec3 Rows[3];
 };

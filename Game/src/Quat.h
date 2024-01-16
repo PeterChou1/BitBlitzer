@@ -23,15 +23,14 @@ public:
     Mat3 RotateMatrix(const Mat3& rhs) const;
     void GetEulerAngles(float& roll, float& pitch, float& yaw) const;
 
-    Vec3 xyz() const { return Vec3(x, y, z); }
+    Vec3 xyz() const { return Vec3(X, Y, Z); }
     bool IsValid() const;
     Mat3 ToMat3() const;
-    Vec4 ToVec4() const { return Vec4(w, x, y, z); }
+    Vec4 ToVec4() const { return Vec4(W, X, Y, Z); }
     static Quat FromRotationMatrix(Mat3& m);
 
-public:
-    float w;
-    float x;
-    float y;
-    float z;
+    float W;
+    float X;
+    float Y;
+    float Z;
 };

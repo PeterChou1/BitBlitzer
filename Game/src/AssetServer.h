@@ -6,6 +6,7 @@
 #include "Material.h"
 #include "Utils.h"
 #include "MeshInstance.h"
+#include "ToonShaderSIMD.h"
 #include "UnlitSIMD.h"
 
 /*
@@ -73,8 +74,12 @@ private:
             return "./Assets/spotWithTextures.obj";
         case Furina:
             return "./Assets/furina.obj";
-        case Pacman:
+        case Maze:
             return "./Assets/MazeTriangulated.obj";
+        case Pinball:
+            return "./Assets/NoNormalsPinball.obj";
+        case Pacman:
+            return "./Assets/PacmanModel.obj";
         }
         assert(false && "not possible");
     }
@@ -83,14 +88,17 @@ private:
     {
         static BlinnPhongSIMD BlinnPhongShaderInstance = BlinnPhongSIMD();
         static UnlitSIMD UnlitShaderInstance = UnlitSIMD();
+        static ToonShaderSIMD ToonShaderInstance = ToonShaderSIMD();
 
         switch (asset)
         {
         case DefaultShader:
             // The Default Shader is an Unlit Shader
-            return &UnlitShaderInstance;
+            return &ToonShaderInstance;
         case BlinnPhong:
             return &BlinnPhongShaderInstance;
+        case ToonShader:
+            return &ToonShaderInstance;
         }
 
         assert(false && "not possible");

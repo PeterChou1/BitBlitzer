@@ -3,64 +3,64 @@
 #include <math.h>
 #include <cmath>;
 
-Quat::Quat() : x(0), y(0), z(0), w(1)
+Quat::Quat() : X(0), Y(0), Z(0), W(1)
 {
 }
 
-Quat::Quat(const Quat& rhs) : x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w)
+Quat::Quat(const Quat& rhs) : X(rhs.X), Y(rhs.Y), Z(rhs.Z), W(rhs.W)
 {
 }
 
-Quat::Quat(float X, float Y, float Z, float W) : x(X), y(Y), z(Z), w(W)
+Quat::Quat(float X, float Y, float Z, float W) : X(X), Y(Y), Z(Z), W(W)
 {
 }
 
 Quat::Quat(Vec3 n, const float angleRadians)
 {
     const float halfAngleRadians = 0.5f * angleRadians;
-    w = cosf(halfAngleRadians);
+    W = cosf(halfAngleRadians);
     const float halfSine = sinf(halfAngleRadians);
     n.Normalize();
-    x = n.x * halfSine;
-    y = n.y * halfSine;
-    z = n.z * halfSine;
+    X = n.X * halfSine;
+    Y = n.Y * halfSine;
+    Z = n.Z * halfSine;
 }
 
 const Quat& Quat::operator=(const Quat& rhs)
 {
-    x = rhs.x;
-    y = rhs.y;
-    z = rhs.z;
-    w = rhs.w;
+    X = rhs.X;
+    Y = rhs.Y;
+    Z = rhs.Z;
+    W = rhs.W;
     return *this;
 }
 
 Quat& Quat::operator*=(const float& rhs)
 {
-    x *= rhs;
-    y *= rhs;
-    z *= rhs;
-    w *= rhs;
+    X *= rhs;
+    Y *= rhs;
+    Z *= rhs;
+    W *= rhs;
     return *this;
 }
 
 Quat& Quat::operator*=(const Quat& rhs)
 {
     Quat temp = *this * rhs;
-    w = temp.w;
-    x = temp.x;
-    y = temp.y;
-    z = temp.z;
+    W = temp.W;
+    X = temp.X;
+    Y = temp.Y;
+    Z = temp.Z;
     return *this;
 }
 
 Quat Quat::operator*(const Quat& rhs) const
 {
     Quat temp;
-    temp.w = (w * rhs.w) - (x * rhs.x) - (y * rhs.y) - (z * rhs.z);
-    temp.x = (x * rhs.w) + (w * rhs.x) + (y * rhs.z) - (z * rhs.y);
-    temp.y = (y * rhs.w) + (w * rhs.y) + (z * rhs.x) - (x * rhs.z);
-    temp.z = (z * rhs.w) + (w * rhs.z) + (x * rhs.y) - (y * rhs.x);
+    temp.W = (W * rhs.W) - (X * rhs.X) - (Y * rhs.Y) - (Z * rhs.Z);
+    temp.X = (X * rhs.W) + (W * rhs.X) + (Y * rhs.Z) - (Z * rhs.Y);
+    temp.Y = (Y * rhs.W) + (W * rhs.Y) + (Z * rhs.X) - (X * rhs.Z);
+    temp.Z = (Z * rhs.W) + (W * rhs.Z) + (X * rhs.Y) - (Y * rhs.X);
     return temp;
 }
 
@@ -69,19 +69,19 @@ void Quat::Normalize()
     float invMag = 1.0f / GetMagnitude();
     if (0.0f * invMag == 0.0f * invMag)
     {
-        x = x * invMag;
-        y = y * invMag;
-        z = z * invMag;
-        w = w * invMag;
+        X = X * invMag;
+        Y = Y * invMag;
+        Z = Z * invMag;
+        W = W * invMag;
     }
 }
 
 void Quat::Invert()
 {
     *this *= 1.0f / MagnitudeSquared();
-    x = -x;
-    y = -y;
-    z = -z;
+    X = -X;
+    Y = -Y;
+    Z = -Z;
 }
 
 Quat Quat::Inverse() const
@@ -93,7 +93,7 @@ Quat Quat::Inverse() const
 
 float Quat::MagnitudeSquared() const
 {
-    return ((x * x) + (y * y) + (z * z) + (w * w));
+    return ((X * X) + (Y * Y) + (Z * Z) + (W * W));
 }
 
 float Quat::GetMagnitude() const
@@ -103,26 +103,26 @@ float Quat::GetMagnitude() const
 
 Vec3 Quat::RotatePoint(const Vec3& rhs) const
 {
-    Quat vector(rhs.x, rhs.y, rhs.z, 0.0f);
+    Quat vector(rhs.X, rhs.Y, rhs.Z, 0.0f);
     Quat final = *this * vector * Inverse();
-    return Vec3(final.x, final.y, final.z);
+    return Vec3(final.X, final.Y, final.Z);
 }
 
 bool Quat::IsValid() const
 {
-    if (x * 0 != x * 0)
+    if (X * 0 != X * 0)
     {
         return false;
     }
-    if (y * 0 != y * 0)
+    if (Y * 0 != Y * 0)
     {
         return false;
     }
-    if (z * 0 != z * 0)
+    if (Z * 0 != Z * 0)
     {
         return false;
     }
-    if (w * 0 != w * 0)
+    if (W * 0 != W * 0)
     {
         return false;
     }
@@ -132,9 +132,9 @@ bool Quat::IsValid() const
 Mat3 Quat::RotateMatrix(const Mat3& rhs) const
 {
     Mat3 mat;
-    mat.rows[0] = RotatePoint(rhs.rows[0]);
-    mat.rows[1] = RotatePoint(rhs.rows[1]);
-    mat.rows[2] = RotatePoint(rhs.rows[2]);
+    mat.Rows[0] = RotatePoint(rhs.Rows[0]);
+    mat.Rows[1] = RotatePoint(rhs.Rows[1]);
+    mat.Rows[2] = RotatePoint(rhs.Rows[2]);
     return mat;
 }
 
@@ -148,19 +148,19 @@ Mat3 Quat::RotateMatrix(const Mat3& rhs) const
 void Quat::GetEulerAngles(float& roll, float& pitch, float& yaw) const
 {
     // Calculate roll (rotation around x)
-    float t0 = +2.0f * (w * x + y * z);
-    float t1 = +1.0f - 2.0f * (x * x + y * y);
+    float t0 = +2.0f * (W * X + Y * Z);
+    float t1 = +1.0f - 2.0f * (X * X + Y * Y);
     roll = std::atan2(t0, t1);
 
     // Calculate pitch (rotation around y)
-    float t2 = +2.0f * (w * y - z * x);
+    float t2 = +2.0f * (W * Y - Z * X);
     t2 = (t2 > +1.0f) ? +1.0f : t2;
     t2 = (t2 < -1.0f) ? -1.0f : t2;
     pitch = std::asin(t2);
 
     // Calculate yaw (rotation around z)
-    float t3 = +2.0f * (w * z + x * y);
-    float t4 = +1.0f - 2.0f * (y * y + z * z);
+    float t3 = +2.0f * (W * Z + X * Y);
+    float t4 = +1.0f - 2.0f * (Y * Y + Z * Z);
     yaw = std::atan2(t3, t4);
 }
 
@@ -168,9 +168,9 @@ Mat3 Quat::ToMat3() const
 {
     Mat3 mat;
     mat.Identity();
-    mat.rows[0] = RotatePoint(mat.rows[0]);
-    mat.rows[1] = RotatePoint(mat.rows[1]);
-    mat.rows[2] = RotatePoint(mat.rows[2]);
+    mat.Rows[0] = RotatePoint(mat.Rows[0]);
+    mat.Rows[1] = RotatePoint(mat.Rows[1]);
+    mat.Rows[2] = RotatePoint(mat.Rows[2]);
     return mat;
 }
 
@@ -181,31 +181,31 @@ Quat Quat::FromRotationMatrix(Mat3& m)
 
     if (trace > 0) {
         float S = std::sqrt(trace + 1.0) * 2; // S=4*qw 
-        q.w = 0.25 * S;
-        q.x = (m[2][1] - m[1][2]) / S;
-        q.y = (m[0][2] - m[2][0]) / S;
-        q.z = (m[1][0] - m[0][1]) / S;
+        q.W = 0.25 * S;
+        q.X = (m[2][1] - m[1][2]) / S;
+        q.Y = (m[0][2] - m[2][0]) / S;
+        q.Z = (m[1][0] - m[0][1]) / S;
     }
     else if ((m[0][0] > m[1][1]) & (m[0][0] > m[2][2])) {
         float S = std::sqrt(1.0 + m[0][0] - m[1][1] - m[2][2]) * 2; // S=4*qx 
-        q.w = (m[2][1] - m[1][2]) / S;
-        q.x = 0.25 * S;
-        q.y = (m[0][1] + m[1][0]) / S;
-        q.z = (m[0][2] + m[2][0]) / S;
+        q.W = (m[2][1] - m[1][2]) / S;
+        q.X = 0.25 * S;
+        q.Y = (m[0][1] + m[1][0]) / S;
+        q.Z = (m[0][2] + m[2][0]) / S;
     }
     else if (m[1][1] > m[2][2]) {
         float S = std::sqrt(1.0 + m[1][1] - m[0][0] - m[2][2]) * 2; // S=4*qy
-        q.w = (m[0][2] - m[2][0]) / S;
-        q.x = (m[0][1] + m[1][0]) / S;
-        q.y = 0.25 * S;
-        q.z = (m[1][2] + m[2][1]) / S;
+        q.W = (m[0][2] - m[2][0]) / S;
+        q.X = (m[0][1] + m[1][0]) / S;
+        q.Y = 0.25 * S;
+        q.Z = (m[1][2] + m[2][1]) / S;
     }
     else {
         float S = std::sqrt(1.0 + m[2][2] - m[0][0] - m[1][1]) * 2; // S=4*qz
-        q.w = (m[1][0] - m[0][1]) / S;
-        q.x = (m[0][2] + m[2][0]) / S;
-        q.y = (m[1][2] + m[2][1]) / S;
-        q.z = 0.25 * S;
+        q.W = (m[1][0] - m[0][1]) / S;
+        q.X = (m[0][2] + m[2][0]) / S;
+        q.Y = (m[1][2] + m[2][1]) / S;
+        q.Z = 0.25 * S;
     }
     return q;
 }

@@ -6,68 +6,68 @@
 
 Mat3::Mat3(const Mat3& rhs)
 {
-    rows[0] = rhs.rows[0];
-    rows[1] = rhs.rows[1];
-    rows[2] = rhs.rows[2];
+    Rows[0] = rhs.Rows[0];
+    Rows[1] = rhs.Rows[1];
+    Rows[2] = rhs.Rows[2];
 }
 
 Mat3::Mat3(const float* mat)
 {
-    rows[0] = mat + 0;
-    rows[1] = mat + 3;
-    rows[2] = mat + 6;
+    Rows[0] = mat + 0;
+    Rows[1] = mat + 3;
+    Rows[2] = mat + 6;
 }
 
 Mat3::Mat3(const Vec3& row0, const Vec3& row1, const Vec3& row2)
 {
-    rows[0] = row0;
-    rows[1] = row1;
-    rows[2] = row2;
+    Rows[0] = row0;
+    Rows[1] = row1;
+    Rows[2] = row2;
 }
 
 
 Mat3& Mat3::operator=(const Mat3& rhs)
 {
-    rows[0] = rhs.rows[0];
-    rows[1] = rhs.rows[1];
-    rows[2] = rhs.rows[2];
+    Rows[0] = rhs.Rows[0];
+    Rows[1] = rhs.Rows[1];
+    Rows[2] = rhs.Rows[2];
     return *this;
 }
 
 const Mat3& Mat3::operator*=(const float rhs)
 {
-    rows[0] *= rhs;
-    rows[1] *= rhs;
-    rows[2] *= rhs;
+    Rows[0] *= rhs;
+    Rows[1] *= rhs;
+    Rows[2] *= rhs;
     return *this;
 }
 
 const Mat3& Mat3::operator+=(const Mat3& rhs)
 {
-    rows[0] += rhs.rows[0];
-    rows[1] += rhs.rows[1];
-    rows[2] += rhs.rows[2];
+    Rows[0] += rhs.Rows[0];
+    Rows[1] += rhs.Rows[1];
+    Rows[2] += rhs.Rows[2];
     return *this;
 }
 
 Vec3 Mat3::operator[](const int i) const
 {
     assert(i >= 0 && i < 3);
-    return rows[i];
+    return Rows[i];
 }
 
 Vec3& Mat3::operator[](const int i)
 {
     assert(i >= 0 && i < 3);
-    return rows[i];
+    return Rows[i];
 }
 
 Mat3 Mat3::FromQuat(const Quat& q)
 {
-    float x = q.x;
-    float y = q.y;
-    float z = q.z;
-    float w = q.w;
+    float x = q.X;
+    float y = q.Y;
+    float z = q.Z;
+    float w = q.W;
 
     float xx = x * x;
     float xy = x * y;
@@ -102,31 +102,31 @@ Mat3 Mat3::FromQuat(const Quat& q)
 
 void Mat3::Zero()
 {
-    rows[0].Zero();
-    rows[1].Zero();
-    rows[2].Zero();
+    Rows[0].Zero();
+    Rows[1].Zero();
+    Rows[2].Zero();
 }
 
 void Mat3::Identity()
 {
-    rows[0] = Vec3(1, 0, 0);
-    rows[1] = Vec3(0, 1, 0);
-    rows[2] = Vec3(0, 0, 1);
+    Rows[0] = Vec3(1, 0, 0);
+    Rows[1] = Vec3(0, 1, 0);
+    Rows[2] = Vec3(0, 0, 1);
 }
 
 float Mat3::Trace() const
 {
-    const float xx = rows[0][0] * rows[0][0];
-    const float yy = rows[1][1] * rows[1][1];
-    const float zz = rows[2][2] * rows[2][2];
+    const float xx = Rows[0][0] * Rows[0][0];
+    const float yy = Rows[1][1] * Rows[1][1];
+    const float zz = Rows[2][2] * Rows[2][2];
     return (xx + yy + zz);
 }
 
 float Mat3::Determinant() const
 {
-    const float i = rows[0][0] * (rows[1][1] * rows[2][2] - rows[1][2] * rows[2][1]);
-    const float j = rows[0][1] * (rows[1][0] * rows[2][2] - rows[1][2] * rows[2][0]);
-    const float k = rows[0][2] * (rows[1][0] * rows[2][1] - rows[1][1] * rows[2][0]);
+    const float i = Rows[0][0] * (Rows[1][1] * Rows[2][2] - Rows[1][2] * Rows[2][1]);
+    const float j = Rows[0][1] * (Rows[1][0] * Rows[2][2] - Rows[1][2] * Rows[2][0]);
+    const float k = Rows[0][2] * (Rows[1][0] * Rows[2][1] - Rows[1][1] * Rows[2][0]);
     return (i - j + k);
 }
 
@@ -137,7 +137,7 @@ Mat3 Mat3::Transpose() const
     {
         for (int j = 0; j < 3; j++)
         {
-            transpose.rows[i][j] = rows[j][i];
+            transpose.Rows[i][j] = Rows[j][i];
         }
     }
     return transpose;
@@ -150,7 +150,7 @@ Mat3 Mat3::Inverse() const
     {
         for (int j = 0; j < 3; j++)
         {
-            inv.rows[j][i] = CoFactor(i, j);
+            inv.Rows[j][i] = CoFactor(i, j);
         }
     }
     const float det = Determinant();
@@ -176,7 +176,7 @@ Mat2 Mat3::Minor(const int i, const int j) const
             {
                 continue;
             }
-            minor.rows[xx][yy] = rows[x][y];
+            minor.Rows[xx][yy] = Rows[x][y];
             xx++;
         }
         yy++;
@@ -194,18 +194,18 @@ float Mat3::CoFactor(const int i, const int j) const
 Vec3 Mat3::operator*(const Vec3& rhs) const
 {
     Vec3 tmp;
-    tmp[0] = rows[0].Dot(rhs);
-    tmp[1] = rows[1].Dot(rhs);
-    tmp[2] = rows[2].Dot(rhs);
+    tmp[0] = Rows[0].Dot(rhs);
+    tmp[1] = Rows[1].Dot(rhs);
+    tmp[2] = Rows[2].Dot(rhs);
     return tmp;
 }
 
 Mat3 Mat3::operator*(const float rhs) const
 {
     Mat3 tmp;
-    tmp.rows[0] = rows[0] * rhs;
-    tmp.rows[1] = rows[1] * rhs;
-    tmp.rows[2] = rows[2] * rhs;
+    tmp.Rows[0] = Rows[0] * rhs;
+    tmp.Rows[1] = Rows[1] * rhs;
+    tmp.Rows[2] = Rows[2] * rhs;
     return tmp;
 }
 
@@ -214,9 +214,9 @@ Mat3 Mat3::operator*(const Mat3& rhs) const
     Mat3 tmp;
     for (int i = 0; i < 3; i++)
     {
-        tmp.rows[i].x = rows[i].x * rhs.rows[0].x + rows[i].y * rhs.rows[1].x + rows[i].z * rhs.rows[2].x;
-        tmp.rows[i].y = rows[i].x * rhs.rows[0].y + rows[i].y * rhs.rows[1].y + rows[i].z * rhs.rows[2].y;
-        tmp.rows[i].z = rows[i].x * rhs.rows[0].z + rows[i].y * rhs.rows[1].z + rows[i].z * rhs.rows[2].z;
+        tmp.Rows[i].X = Rows[i].X * rhs.Rows[0].X + Rows[i].Y * rhs.Rows[1].X + Rows[i].Z * rhs.Rows[2].X;
+        tmp.Rows[i].Y = Rows[i].X * rhs.Rows[0].Y + Rows[i].Y * rhs.Rows[1].Y + Rows[i].Z * rhs.Rows[2].Y;
+        tmp.Rows[i].Z = Rows[i].X * rhs.Rows[0].Z + Rows[i].Y * rhs.Rows[1].Z + Rows[i].Z * rhs.Rows[2].Z;
     }
     return tmp;
 }
@@ -226,7 +226,7 @@ Mat3 Mat3::operator+(const Mat3& rhs) const
     Mat3 tmp;
     for (int i = 0; i < 3; i++)
     {
-        tmp.rows[i] = rows[i] + rhs.rows[i];
+        tmp.Rows[i] = Rows[i] + rhs.Rows[i];
     }
     return tmp;
 }

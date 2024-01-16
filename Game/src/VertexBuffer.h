@@ -11,8 +11,8 @@ public:
 
     void ResetResource() override
     {
-        buffer.clear();
+        Buffer.clear();
     }
 
-    std::vector<Vertex> buffer;
+    std::vector<Vertex> Buffer;
 };

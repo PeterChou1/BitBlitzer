@@ -10,11 +10,11 @@ public:
 
     void ResetResource() override
     {
-        for (int i = 0; i < tiles.size(); i++)
+        for (int i = 0; i < TilesArray.size(); i++)
         {
-            tiles[i].Clear();
+            TilesArray[i].Clear();
         }
     }
 
-    std::vector<Tile> tiles;
+    std::vector<Tile> TilesArray;
 };

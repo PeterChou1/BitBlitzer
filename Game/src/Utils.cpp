@@ -9,6 +9,46 @@
 
 
 
+Vec2 Utils::PointToLineSegment(Vec2 point, Vec2 a, Vec2 b)
+{
+    Vec2 a2b = b - a;
+    Vec2 a2point = point - a;
+
+    float proj = a2point.Dot(a2b);
+    float lengthSquared = a2b.GetMagnitudeSquared();
+    float d = proj / lengthSquared;
+
+    if (d <= 0)
+    {
+        return a;
+    }
+    if (d >= 1)
+    {
+        return b;
+    }
+
+    return a + a2b * d;
+}
+
+std::vector<Vec2> Utils::TranslatePoints(const std::vector<Vec2>& points, const float angle, const Vec2& position)
+{
+    std::vector<Vec2> translatedPolygon;
+    int polySize = points.size();
+    Mat2 matrix = Mat2(
+        Vec2(std::cos(angle), -std::sin(angle)),
+        Vec2(std::sin(angle), std::cos(angle))
+    );
+
+    for (int i = 0; i < polySize; i++)
+    {
+        Vec2 points = points[i];
+        Vec2 translated = matrix * points + position;
+        translatedPolygon.push_back(translated);
+    }
+    return translatedPolygon;
+}
+
+
 bool Utils::LoadInstance(std::string filename,
     MeshInstance& mesh,
     std::vector<Material>& textureList)
@@ -56,21 +96,21 @@ bool Utils::LoadInstance(std::string filename,
         else if (prefix == "v")
         {
             Vec3 vertex;
-            ss >> vertex.x >> vertex.y >> vertex.z;
+            ss >> vertex.X >> vertex.Y >> vertex.Z;
             temp_vertices.push_back(vertex);
         }
         else if (prefix == "vt")
         {
             UV = true;
             Vec2 uv;
-            ss >> uv.x >> uv.y;
+            ss >> uv.X >> uv.Y;
             temp_uvs.push_back(uv);
         }
         else if (prefix == "vn")
         {
             Normal = true;
             Vec3 normal;
-            ss >> normal.x >> normal.y >> normal.z;
+            ss >> normal.X >> normal.Y >> normal.Z;
             temp_normals.push_back(normal);
         }
         else if (prefix == "f")
@@ -109,8 +149,8 @@ bool Utils::LoadInstance(std::string filename,
                 if (UV && !uvIndex.empty())
                 {
                     int uvIdx = std::stoi(uvIndex) - 1;
-                    v.uv.x = temp_uvs[uvIdx].x;
-                    v.uv.y = std::abs(temp_uvs[uvIdx].y - 1);
+                    v.uv.X = temp_uvs[uvIdx].X;
+                    v.uv.Y = std::abs(temp_uvs[uvIdx].Y - 1);
                 }
 
                 if (Normal && !normalIndex.empty())
@@ -204,17 +244,17 @@ Utils::LoadMTLFile(
         else if (keyword == "Ka")
         {
             // Ambient color
-            iss >> ambient.x >> ambient.y >> ambient.z;
+            iss >> ambient.X >> ambient.Y >> ambient.Z;
         }
         else if (keyword == "Kd")
         {
             // Diffuse color
-            iss >> diffuse.x >> diffuse.y >> diffuse.z;
+            iss >> diffuse.X >> diffuse.Y >> diffuse.Z;
         }
         else if (keyword == "Ks")
         {
             // Specular color
-            iss >> specular.x >> specular.y >> specular.z;
+            iss >> specular.X >> specular.Y >> specular.Z;
         }
         else if (keyword == "Ns")
         {

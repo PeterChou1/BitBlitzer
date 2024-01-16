@@ -4,15 +4,15 @@
 
 struct PointLight
 {
-    Vec3 position;
-    Vec3 color;
-    float lightPower;
+    Vec3 Position;
+    Vec3 Color;
+    float LightPower;
 };
 
 
 struct ShadowCastingLight
 {
-    Quat orientation;
-    Vec3 position;
-    Vec3 color;
+    Quat Orientation;
+    Vec3 Position;
+    Vec3 Color;
 };

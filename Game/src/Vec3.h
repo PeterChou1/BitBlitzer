@@ -1,13 +1,6 @@
 #pragma once
 #include <string>
 
-struct Transform;
-
-/*
-===================
-Vec3
-===================
-*/
 class Vec3
 {
 public:
@@ -39,9 +32,9 @@ public:
 
     void Zero()
     {
-        x = 0.0f;
-        y = 0.0f;
-        z = 0.0f;
+        X = 0.0f;
+        Y = 0.0f;
+        Z = 0.0f;
     }
 
     Vec3 Cross(const Vec3& rhs) const;
@@ -60,19 +53,12 @@ public:
 
     const float* ToPtr() const
     {
-        return &x;
+        return &X;
     }
 
     std::string ToString() const;
 
-public:
-    float x;
-    float y;
-    float z;
+    float X;
+    float Y;
+    float Z;
 };
-
-
-// return a vector from line start to a point on the plane
-Vec3 IntersectPlane(const Vec3& point, const Vec3& normal, Vec3& start, Vec3& end, float& scale);
-
-float Dist(const Vec3& point, const Vec3& planeN, const Vec3& planeP);

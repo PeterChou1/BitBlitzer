@@ -10,8 +10,8 @@ public:
 
     void ResetResource() override
     {
-        buffer.clear();
+        Buffer.clear();
     }
 
-    std::vector<std::uint32_t> buffer;
+    std::vector<std::uint32_t> Buffer;
 };

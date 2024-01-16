@@ -7,19 +7,19 @@
 class Camera : public Resource
 {
 public:
-    Mat4 proj{};
-    Transform transform{};
-    Vec3 pos{};
-    Vec3 target{};
-    Vec3 forward{};
-    Vec3 up{};
+    Mat4 Proj{};
+    Transform CamTransform{};
+    Vec3 Position{};
+    Vec3 Target{};
+    Vec3 Forward{};
+    Vec3 Up{};
     // default camera values
-    float nearplane = 0.1f;
-    float farplane = 100.0f;
-    float fov = 90.0;
-    float screenHeight = APP_VIRTUAL_HEIGHT;
-    float screenWidth = APP_VIRTUAL_WIDTH;
-    float aspect_ratio = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
+    float Nearplane = 0.1f;
+    float Farplane = 100.0f;
+    float Fov = 90.0;
+    float ScreenHeight = APP_VIRTUAL_HEIGHT;
+    float ScreenWidth = APP_VIRTUAL_WIDTH;
+    float AspectRatio = APP_VIRTUAL_WIDTH / APP_VIRTUAL_HEIGHT;
 
 
     Camera() = default;
@@ -33,10 +33,13 @@ public:
     // To Raster Space but without safety checks
     void ToRasterSpaceDebug(Vec4& point);
 
-    void ResetResource() override {}
+    void ResetResource() override
+    {
+    }
 
     Vec3 CameraToWorld(const Vec3& point);
 
     Vec3 WorldToCamera(const Vec3& point);
 
+    Vec3 RasterSpaceToWorldPoint(float x, float y, Vec3& planePt, Vec3& planeNormal);
 };

@@ -14,10 +14,10 @@ extern ECSManager ECS;
 void RenderAABB(std::vector<Vertex>& vertexBuffer, 
                   Vec2 min, Vec2 max, Vec3 color)
 {
-    Vec3 tR = Vec3(max.x, max.y, 5.0f);
-    Vec3 tL = Vec3(min.x, max.y, 5.0f);
-    Vec3 bR = Vec3(max.x, min.y, 5.0f);
-    Vec3 bL = Vec3(min.x, min.y, 5.0f);
+    Vec3 tR = Vec3(max.X, max.Y, 5.0f);
+    Vec3 tL = Vec3(min.X, max.Y, 5.0f);
+    Vec3 bR = Vec3(max.X, min.Y, 5.0f);
+    Vec3 bL = Vec3(min.X, min.Y, 5.0f);
     Vertex topRight = tR;
     Vertex topLeft = tL;
     Vertex bottomRight = bR;
@@ -54,11 +54,11 @@ void RenderCircle(std::vector<Vertex>& vertexBuffer, int radius, Vec2 pos, Vec3 
         // Calculate the x and y coordinates for the current point
         float theta = i * increment;
         Vec3 point1 = Vec3(radius * cosf(theta), radius * sinf(theta), 5.0f);
-        point1.x += pos.x; point1.y += pos.y;
+        point1.X += pos.X; point1.Y += pos.Y;
         // Calculate the x and y coordinates for the next point
         theta = (i + 1) * increment;
         Vec3 point2 = Vec3(radius * cosf(theta), radius * sinf(theta), 5.0f);
-        point2.x += pos.x; point2.y += pos.y;
+        point2.X += pos.X; point2.Y += pos.Y;
 
         Vertex p1 = point1;
         Vertex p2 = point2;
@@ -101,8 +101,8 @@ void RenderPolygon(
         Vec2 pt1 = translatedPolygon[i];
         Vec2 pt2 = translatedPolygon[i + 1 == polySize ? 0 : i + 1];
 
-        Vec3 point1 = Vec3(pt1.x, pt1.y, 5.0);
-        Vec3 point2 = Vec3(pt2.x, pt2.y, 5.0);
+        Vec3 point1 = Vec3(pt1.X, pt1.Y, 5.0);
+        Vec3 point2 = Vec3(pt2.X, pt2.Y, 5.0);
 
         Vertex vertex1 = Vertex(point1);
         Vertex vertex2 = Vertex(point2);
@@ -118,7 +118,7 @@ void RenderPolygon(
 
     for (Vec2& pt : debugPoints)
     {
-        Vec3 point = Vec3(pt.x, pt.y, 5.0);
+        Vec3 point = Vec3(pt.X, pt.Y, 5.0);
         Vertex v = Vertex(point);
         v.color = Vec3(1.0, 1.0, 1.0);
         vertexBuffer.push_back(v);
@@ -127,7 +127,37 @@ void RenderPolygon(
 
 DebugPhysicsRenderer::DebugPhysicsRenderer()
 {
-    m_cam = ECS.GetResource<Camera>();
+    m_Cam = ECS.GetResource<Camera>();
+}
+
+void DebugPhysicsRenderer::Update()
+{
+
+    if (App::IsKeyPressed('M'))
+    {
+        float x = 0.0f, y = 0.0f;
+        App::GetMousePos(x, y);
+        Vec3 planePoint = Vec3(0, 0, 5);
+        Vec3 planeNormal = Vec3(0, 0, -1);
+        Vec3 point = m_Cam->RasterSpaceToWorldPoint(x, y, planePoint, planeNormal);
+        Entity meshEntity = ECS.CreateEntity();
+        auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
+        ECS.AddComponent<Transform>(meshEntity, modelTransform);
+        ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f));
+    }
+
+    if (App::IsKeyPressed('N'))
+    {
+        float x = 0.0f, y = 0.0f;
+        App::GetMousePos(x, y);
+        Vec3 planePoint = Vec3(0, 0, 5);
+        Vec3 planeNormal = Vec3(0, 0, -1);
+        Vec3 point = m_Cam->RasterSpaceToWorldPoint(x, y, planePoint, planeNormal);
+        Entity meshEntity = ECS.CreateEntity();
+        auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
+        ECS.AddComponent<Transform>(meshEntity, modelTransform);
+        ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f, 1.0f));
+    }
 }
 
 void DebugPhysicsRenderer::Render()
@@ -144,26 +174,26 @@ void DebugPhysicsRenderer::Render()
         switch (shape.GetShapeType())
         {
         case CircleShape:
-            RenderCircle(debugVertexBuffer, shape.radius, r.Position, r.Color);
+            RenderCircle(debugVertexBuffer, shape.Radius, r.Position, r.Color);
             break;
         case AABB:
-            RenderAABB(debugVertexBuffer, shape.min + r.Position, shape.max + r.Position, r.Color);
+            RenderAABB(debugVertexBuffer, shape.Min + r.Position, shape.Max + r.Position, r.Color);
             break;
         case PolygonShape:
-            RenderPolygon(debugVertexBuffer, shape.polygonPoints, shape.debugPoints, r.Angular, r.Position, r.Color);
+            RenderPolygon(debugVertexBuffer, shape.PolygonPoints, shape.DebugPoints, r.Angular, r.Position, r.Color);
             break;
         }
 
-        for (Vec2& pts : shape.contactPoints)
+        for (Vec2& pts : shape.ContactPoints)
         {
-            Vec3 point = Vec3(pts.x, pts.y, 5.0);
+            Vec3 point = Vec3(pts.X, pts.Y, 5.0);
             debugPoints.push_back(point);
         }
     }
 
     Concurrent::ForEach(debugVertexBuffer.begin(), debugVertexBuffer.end(), [&](Vertex& v)
     {
-        v.proj = m_cam->proj * Vec4(m_cam->WorldToCamera(v.pos));
+        v.proj = m_Cam->Proj * Vec4(m_Cam->WorldToCamera(v.pos));
     });
 
 
@@ -180,31 +210,31 @@ void DebugPhysicsRenderer::Render()
         start.PerspectiveDivision();
         end.PerspectiveDivision();
 
-        m_cam->ToRasterSpaceDebug(start.proj);
-        m_cam->ToRasterSpaceDebug(end.proj);
+        m_Cam->ToRasterSpaceDebug(start.proj);
+        m_Cam->ToRasterSpaceDebug(end.proj);
 
-        float startX = start.proj.x;
-        float startY = start.proj.y;
+        float startX = start.proj.X;
+        float startY = start.proj.Y;
 
-        float endX = end.proj.x;
-        float endY = end.proj.y;
+        float endX = end.proj.X;
+        float endY = end.proj.Y;
 
         Vec3 color = start.color;
 
-        App::DrawLine(startX, startY, endX, endY, color.x, color.y, color.z);
+        App::DrawLine(startX, startY, endX, endY, color.X, color.Y, color.Z);
 
     }
 
     Concurrent::ForEach(debugPoints.begin(), debugPoints.end(), [&](Vertex& v)
     {
-        v.proj = m_cam->proj * Vec4(m_cam->WorldToCamera(v.pos));
+        v.proj = m_Cam->Proj * Vec4(m_Cam->WorldToCamera(v.pos));
     });
 
     for (Vertex& v : debugPoints) 
     {
         v.PerspectiveDivision();
-        m_cam->ToRasterSpaceDebug(v.proj);
-        App::DrawDot(v.proj.x, v.proj.y, 0.01, 1.0, 0.0, 0.0);
+        m_Cam->ToRasterSpaceDebug(v.proj);
+        App::DrawDot(v.proj.X, v.proj.Y, 0.01, 1.0, 0.0, 0.0);
     }
 
 

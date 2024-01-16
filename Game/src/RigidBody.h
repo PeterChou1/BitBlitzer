@@ -28,7 +28,7 @@ public:
     RigidBody() = default;
 
     // Circle Constructor
-    RigidBody(int radius)
+    RigidBody(float radius)
     {
         Shape = Shape::CreateCircle(radius);
         float area = radius * radius * 3.141;
@@ -39,7 +39,7 @@ public:
     }
 
     // Square Constructor
-    RigidBody(int width, int height)
+    RigidBody(float width, float height)
     {
         Shape = Shape::CreateRect(width, height);
         float area = width * height;
@@ -72,24 +72,24 @@ public:
         switch (plane)
         {
         case YZ:
-            Position.x = transform.Position.y;
-            Position.y = transform.Position.z;
+            Position.X = transform.Position.Y;
+            Position.Y = transform.Position.Z;
             Angular = roll;
             break;
         case XZ:
-            Position.x = transform.Position.x;
-            Position.y = transform.Position.z;
+            Position.X = transform.Position.X;
+            Position.Y = transform.Position.Z;
             Angular = pitch;
             break;
         case XY:
-            Position.x = transform.Position.x;
-            Position.y = transform.Position.y;
+            Position.X = transform.Position.X;
+            Position.Y = transform.Position.Y;
             Angular = yaw;
             break;
         }
     }
 
-    void ForwardTransform(Transform& transform, SlicePlane plane)
+    void ForwardTransform(Transform& transform, SlicePlane plane) const
     {
         transform.SetPosition2D(Position);
         switch (plane)
@@ -162,7 +162,7 @@ public:
 
     // use to sync rigid body with their transform
     bool Initialized{};
-    // specify if rigid body is player or controlled by AI
+    // specify if rigid body is a player or controlled by a script
     bool Controlled{};
     unsigned int bitMaskLayers{};
     // used for debugging

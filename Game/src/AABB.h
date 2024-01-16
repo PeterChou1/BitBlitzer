@@ -1,9 +1,63 @@
 #pragma once
+#include <cassert>
+#include <vector>
+
+#include "Utils.h"
 #include "Vec2.h"
 
-class AABB
+struct AABB
 {
-public:
-    Vec2 max;
-    Vec2 min;
+    Vec2 OriginalMax;
+    Vec2 OriginalMin;
+
+    Vec2 Max;
+    Vec2 Min;
+
+
+    AABB(float radius)
+    {
+        OriginalMax = Vec2(radius, radius);
+        OriginalMin = Vec2(-radius, -radius);
+    }
+
+    // Compute AABB for polygon
+    AABB(std::vector<Vec2> points)
+    {
+        assert(!points.empty() && "Points Empty");
+        ComputeMaxPoints(points, OriginalMax, OriginalMin);
+        Min = OriginalMin;
+        Max = OriginalMax;
+    }
+
+    void RecomputeAABB(float newPosition, float newAngle)
+    {
+        Vec2 topRight = OriginalMax;
+        Vec2 topLeft = Vec2(OriginalMin.X, OriginalMax.Y);
+        Vec2 bottomLeft = OriginalMin;
+        Vec2 bottomRight = Vec2(OriginalMax.X, OriginalMin.Y);
+        std::vector<Vec2> points = {topRight, topLeft, bottomLeft, bottomRight};
+        std::vector<Vec2> translated = Utils::TranslatePoints(points, newAngle, newPosition);
+        ComputeMaxPoints(translated, Max, Min);
+    }
+
+
+    static void ComputeMaxPoints(std::vector<Vec2> points, Vec2& maxPoint, Vec2& minPoint)
+    {
+        maxPoint = points[0];
+        minPoint = points[0];
+        for (const Vec2& point : points) {
+            if (point.X < minPoint.X) minPoint.X = point.X;
+            if (point.Y < minPoint.Y) minPoint.Y = point.Y;
+            if (point.X > maxPoint.X) maxPoint.X = point.X;
+            if (point.Y > maxPoint.Y) maxPoint.X = point.Y;
+        }
+    }
 };
+
+
+inline bool AABBTest(AABB& A, AABB& B)
+{
+    if (A.Max.X < B.Min.X || A.Min.X > B.Max.X) return false;
+    if (A.Max.Y < B.Min.Y || A.Min.Y > B.Max.Y) return false;
+    return true;
+}

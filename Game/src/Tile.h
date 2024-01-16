@@ -19,20 +19,20 @@ static constexpr int TILE_COUNT_Y = APP_VIRTUAL_HEIGHT / TILE_SIZE_Y;
 class Tile
 {
 public:
-    Tile(Vec2& min, Vec2& max) : minRaster(min), maxRaster(max)
+    Tile(Vec2& min, Vec2& max) : m_MinRaster(min), m_MaxRaster(max)
     {
         const unsigned numCores = std::thread::hardware_concurrency();
-        binTriangles.resize(numCores);
+        m_BinTriangles.resize(numCores);
     }
 
     void Add(std::uint32_t bin, Triangle& tri)
     {
-        binTriangles[bin].push_back(tri);
+        m_BinTriangles[bin].push_back(tri);
     }
 
     void Clear()
     {
-        for (auto& binTriangle : binTriangles)
+        for (auto& binTriangle : m_BinTriangles)
         {
             binTriangle.clear();
         }
@@ -42,7 +42,7 @@ public:
     int Size() const
     {
         int size = 0;
-        for (auto& binTriangle : binTriangles)
+        for (auto& binTriangle : m_BinTriangles)
         {
             size += binTriangle.size();
         }
@@ -51,41 +51,35 @@ public:
 
     void DebugDraw(float r, float g, float b) const
     {
-        App::DrawTriangle(minRaster.x, minRaster.y, maxRaster.x, maxRaster.y, minRaster.x, maxRaster.y, r, g, b);
-        App::DrawTriangle(minRaster.x, minRaster.y, maxRaster.x, maxRaster.y, maxRaster.x, minRaster.y, r, g, b);
-        App::DrawLine(minRaster.x, minRaster.y, minRaster.x, maxRaster.y);
-        App::DrawLine(maxRaster.x, maxRaster.y, minRaster.x, maxRaster.y);
+        App::DrawTriangle(m_MinRaster.X, m_MinRaster.Y, m_MaxRaster.X, m_MaxRaster.Y, m_MinRaster.X, m_MaxRaster.Y, r, g, b);
+        App::DrawTriangle(m_MinRaster.X, m_MinRaster.Y, m_MaxRaster.X, m_MaxRaster.Y, m_MaxRaster.X, m_MinRaster.Y, r, g, b);
+        App::DrawLine(m_MinRaster.X, m_MinRaster.Y, m_MinRaster.X, m_MaxRaster.Y);
+        App::DrawLine(m_MaxRaster.X, m_MaxRaster.Y, m_MinRaster.X, m_MaxRaster.Y);
     }
 
     Vec2 GetMin() const
     {
-        return minRaster;
+        return m_MinRaster;
     }
 
     Vec2 GetMax() const
     {
-        return maxRaster;
-    }
-
-    int GetID() const
-    {
-        return id;
+        return m_MaxRaster;
     }
 
     Vec2 GetCorner(int index) const
     {
-        return minRaster + CornerIndex[index];
+        return m_MinRaster + CornerIndex[index];
     }
 
     std::vector<std::vector<Triangle>>& GetBinTriangle()
     {
-        return binTriangles;
+        return m_BinTriangles;
     }
 
 private:
-    int id;
-    Vec2 minRaster;
-    Vec2 maxRaster;
-    std::vector<std::vector<Triangle>> binTriangles;
+    Vec2 m_MinRaster;
+    Vec2 m_MaxRaster;
+    std::vector<std::vector<Triangle>> m_BinTriangles;
     static Vec2 CornerIndex[4];
 };

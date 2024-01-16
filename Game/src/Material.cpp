@@ -53,8 +53,8 @@ void Material::SampleSIMD(SIMDVec2& tex, SIMDFloat& r, SIMDFloat& g, SIMDFloat& 
         return;
     }
 
-    SIMDFloat u = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, tex.x);
-    SIMDFloat v = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, tex.y);
+    SIMDFloat u = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, tex.X);
+    SIMDFloat v = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, tex.Y);
 
     const SIMDFloat x = (u * (mtexWidth - 1)).floor();
     const SIMDFloat y = (v * (mtexHeight - 1)).floor();

@@ -8,20 +8,20 @@ void BlinnPhongSIMD::Shade(SIMDPixel& pixel,
 {
     // setup 
     PointLight light = lights[0];
-    SIMDVec3 camPos = cam.pos;
-    SIMDVec3 lightPos = light.position;
-    SIMDVec3 lightColor = light.color;
+    SIMDVec3 camPos = cam.Position;
+    SIMDVec3 lightPos = light.Position;
+    SIMDVec3 lightColor = light.Color;
     SIMDFloat shininess = texture.highlight;
     SIMDVec3 ambientColor = texture.ambient;
     SIMDVec3 diffuseColor = texture.diffuse;
     SIMDVec3 specularColor = texture.specular;
-    SIMDVec3 fragPos = pixel.worldSpacePosition;
+    SIMDVec3 fragPos = pixel.WorldSpacePosition;
 
     // Phong Shading Model
     SIMDFloat r, g, b;
-    texture.SampleSIMD(pixel.textureCoord, r, g, b);
+    texture.SampleSIMD(pixel.TextureCoord, r, g, b);
     SIMDVec3 mappedDiffuseColor = SIMDVec3(r / 255.0, g / 255.0, b / 255.0);
-    SIMDVec3 normal = pixel.normal.Normalize();
+    SIMDVec3 normal = pixel.Normal.Normalize();
     SIMDVec3 lightDir = (lightPos - fragPos).Normalize();
     SIMDVec3 viewDir = (camPos - fragPos).Normalize();
     SIMDFloat diff = normal.Dot(lightDir);
@@ -35,10 +35,10 @@ void BlinnPhongSIMD::Shade(SIMDPixel& pixel,
     SIMDVec3 specular = lightColor * specularColor * spec;
     SIMDVec3 diffuse = lightColor * diff;
 
-    pixel.color = (specular + ambientColor + diffuse) * mappedDiffuseColor * diffuseColor;
+    pixel.Color = (specular + ambientColor + diffuse) * mappedDiffuseColor * diffuseColor;
     // Clamp the pixel colors to 0 -> 1
-    pixel.color.x = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, pixel.color.x);
-    pixel.color.y = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, pixel.color.y);
-    pixel.color.z = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, pixel.color.z);
+    pixel.Color.X = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, pixel.Color.X);
+    pixel.Color.Y = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, pixel.Color.Y);
+    pixel.Color.Z = SIMD::Clamp(SIMD::ZERO, SIMD::ONE, pixel.Color.Z);
 
 }

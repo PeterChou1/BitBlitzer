@@ -32,17 +32,13 @@ public:
 
     void Zero()
     {
-        x = 0;
-        y = 0;
-        z = 0;
-        w = 0;
+        X = 0;
+        Y = 0;
+        Z = 0;
+        W = 0;
     }
-
-    const float* ToPtr() const { return &x; }
-    float* ToPtr() { return &x; }
 
     std::string toString() const;
 
-public:
-    float x, y, z, w;
+    float X, Y, Z, W;
 };

@@ -3,7 +3,7 @@
 
 template<typename T>
 struct TypeID {
-    static const ComponentTypeID value; // Unique value for each type
+    static const ComponentTypeID VALUE; // Unique value for each type
 };
 
 
@@ -14,4 +14,4 @@ inline ComponentTypeID GenerateComponentID()
 }
 
 template<typename T>
-const std::size_t TypeID<T>::value = GenerateComponentID();
+const std::size_t TypeID<T>::VALUE = GenerateComponentID();

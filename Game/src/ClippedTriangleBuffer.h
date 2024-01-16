@@ -10,17 +10,17 @@ class ClippedTriangleBuffer : public Resource
 public:
     ClippedTriangleBuffer()
     {
-        buffer.resize(std::thread::hardware_concurrency());
+        Buffer.resize(std::thread::hardware_concurrency());
     }
 
 
     void ResetResource() override
     {
-        for (auto& triangles : buffer)
+        for (auto& triangles : Buffer)
         {
             triangles.clear();
         }
     }
 
-    std::vector<std::vector<Triangle>> buffer;
+    std::vector<std::vector<Triangle>> Buffer;
 };

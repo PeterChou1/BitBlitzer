@@ -48,15 +48,14 @@ public:
 
     float Dot(const Vec2& rhs) const
     {
-        return x * rhs.x + y * rhs.y;
+        return X * rhs.X + Y * rhs.Y;
     }
 
     const float* ToPtr() const
     {
-        return &x;
+        return &X;
     }
 
-public:
-    float x;
-    float y;
+    float X;
+    float Y;
 };

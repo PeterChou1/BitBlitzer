@@ -22,9 +22,9 @@ public:
 
     float Determinant() const
     {
-        return rows[0].x * rows[1].y - rows[0].y * rows[1].x;
+        return Rows[0].X * Rows[1].Y - Rows[0].Y * Rows[1].X;
     }
 
-public:
-    Vec2 rows[2];
+
+    Vec2 Rows[2];
 };

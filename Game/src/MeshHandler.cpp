@@ -29,15 +29,15 @@ void MeshHandler::Update()
 
         if (ECS.HasComponent<Shader>(e))
         {
-            shaderID = ECS.GetComponent<Shader>(e).shaderID;
+            shaderID = ECS.GetComponent<Shader>(e).ShaderId;
         }
 
-        if (!mesh.loaded)
+        if (!mesh.Loaded)
         {
             AddMesh(e, mesh, transform, shaderID);
-            mesh.loaded = true;
+            mesh.Loaded = true;
         }
-        else if (mesh.markedForDeletion)
+        else if (mesh.MarkedForDeletion)
         {
             MarkedForDeletion.push_back(e);
         }
@@ -123,7 +123,7 @@ void MeshHandler::DeleteMeshes(const std::vector<Entity>& entities)
         {
             for (int i = indexRange.first; i < indexRange.second; i++)
             {
-                m_IndexBuffer->buffer[i] -= vertexAdjustment;
+                m_IndexBuffer->Buffer[i] -= vertexAdjustment;
             }
             vertexRange.first -= vertexAdjustment;
             vertexRange.second -= vertexAdjustment;
@@ -132,10 +132,10 @@ void MeshHandler::DeleteMeshes(const std::vector<Entity>& entities)
         }
     }
 
-    Utils::EraseRanges(vertexRangesToRemove, m_VertexBuffer->buffer);
-    Utils::EraseRanges(indexRangesToRemove, m_IndexBuffer->buffer);
+    Utils::EraseRanges(vertexRangesToRemove, m_VertexBuffer->Buffer);
+    Utils::EraseRanges(indexRangesToRemove, m_IndexBuffer->Buffer);
 
-    m_RenderConstants->TriangleCount = m_IndexBuffer->buffer.size() / 3;
+    m_RenderConstants->TriangleCount = m_IndexBuffer->Buffer.size() / 3;
     unsigned int CoreCount = m_RenderConstants->CoreCount;
     m_RenderConstants->CoreInterval = (m_RenderConstants->TriangleCount + CoreCount - 1) / CoreCount;
 }
@@ -143,8 +143,8 @@ void MeshHandler::DeleteMeshes(const std::vector<Entity>& entities)
 void MeshHandler::UpdateMeshTransform(Entity entity, Transform& transform)
 {
     BufferRange range = m_RenderConstants->EntityToVertexRange[entity];
-    auto begin = m_VertexBuffer->buffer.begin() + range.first;
-    auto end = m_VertexBuffer->buffer.begin() + range.second;
+    auto begin = m_VertexBuffer->Buffer.begin() + range.first;
+    auto end = m_VertexBuffer->Buffer.begin() + range.second;
     std::for_each(begin, end, [&](Vertex& v)
         {
             v.pos = transform.TransformVec3(v.localPosition);
@@ -156,8 +156,8 @@ void MeshHandler::UpdateMeshTransform(Entity entity, Transform& transform)
 void MeshHandler::UpdateMeshShader(Entity entity, ShaderAsset shaderID)
 {
     BufferRange range = m_RenderConstants->EntityToVertexRange[entity];
-    auto begin = m_VertexBuffer->buffer.begin() + range.first;
-    auto end = m_VertexBuffer->buffer.begin() + range.second;
+    auto begin = m_VertexBuffer->Buffer.begin() + range.first;
+    auto end = m_VertexBuffer->Buffer.begin() + range.second;
     std::for_each(begin, end, [&](Vertex& v)
         {
             v.shader_id = shaderID;
@@ -175,23 +175,23 @@ void MeshHandler::AddMesh(Entity entity, Mesh mesh, Transform& transform, Shader
     // Transform Mesh Instance to World Space
     instance.transform(transform);
     // Get Vertex Buffer Offset
-    int offsetVertex = m_VertexBuffer->buffer.size();
+    int offsetVertex = m_VertexBuffer->Buffer.size();
 
-    EntityToVertexRange[entity] = { m_VertexBuffer->buffer.size(), m_VertexBuffer->buffer.size() + instance.vertices.size() };
-    EntityToIndexRange[entity] = { m_IndexBuffer->buffer.size(), m_IndexBuffer->buffer.size() + instance.indices.size() };
+    EntityToVertexRange[entity] = { m_VertexBuffer->Buffer.size(), m_VertexBuffer->Buffer.size() + instance.vertices.size() };
+    EntityToIndexRange[entity] = { m_IndexBuffer->Buffer.size(), m_IndexBuffer->Buffer.size() + instance.indices.size() };
     EntityToShaderAsset[entity] = shaderID;
 
     for (auto& vertex : instance.vertices)
     {
         vertex.shader_id = shaderID;
-        m_VertexBuffer->buffer.push_back(vertex);
+        m_VertexBuffer->Buffer.push_back(vertex);
     }
     for (const auto id : instance.indices)
     {
-        m_IndexBuffer->buffer.push_back(offsetVertex + id);
+        m_IndexBuffer->Buffer.push_back(offsetVertex + id);
     }
 
-    m_RenderConstants->TriangleCount = m_IndexBuffer->buffer.size() / 3;
+    m_RenderConstants->TriangleCount = m_IndexBuffer->Buffer.size() / 3;
     unsigned int CoreCount = m_RenderConstants->CoreCount;
     m_RenderConstants->CoreInterval = (m_RenderConstants->TriangleCount + CoreCount - 1) / CoreCount;
 }

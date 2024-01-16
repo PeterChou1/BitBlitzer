@@ -15,24 +15,24 @@ public:
     void RegisterComponent()
     {
 
-        ComponentTypeID typeID = TypeID<T>::value;
+        ComponentTypeID typeID = TypeID<T>::VALUE;
 
-        assert(mComponentTypes.find(typeID) == mComponentTypes.end() && "Registering component type more than once.");
-        assert(mNextComponentType < MAX_COMPONENTS && "Maximum allowed registered components exceeded");
+        assert(m_ComponentTypes.find(typeID) == m_ComponentTypes.end() && "Registering component type more than once.");
+        assert(m_NextComponentType < MAX_COMPONENTS && "Maximum allowed registered components exceeded");
 
-        mComponentTypes.insert({ typeID, mNextComponentType});
-        mComponentArrays.insert({ typeID, std::make_shared<ComponentBuffer<T>>()});
+        m_ComponentTypes.insert({ typeID, m_NextComponentType});
+        m_ComponentArrays.insert({ typeID, std::make_shared<ComponentBuffer<T>>()});
 
-        ++mNextComponentType;
+        ++m_NextComponentType;
     }
 
     template <typename T>
     ComponentType GetComponentType()
     {
-        ComponentTypeID typeID = TypeID<T>::value;
-        if (mComponentTypes.find(typeID) == mComponentTypes.end())
+        ComponentTypeID typeID = TypeID<T>::VALUE;
+        if (m_ComponentTypes.find(typeID) == m_ComponentTypes.end())
             RegisterComponent<T>();
-        return mComponentTypes[typeID];
+        return m_ComponentTypes[typeID];
     }
 
     template <typename... Ts>
@@ -50,8 +50,8 @@ public:
     template <typename T>
     void AddComponent(Entity entity, T component)
     {
-        ComponentTypeID typeID = TypeID<T>::value;
-        if (mComponentTypes.find(typeID) == mComponentTypes.end())
+        ComponentTypeID typeID = TypeID<T>::VALUE;
+        if (m_ComponentTypes.find(typeID) == m_ComponentTypes.end())
             RegisterComponent<T>();
         GetComponentArray<T>()->InsertData(entity, component);
     }
@@ -65,8 +65,8 @@ public:
     template <typename T>
     bool HasComponent(Entity entity)
     {
-        ComponentTypeID typeID = TypeID<T>::value;
-        if (mComponentTypes.find(typeID) != mComponentTypes.end())
+        ComponentTypeID typeID = TypeID<T>::VALUE;
+        if (m_ComponentTypes.find(typeID) != m_ComponentTypes.end())
             return GetComponentArray<T>()->HasData(entity);
         return false;
     }
@@ -79,7 +79,7 @@ public:
 
     void EntityDestroyed(Entity entity)
     {
-        for (auto const& pair : mComponentArrays)
+        for (auto const& pair : m_ComponentArrays)
         {
             auto const& component = pair.second;
 
@@ -89,25 +89,23 @@ public:
 
     void Clear()
     {
-        mComponentTypes.clear();
-        mComponentArrays.clear();
-        mNextComponentType = 0;
+        m_ComponentTypes.clear();
+        m_ComponentArrays.clear();
+        m_NextComponentType = 0;
     }
 
 private:
-    // maps type name -> type id 
-    std::unordered_map<ComponentTypeID, ComponentType> mComponentTypes{};
 
-    // maps type 
-    std::unordered_map<ComponentTypeID, std::shared_ptr<IComponentBuffer>> mComponentArrays{};
-    ComponentType mNextComponentType{};
+    std::unordered_map<ComponentTypeID, ComponentType> m_ComponentTypes{};
+    std::unordered_map<ComponentTypeID, std::shared_ptr<IComponentBuffer>> m_ComponentArrays{};
+    ComponentType m_NextComponentType{};
 
 
     template <typename T>
     std::shared_ptr<ComponentBuffer<T>> GetComponentArray()
     {
-        ComponentTypeID typeID = TypeID<T>::value;
-        assert(mComponentTypes.find(typeID) != mComponentTypes.end() && "Component does not exist");
-        return std::static_pointer_cast<ComponentBuffer<T>>(mComponentArrays[typeID]);
+        ComponentTypeID typeID = TypeID<T>::VALUE;
+        assert(m_ComponentTypes.find(typeID) != m_ComponentTypes.end() && "Component does not exist");
+        return std::static_pointer_cast<ComponentBuffer<T>>(m_ComponentArrays[typeID]);
     }
 };

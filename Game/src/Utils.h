@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <unordered_set>
 
 #include "MeshInstance.h"
 #include "Entity.h"
@@ -8,7 +7,25 @@
 
 namespace Utils
 {
+    /**
+     * \brief Returns closest point between point and line segment ab
+     */
+    Vec2 PointToLineSegment(Vec2 point, Vec2 a, Vec2 b);
 
+    /**
+     * \brief Translates all points in a vector to a specific position
+     *        and angle
+     */
+    std::vector<Vec2> TranslatePoints
+    (
+        const std::vector<Vec2>& points,
+        float angle,
+        const Vec2& position
+    );
+
+    /**
+     * \brief Clamp n between upper and lower floats
+     */
     inline float Clamp(float n, float lower, float upper)
     {
         return std::max(lower, std::min(n, upper));
@@ -22,24 +39,26 @@ namespace Utils
      * \param vec vector to erase ranges from
      */
     template <typename Type>
-    void EraseRanges(const std::vector<std::pair<int, int>>& ranges_to_erase, std::vector<Type>& vec) {
+    void EraseRanges(const std::vector<std::pair<int, int>>& ranges_to_erase, std::vector<Type>& vec)
+    {
         std::vector<bool> erase_index(vec.size(), false);
 
-        for (const std::pair<int, int> pair : ranges_to_erase) {
+        for (const std::pair<int, int> pair : ranges_to_erase)
+        {
             std::fill(erase_index.begin() + pair.first, erase_index.begin() + pair.second, true);
         }
-        std::vector<bool>::const_iterator it_to_erase = erase_index.cbegin();
+        auto it_to_erase = erase_index.cbegin();
 
         typename std::vector<Type>::iterator it_erase_from = std::remove_if(
             vec.begin(), vec.end(),
-            [&it_to_erase](const Type&) -> bool {
+            [&it_to_erase](const Type&) -> bool
+            {
                 return *it_to_erase++ == true;
             }
         );
 
         vec.erase(it_erase_from, vec.end());
     }
-
 
     /**
      * \brief Loads an .obj file only supports triangles, normals, texture coordinates 
@@ -59,5 +78,6 @@ namespace Utils
      * \param textureIDs map of texture names to index of texture in textureList
      * \return 
      */
-    bool LoadMTLFile(const std::string& directory, const std::string& filename, std::vector<Material>& textureList, std::unordered_map<std::string, size_t>& textureIDs);
+    bool LoadMTLFile(const std::string& directory, const std::string& filename, std::vector<Material>& textureList,
+                     std::unordered_map<std::string, size_t>& textureIDs);
 }

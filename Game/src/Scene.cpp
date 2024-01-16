@@ -1,12 +1,35 @@
 #include "stdafx.h"
+
 #include "Scene.h"
 #include "Camera.h"
 #include "AssetServer.h"
 #include "ECSManager.h"
-#include "Mesh.h"
-#include "Shape.h"
 #include "RigidBody.h"
+
+
 extern ECSManager ECS;
+
+void CreateRigidBodyRect(float x, float y, float width, float height, float rotation)
+{
+    float radians = (3.141f  / 180.0f) * rotation;
+
+    Entity entity = ECS.CreateEntity();
+    auto transform = Transform(Vec3(x, y, 5.0f), Quat(Vec3(0.0f, 0.0f, 1.0f), radians));
+    ECS.AddComponent<Transform>(entity, transform);
+    auto rigidbody = RigidBody(width, height);
+    rigidbody.SetStatic(true);
+    ECS.AddComponent<RigidBody>(entity, rigidbody);
+}
+
+void CreateRigidBodyCircle(float x, float y, float radius)
+{
+    Entity entity = ECS.CreateEntity();
+    auto transform = Transform(Vec3(x, y, 5.0f), Quat(Vec3(0.0f, 0.0f, 1.0f), 0.0));
+    ECS.AddComponent<Transform>(entity, transform);
+    auto rigidbody = RigidBody(radius);
+    rigidbody.SetStatic(true);
+    ECS.AddComponent<RigidBody>(entity, rigidbody);
+} 
 
 void Scene::Setup()
 {
@@ -14,28 +37,24 @@ void Scene::Setup()
     camera->SetPosition(Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(0.0f, 1.0f, 0.0f));
 
     // Loaded all asset that the current scene needs
-    std::set<ObjAsset> levelAssets({Spot});
-    AssetServer& loader = AssetServer::GetInstance();
-    loader.LoadLevelAssets(levelAssets);
+    // std::set<ObjAsset> levelAssets({Pacman});
+    // AssetServer& loader = AssetServer::GetInstance();
+    // loader.LoadLevelAssets(levelAssets);
+    // Ground
+    CreateRigidBodyRect(0.0f, -5.0f, 20.0, 1.0, 0.0f);
+    // Side walls
+    CreateRigidBodyRect(-10.0f, 0.0f, 1.0, 10.0, 0.0f);
+    CreateRigidBodyRect(10.0f, 0.0f, 1.0, 10.0, 0.0f);
 
-    // Entity groundEntity = ECS.CreateEntity();
-    // auto modelTransform = Transform(Vec3(0.0f, -3.0f, 0.0f), Quat(Vec3(0.0f, 0.0f, 1.0f), 1.0));
-    // ECS.AddComponent<Transform>(groundEntity, modelTransform);
-    // auto rb = RigidBody(10.0f, 1.0f);
-    // rb.SetStatic(true);
-    // 
-    // ECS.AddComponent<RigidBody>(groundEntity, rb);
-    
-    // Setup Rigid Bodies
-    for (int x = 0; x < 1; x++)
-    {
-        Entity meshEntity = ECS.CreateEntity();
-        auto modelTransform = Transform(Vec3(0.0f, 0.0, 5.0), Quat(Vec3(1, 0, 0), 0.0));
-        // auto meshRB = RigidBody(2.0f, 2.0f);
-        ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
-        ECS.AddComponent<Transform>(meshEntity, modelTransform);
-        //ECS.AddComponent<RigidBody>(meshEntity, meshRB);
-    }
+    CreateRigidBodyCircle(0.0f, 0.0f, 2.0f);
+
+    //Entity meshEntity = ECS.CreateEntity();
+    //auto modelTransform = Transform(Vec3(0.0, 0.0, 5.0), Quat(Vec3(0, 0, 1), 0.0));
+    //auto rigidbody = RigidBody(1.0f);
+    //rigidbody.Controlled = true;
+    //ECS.AddComponent<Transform>(meshEntity, modelTransform);
+    //ECS.AddComponent<RigidBody>(meshEntity, rigidbody);
+
     
 }
 

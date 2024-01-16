@@ -20,8 +20,7 @@ Scene scene;
 void GameManager::Setup()
 {
     // setup opengl rendering instance
-    //App::SetupGL();
-
+    App::SetupGL();
     // Register Resources Required For Rendering
     ECS.RegisterResource(Camera());
     ECS.RegisterResource(VertexBuffer());
@@ -51,9 +50,10 @@ void GameManager::Setup()
 void GameManager::Update(float deltaTime)
 {
     m_DebugCamera->Move(deltaTime);
-    //m_DebugMesh->Update(deltaTime);
+    m_DebugMesh->Update(deltaTime);
     m_MeshHandler->Update();
-    //m_PhysicsSystem->Update(deltaTime);
+    m_PhysicsSystem->Update(deltaTime);
+    m_DebugPhysicsRender->Update();
 }
 
 void GameManager::Render()
@@ -64,7 +64,7 @@ void GameManager::Render()
     m_Rasterizer->Rasterize();
     m_FragmentShader->Shade();
     m_DebugCamera->Render();
-    //m_DebugPhysicsRender->Render();
+    m_DebugPhysicsRender->Render();
 
     // Clear Render Pipeline to get ready for next pass
     ECS.GetResource<ClippedTriangleBuffer>()->ResetResource();

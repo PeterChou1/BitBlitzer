@@ -2,8 +2,7 @@
 #include "Assets.h"
 
 
-class Shader
+struct Shader
 {
-public:
-    ShaderAsset shaderID;
+    ShaderAsset ShaderId;
 };

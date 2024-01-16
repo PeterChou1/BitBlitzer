@@ -30,11 +30,11 @@ void Rasterizer::Rasterize()
 void Rasterizer::AssignTile()
 {
     std::vector<unsigned int> coreID = m_RenderConstants->CoreIds;
-    std::vector<Tile>& tiles = m_Tiles->tiles;
+    std::vector<Tile>& tiles = m_Tiles->TilesArray;
 
     Concurrent::ForEach(coreID.begin(), coreID.end(), [&](unsigned int binID)
     {
-            std::vector<Triangle>& binnedTriangles = m_ClippedTriangle->buffer[binID];
+            std::vector<Triangle>& binnedTriangles = m_ClippedTriangle->Buffer[binID];
 
             for (auto& tri : binnedTriangles)
             {
@@ -78,7 +78,7 @@ void Rasterizer::AssignTile()
 
 void Rasterizer::RasterizeTiles()
 {
-    std::vector<Tile>& tiles = m_Tiles->tiles;
+    std::vector<Tile>& tiles = m_Tiles->TilesArray;
 
     Concurrent::ForEach(tiles.begin(), tiles.end(), [&] (Tile& tile)
     {
@@ -93,33 +93,33 @@ void Rasterizer::RasterizeTiles()
             {
                 // construct the triangles bounding box to loop through this faster
                 auto minPt =
-                    Vec2((std::min)((std::max)(tileMin.x, static_cast<float>(tri.minX)),
+                    Vec2((std::min)((std::max)(tileMin.X, static_cast<float>(tri.minX)),
                         static_cast<float>(tri.maxX)),
-                        (std::min)((std::max)(tileMin.y, static_cast<float>(tri.minY)),
+                        (std::min)((std::max)(tileMin.Y, static_cast<float>(tri.minY)),
                             static_cast<float>(tri.maxY)));
 
                 auto maxPt =
-                    Vec2((std::max)((std::min)(tileMax.x, static_cast<float>(tri.maxX)),
+                    Vec2((std::max)((std::min)(tileMax.X, static_cast<float>(tri.maxX)),
                         static_cast<float>(tri.minX)),
-                        (std::max)((std::min)(tileMax.y, static_cast<float>(tri.maxY)),
+                        (std::max)((std::min)(tileMax.Y, static_cast<float>(tri.maxY)),
                             static_cast<float>(tri.minY)));
 
                 // iterate over pixels to determine which pixel belong in the triangle
 
                 // Aligning pixel tile boundaries
-                minPt.x =
-                    std::floor(minPt.x / SIMDPixel::PIXEL_WIDTH) * SIMDPixel::PIXEL_WIDTH;
-                minPt.y =
-                    std::floor(minPt.y / SIMDPixel::PIXEL_HEIGHT) * SIMDPixel::PIXEL_HEIGHT;
-                maxPt.x =
-                    std::ceil(maxPt.x / SIMDPixel::PIXEL_WIDTH) * SIMDPixel::PIXEL_WIDTH;
-                maxPt.y =
-                    std::ceil(maxPt.y / SIMDPixel::PIXEL_HEIGHT) * SIMDPixel::PIXEL_HEIGHT;
+                minPt.X =
+                    std::floor(minPt.X / SIMDPixel::PIXEL_WIDTH) * SIMDPixel::PIXEL_WIDTH;
+                minPt.Y =
+                    std::floor(minPt.Y / SIMDPixel::PIXEL_HEIGHT) * SIMDPixel::PIXEL_HEIGHT;
+                maxPt.X =
+                    std::ceil(maxPt.X / SIMDPixel::PIXEL_WIDTH) * SIMDPixel::PIXEL_WIDTH;
+                maxPt.Y =
+                    std::ceil(maxPt.Y / SIMDPixel::PIXEL_HEIGHT) * SIMDPixel::PIXEL_HEIGHT;
 
                 SIMDTriangle triSIMD(tri);
 
-                SIMDFloat posX = SIMDPixel::PixelOffsetX + minPt.x;
-                SIMDFloat posY = SIMDPixel::PixelOffsetY + minPt.y;
+                SIMDFloat posX = SIMDPixel::PixelOffsetX + minPt.X;
+                SIMDFloat posY = SIMDPixel::PixelOffsetY + minPt.Y;
 
                 SIMDFloat deltaX0 = triSIMD.B0 * SIMDPixel::PIXEL_WIDTH;
                 SIMDFloat deltaX1 = triSIMD.B1 * SIMDPixel::PIXEL_WIDTH;
@@ -133,13 +133,13 @@ void Rasterizer::RasterizeTiles()
                 SIMDFloat e2 = triSIMD.EdgeFunc1(base);
                 SIMDFloat e3 = triSIMD.EdgeFunc2(base);
 
-                for (int y = minPt.y; y < maxPt.y; y += SIMDPixel::PIXEL_HEIGHT)
+                for (int y = minPt.Y; y < maxPt.Y; y += SIMDPixel::PIXEL_HEIGHT)
                 {
                     SIMDFloat deltaXe1 = e1;
                     SIMDFloat deltaXe2 = e2;
                     SIMDFloat deltaXe3 = e3;
-                    posX = SIMDPixel::PixelOffsetX + minPt.x;
-                    for (int x = minPt.x; x < maxPt.x; x += SIMDPixel::PIXEL_WIDTH)
+                    posX = SIMDPixel::PixelOffsetX + minPt.X;
+                    for (int x = minPt.X; x < maxPt.X; x += SIMDPixel::PIXEL_WIDTH)
                     {
                         SIMDFloat inTriangle =
                             deltaXe1 <= 0.0f & deltaXe2 <= 0.0f & deltaXe3 <= 0.0f; // &
@@ -150,8 +150,8 @@ void Rasterizer::RasterizeTiles()
                         {
                             SIMDFloat alpha, beta, gamma;
                             triSIMD.ComputeBarycentric(posX, posY, alpha, beta, gamma);
-                            SIMDFloat depth = alpha * triSIMD.invW1 + beta * triSIMD.invW2 +
-                                gamma * triSIMD.invW3;
+                            SIMDFloat depth = alpha * triSIMD.InvW1 + beta * triSIMD.InvW2 +
+                                gamma * triSIMD.InvW3;
 
                             int pixelX = x / SIMDPixel::PIXEL_WIDTH;
                             int pixelY = y / SIMDPixel::PIXEL_HEIGHT;

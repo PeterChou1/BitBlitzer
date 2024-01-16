@@ -17,10 +17,10 @@ public:
 
     Entity A;
     Entity B;
-    bool collided{};
-    float penetration{};
-    Vec2 normal{};
-    std::vector<Vec2> contactPoints;
+    bool Collided{};
+    float Penetration{};
+    Vec2 Normal{};
+    std::vector<Vec2> ContactPoints;
 
 };
 

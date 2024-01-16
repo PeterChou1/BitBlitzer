@@ -3,37 +3,37 @@
 #include <math.h>
 #include <cassert>
 
-Vec2::Vec2() : x(0), y(0)
+Vec2::Vec2() : X(0), Y(0)
 {
 }
 
-Vec2::Vec2(const float value) : x(value), y(value)
+Vec2::Vec2(const float value) : X(value), Y(value)
 {
 }
 
-Vec2::Vec2(const Vec2& rhs) : x(rhs.x), y(rhs.y)
+Vec2::Vec2(const Vec2& rhs) : X(rhs.X), Y(rhs.Y)
 {
 }
 
-Vec2::Vec2(float X, float Y) : x(X), y(Y)
+Vec2::Vec2(float X, float Y) : X(X), Y(Y)
 {
 }
 
-Vec2::Vec2(const float* xy) : x(xy[0]), y(xy[1])
+Vec2::Vec2(const float* xy) : X(xy[0]), Y(xy[1])
 {
 }
 
 Vec2& Vec2::operator=(const Vec2& rhs)
 {
-    x = rhs.x;
-    y = rhs.y;
+    X = rhs.X;
+    Y = rhs.Y;
     return *this;
 }
 
 bool Vec2::operator==(const Vec2& rhs) const
 {
-    if (std::abs(x - rhs.x) < std::numeric_limits<float>::epsilon()) return false;
-    if (std::abs(y - rhs.y) < std::numeric_limits<float>::epsilon()) return false;
+    if (std::abs(X - rhs.X) < std::numeric_limits<float>::epsilon()) return false;
+    if (std::abs(Y - rhs.Y) < std::numeric_limits<float>::epsilon()) return false;
     return true;
 }
 
@@ -46,70 +46,70 @@ bool Vec2::operator!=(const Vec2& rhs) const
 Vec2 Vec2::operator+(const Vec2& rhs) const
 {
     Vec2 temp;
-    temp.x = x + rhs.x;
-    temp.y = y + rhs.y;
+    temp.X = X + rhs.X;
+    temp.Y = Y + rhs.Y;
     return temp;
 }
 
 const Vec2& Vec2::operator+=(const Vec2& rhs)
 {
-    x += rhs.x;
-    y += rhs.y;
+    X += rhs.X;
+    Y += rhs.Y;
     return *this;
 }
 
 const Vec2& Vec2::operator-=(const Vec2& rhs)
 {
-    x -= rhs.x;
-    y -= rhs.y;
+    X -= rhs.X;
+    Y -= rhs.Y;
     return *this;
 }
 
 Vec2 Vec2::operator-(const Vec2& rhs) const
 {
     Vec2 temp;
-    temp.x = x - rhs.x;
-    temp.y = y - rhs.y;
+    temp.X = X - rhs.X;
+    temp.Y = Y - rhs.Y;
     return temp;
 }
 
 Vec2 Vec2::operator*(const float rhs) const
 {
     Vec2 temp;
-    temp.x = x * rhs;
-    temp.y = y * rhs;
+    temp.X = X * rhs;
+    temp.Y = Y * rhs;
     return temp;
 }
 
 Vec2 Vec2::operator/(float rhs) const
 {
-    return Vec2(x / rhs, y / rhs);
+    return Vec2(X / rhs, Y / rhs);
 }
 
 const Vec2& Vec2::operator*=(const float rhs)
 {
-    x *= rhs;
-    y *= rhs;
+    X *= rhs;
+    Y *= rhs;
     return *this;
 }
 
 const Vec2& Vec2::operator/=(const float rhs)
 {
-    x /= rhs;
-    y /= rhs;
+    X /= rhs;
+    Y /= rhs;
     return *this;
 }
 
 float Vec2::operator[](const int idx) const
 {
     assert(idx >= 0 && idx < 2);
-    return (&x)[idx];
+    return (&X)[idx];
 }
 
 float& Vec2::operator[](const int idx)
 {
     assert(idx >= 0 && idx < 2);
-    return (&x)[idx];
+    return (&X)[idx];
 }
 
 const Vec2& Vec2::Normalize()
@@ -118,43 +118,43 @@ const Vec2& Vec2::Normalize()
     float invMag = 1.0f / mag;
     if (0.0f * invMag == 0.0f * invMag)
     {
-        x = x * invMag;
-        y = y * invMag;
+        X = X * invMag;
+        Y = Y * invMag;
     }
     return *this;
 }
 
 float Vec2::Cross(const Vec2& rhs) const
 {
-    return x * rhs.y - y * rhs.x;
+    return X * rhs.Y - Y * rhs.X;
 }
 
 
 Vec2 Vec2::Cross(float rhs) const
 {
-    return {y * rhs, x * -rhs};
+    return {Y * rhs, X * -rhs};
 }
 
 float Vec2::GetMagnitude() const
 {
-    float mag = x * x + y * y;
+    float mag = X * X + Y * Y;
     mag = sqrtf(mag);
     return mag;
 }
 
 float Vec2::GetMagnitudeSquared() const
 {
-    return x * x + y * y;
+    return X * X + Y * Y;
 }
 
 bool Vec2::IsValid() const
 {
-    if (x * 0.0f != x * 0.0f)
+    if (X * 0.0f != X * 0.0f)
     {
         // x is NaN or Inf
         return false;
     }
-    if (y * 0.0f != y * 0.0f)
+    if (Y * 0.0f != Y * 0.0f)
     {
         // y is NaN or Inf
         return false;
@@ -164,5 +164,5 @@ bool Vec2::IsValid() const
 
 std::string Vec2::ToString() const
 {
-    return "{" + std::to_string(x) + "," + std::to_string(y) + "}";
+    return "{" + std::to_string(X) + "," + std::to_string(Y) + "}";
 }

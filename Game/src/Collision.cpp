@@ -1,31 +1,18 @@
 #include "stdafx.h"
 #include <cmath>
+
 #include "Collision.h"
+#include "SAT.h"
+#include "Utils.h"
 
-
-bool AABB2AABBCollision(Vec2& aPos, Vec2& bPos, Shape& a, Shape& b)
-{
-    Vec2 aMax = aPos + a.max;
-    Vec2 aMin = aPos + a.min;
-
-    Vec2 bMax = bPos + b.max;
-    Vec2 bMin = bPos + b.min;
-
-    if (aMax.x < bMin.x || aMin.x > bMax.x) return false;
-    if (aMax.y < bMin.y || aMin.y > bMax.y) return false;
-
-    // No separating axis found, therefor there is at least one overlapping axis
-    return true;
-}
 
 
 bool Circle2CircleCollision(const Vec2& aPos, const Vec2& bPos, const Shape& a, const Shape& b)
 {
-    float r = a.radius + b.radius;
+    float r = a.Radius + b.Radius;
     r *= r;
-    return std::pow(aPos.x - bPos.x, 2.0f) + std::pow(aPos.y - bPos.y, 2.0f) <= r;
+    return std::pow(aPos.X - bPos.X, 2.0f) + std::pow(aPos.Y - bPos.Y, 2.0f) <= r;
 }
-
 
 
 void Circle2Circle(Manifold& m, RigidBody& A, RigidBody& B)
@@ -37,221 +24,28 @@ void Circle2Circle(Manifold& m, RigidBody& A, RigidBody& B)
 
     assert(AShape.GetShapeType() == CircleShape && BShape.GetShapeType() == CircleShape);
 
-    m.collided = Circle2CircleCollision(APos, BPos, AShape, BShape);
+    m.Collided = Circle2CircleCollision(APos, BPos, AShape, BShape);
 
-    if (!m.collided)
+    if (!m.Collided)
         return;
 
     Vec2 n = APos - BPos;
-    float r = AShape.radius + BShape.radius;
+    float r = AShape.Radius + BShape.Radius;
 
     float distance = n.GetMagnitude();
 
     if (distance != 0.0f)
     {
-        m.penetration = r - distance;
-        m.normal = n / distance;
-        m.contactPoints.push_back(BPos + n);
+        m.Penetration = r - distance;
+        m.Normal = n / distance;
+        m.ContactPoints.push_back(BPos + n);
     }
     else
     {
-        m.penetration = AShape.radius;
-        m.normal = Vec2(1, 0);
-        m.contactPoints.push_back(APos);
+        m.Penetration = AShape.Radius;
+        m.Normal = Vec2(1, 0);
+        m.ContactPoints.push_back(APos);
     }
-}
-
-std::vector<Vec2> TranslatePoints
-(
-    const std::vector<Vec2>& polygonPoints,
-    const float angle,
-    const Vec2& position
-)
-{
-    std::vector<Vec2> translatedPolygon;
-    int polySize = polygonPoints.size();
-    Mat2 matrix = Mat2(
-        Vec2(std::cos(angle), -std::sin(angle)),
-        Vec2(std::sin(angle), std::cos(angle))
-    );
-
-    for (int i = 0; i < polySize; i++)
-    {
-        Vec2 points = polygonPoints[i];
-        Vec2 translated = matrix * points + position;
-        translatedPolygon.push_back(translated);
-    }
-
-    return translatedPolygon;
-}
-
-
-void PointToLineSegment(Vec2 point, Vec2 a, Vec2 b, Vec2& linePoint)
-{
-    Vec2 a2b = b - a;
-    Vec2 a2point = point - a;
-
-    float proj = a2point.Dot(a2b);
-    float lengthSquared = a2b.GetMagnitudeSquared();
-    float d = proj / lengthSquared;
-
-    if (d <= 0)
-    {
-        linePoint = a;
-    }
-    else if (d >= 1)
-    {
-        linePoint = b;
-    }
-    else
-    {
-        linePoint = a + a2b * d;
-    }
-
-}
-
-void FindContactPoints(
-    const std::vector<Vec2>& poly1, const std::vector<Vec2>& poly2,
-    Vec2& contactPt1, Vec2& contactPt2, int& contactCount
-)
-{
-    contactCount = 0;
-
-    contactPt1 = Vec2(0.0, 0.0);
-    contactPt2 = Vec2(0.0, 0.0);
-    float minDistSq = std::numeric_limits<float>::infinity();
-
-    for (int i = 0; i < poly1.size(); i++)
-    {
-
-        Vec2 point = poly1[i];
-
-        for (int j = 0; j < poly2.size(); j++)
-        {
-            Vec2 A = poly2[j];
-            Vec2 B = poly2[(j + 1) % poly2.size()];
-            Vec2 linePoint;
-            PointToLineSegment(point, A, B, linePoint);
-            float distSq = (linePoint - point).GetMagnitudeSquared();
-
-            if (std::abs(distSq - minDistSq) < 0.001 &&
-                !(linePoint == contactPt1) &&
-                !(linePoint == contactPt2))
-            {
-                contactPt2 = linePoint;
-                contactCount = 2;
-            }
-            else if (distSq < minDistSq)
-            {
-                contactCount = 1;
-                contactPt1 = linePoint;
-                minDistSq = distSq;
-            }
-        }
-    }
-
-    for (int i = 0; i < poly2.size(); i++)
-    {
-
-        Vec2 point = poly2[i];
-
-        for (int j = 0; j < poly1.size(); j++)
-        {
-            Vec2 A = poly1[j];
-            Vec2 B = poly1[(j + 1) % poly1.size()];
-            Vec2 linePoint;
-            PointToLineSegment(point, A, B, linePoint);
-            float distSq = (linePoint - point).GetMagnitudeSquared();
-
-            if (std::abs(distSq - minDistSq) < 0.001)
-            {
-                contactPt2 = linePoint;
-                contactCount = 2;
-            }
-            else if (distSq < minDistSq)
-            {
-                contactCount = 1;
-                contactPt1 = linePoint;
-                minDistSq = distSq;
-            }
-        }
-    }
-}
-
-std::pair<float, float> project(const std::vector<Vec2>& polygon, const Vec2& axis) {
-    float min = axis.Dot(polygon[0]);
-    float max = min;
-    for (const Vec2& p : polygon) {
-        float projection = axis.Dot(p);
-        min = std::min(min, projection);
-        max = std::max(max, projection);
-    }
-    return { min, max };
-}
-
-// Check if projections on an axis overlap
-bool overlap(const std::pair<float, float>& a, const std::pair<float, float>& b) {
-    return a.first <= b.second && a.second >= b.first;
-}
-
-// Calculate MTV between two polygons
-bool findMTV(
-    const std::vector<Vec2>& poly1, const std::vector<Vec2>& poly2,
-    Vec2& collisionNormal,
-    float& overlapAmount
-) {
-    overlapAmount = std::numeric_limits<float>::max();
-
-    // Test all edges of both polygons
-    std::vector<Vec2> edges;
-    for (size_t i = 0; i < poly1.size(); i++)
-        edges.push_back(poly1[i] - poly1[(i + 1) % poly1.size()]);
-    for (size_t i = 0; i < poly2.size(); i++)
-        edges.push_back(poly2[i] - poly2[(i + 1) % poly2.size()]);
-
-    // Seperating Axis Thereom
-
-    for (const Vec2& edge : edges) {
-        bool flip = true;
-
-        Vec2 axis = edge.Cross(-1.0).Normalize();
-        auto proj1 = project(poly1, axis);
-        auto proj2 = project(poly2, axis);
-
-        if (!overlap(proj1, proj2))
-            return false; // No overlap found, polygons do not intersect
-
-        float o = std::min(proj1.second, proj2.second) - std::max(proj1.first, proj2.first);
-
-        if (proj1.second > proj2.second) {
-            flip = !flip;
-        }
-
-        if ((proj1.first <= proj2.first && proj2.second <= proj1.second) ||
-            (proj2.first <= proj1.first && proj1.second <= proj2.second))
-        {
-            float mins = std::abs(proj1.first - proj2.first);
-            float maxs = std::abs(proj1.second - proj2.second);
-            if (mins < maxs) {
-                o += mins;
-                flip = true;
-            }
-            else {
-                o += maxs;
-                flip = false;
-            }
-        }
-
-        if (o < overlapAmount) {
-            overlapAmount = o;
-            collisionNormal = axis;
-            if (flip) {
-                collisionNormal = collisionNormal * -1;
-            }
-        }
-    }
-
-    return true;
 }
 
 struct Edge
@@ -268,7 +62,6 @@ struct Edge
         v1(v1), v2(v2),
         edgeV(v2 - v1)
     {
-
     }
 
 };
@@ -328,6 +121,7 @@ std::vector<Vec2> ClipPoints(Vec2& v1, Vec2& v2, Vec2& n, float o)
 
     return clippedPoints;
 }
+
 void FindContactPoints(Edge& ref, Edge& inc, std::vector<Vec2>& contactPoints)
 {
     Vec2 refv = ref.edgeV;
@@ -345,8 +139,6 @@ void FindContactPoints(Edge& ref, Edge& inc, std::vector<Vec2>& contactPoints)
     if (cp2.size() < 2) return;
 
     Vec2 refNorm = refv.Cross(-1.0);
-
-
 
     float maxDepth = refNorm.Dot(ref.max);
 
@@ -368,24 +160,24 @@ void Polygon2Polygon(Manifold& m, RigidBody& A, RigidBody& B)
 
     assert(AShape.GetShapeType() == PolygonShape && BShape.GetShapeType() == PolygonShape);
 
-    auto polyA = TranslatePoints(AShape.polygonPoints, A.Angular, A.Position);
-    auto polyB = TranslatePoints(BShape.polygonPoints, B.Angular, B.Position);
+    auto polyA = Utils::TranslatePoints(AShape.PolygonPoints, A.Angular, A.Position);
+    auto polyB = Utils::TranslatePoints(BShape.PolygonPoints, B.Angular, B.Position);
 
     // find Minimum Translation Vector (MTV)
-    m.collided = findMTV(polyA, polyB, m.normal, m.penetration);
+    m.Collided = FindMTVPolygon(polyA, polyB, m.Normal, m.Penetration);
 
-    if (!m.collided)
+    if (!m.Collided)
         return;
 
     Edge AEdge{};
     Edge BEdge{};
 
-    FindClosestEdgeToNormal(m.normal * -1.0, polyA, AEdge);
-    FindClosestEdgeToNormal(m.normal, polyB, BEdge);
+    FindClosestEdgeToNormal(m.Normal * -1.0, polyA, AEdge);
+    FindClosestEdgeToNormal(m.Normal, polyB, BEdge);
 
     Edge ref, inc;
-    if (std::abs(AEdge.edgeV.Dot(m.normal)) <=
-        std::abs(BEdge.edgeV.Dot(m.normal)))
+    if (std::abs(AEdge.edgeV.Dot(m.Normal)) <=
+        std::abs(BEdge.edgeV.Dot(m.Normal)))
     {
         ref = AEdge;
         inc = BEdge;
@@ -397,19 +189,45 @@ void Polygon2Polygon(Manifold& m, RigidBody& A, RigidBody& B)
     }
     std::vector<Vec2> contactPoints;
     FindContactPoints(ref, inc, contactPoints);
-    assert(contactPoints.size() != 0.0);
-    m.contactPoints = contactPoints;
-    AShape.contactPoints = contactPoints;
+    m.ContactPoints = contactPoints;
 }
+
 
 void Circle2Polygon(Manifold& m, RigidBody& A, RigidBody& B)
 {
     Shape& AShape = A.Shape;
     Shape& BShape = B.Shape;
     assert(AShape.GetShapeType() == PolygonShape && BShape.GetShapeType() == CircleShape);
+    std::vector<Vec2> poly = Utils::TranslatePoints(AShape.PolygonPoints, A.Angular, A.Position);
+
+    // Use SAT to find circle normal and penetration
+    m.Collided = FindMTVCircle(B.Position, BShape.Radius, poly, m.Normal, m.Penetration);
+
+    m.Normal = m.Normal;
+
+    if (!m.Collided)
+        return;
+
+    float minSquaredDistance = std::numeric_limits<float>::infinity();
+
+    for (int i = 0; i < poly.size(); i++)
+    {
+        Vec2& point1 = poly[i];
+        Vec2& point2 = poly[(i + 1) % poly.size()];
+        Vec2 contactPoint = Utils::PointToLineSegment(B.Position, point1, point2);
+        float squaredDistance = (contactPoint - B.Position).GetMagnitudeSquared();
+
+        if (squaredDistance < minSquaredDistance)
+        {
+            minSquaredDistance = squaredDistance;
+            m.ContactPoints = {contactPoint};
+        }
+    }
+
 }
 
 void Polygon2Circle(Manifold& m, RigidBody& A, RigidBody& B)
 {
     Circle2Polygon(m, B, A);
+    m.Normal *= -1.0f;
 }

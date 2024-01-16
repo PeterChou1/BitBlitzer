@@ -8,9 +8,11 @@
 class SIMDPixel
 {
 public:
-    SIMDPixel(const SIMDVec2& position, const SIMDFloat& depth, SIMDFloat alpha, SIMDFloat beta, SIMDFloat gamma,
-        int binId, int binIndex) :
-        screenSpacePosition(position), alpha(alpha), beta(beta), gamma(gamma), depth(depth), binId(binId), binIndex(binIndex)
+    SIMDPixel(const SIMDVec2& position, const SIMDFloat& depth, const SIMDFloat& alpha, const SIMDFloat& beta,
+              const SIMDFloat& gamma,
+              int binId, int binIndex) :
+        ScreenSpacePosition(position), Alpha(alpha), Beta(beta), Gamma(gamma), Depth(depth), BinId(binId),
+        BinIndex(binIndex)
     {
     }
 
@@ -31,9 +33,9 @@ public:
         auto p2 = SIMDVec3(t.verts[1].pos);
         auto p3 = SIMDVec3(t.verts[2].pos);
 
-        textureCoord = (t1 * alpha + t2 * beta + t3 * gamma) / depth;
-        normal = (n1 * alpha + n2 * beta + n3 * gamma) / depth;
-        worldSpacePosition = (p1 * alpha + p2 * beta + p3 * gamma);
+        TextureCoord = (t1 * Alpha + t2 * Beta + t3 * Gamma) / Depth;
+        Normal = (n1 * Alpha + n2 * Beta + n3 * Gamma) / Depth;
+        WorldSpacePosition = (p1 * Alpha + p2 * Beta + p3 * Gamma);
     }
 
     // static variables to tell the renderer how to screenSpacePosition each set of 8 pixels
@@ -42,16 +44,16 @@ public:
     static SIMDFloat PixelOffsetX;
     static SIMDFloat PixelOffsetY;
     // the mask indicates which pixel is to be actually shaded
-    SIMDFloat mask;
-    SIMDVec2 screenSpacePosition{}, textureCoord{};
-    SIMDVec3 worldSpacePosition{};
-    SIMDVec3 normal{};
-    SIMDVec3 color{};
+    SIMDFloat Mask;
+    SIMDVec2 ScreenSpacePosition{}, TextureCoord{};
+    SIMDVec3 WorldSpacePosition{};
+    SIMDVec3 Normal{};
+    SIMDVec3 Color{};
     // barycentric coordinates
-    SIMDFloat alpha{}, beta{}, gamma{};
+    SIMDFloat Alpha{}, Beta{}, Gamma{};
     // depth buffer values of current pixels
-    SIMDFloat depth{};
+    SIMDFloat Depth{};
     // this is used by the render to retrieve the triangle this pixel belong to
-    int binId;
-    int binIndex;
+    int BinId;
+    int BinIndex;
 };

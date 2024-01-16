@@ -1,11 +1,10 @@
 #pragma once
 #include "Assets.h"
 
-class Mesh
+struct Mesh
 {
-public:
-    bool loaded{};
-    bool markedForDeletion{};
+    bool Loaded{};
+    bool MarkedForDeletion{};
     ObjAsset MeshType;
     Mesh() = default;
     Mesh(ObjAsset meshType) : MeshType(meshType) {}

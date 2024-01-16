@@ -43,17 +43,17 @@ struct Triangle
     // edge function 
     float EdgeFunc0(Vec2& p) const
     {
-        return B0 * (p.x - verts[0].proj.x) - C0 * (p.y - verts[0].proj.y);
+        return B0 * (p.X - verts[0].proj.X) - C0 * (p.Y - verts[0].proj.Y);
     }
 
     float EdgeFunc1(Vec2& p) const
     {
-        return B1 * (p.x - verts[1].proj.x) - C1 * (p.y - verts[1].proj.y);
+        return B1 * (p.X - verts[1].proj.X) - C1 * (p.Y - verts[1].proj.Y);
     }
 
     float EdgeFunc2(Vec2& p) const
     {
-        return B2 * (p.x - verts[2].proj.x) - C2 * (p.y - verts[2].proj.y);
+        return B2 * (p.X - verts[2].proj.X) - C2 * (p.Y - verts[2].proj.Y);
     }
 
     bool CheckInTriangle(Vec2& point) const;

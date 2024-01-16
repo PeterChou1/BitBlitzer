@@ -191,6 +191,7 @@
     <ClInclude Include="src\BlingPhong.h" />
     <ClInclude Include="src\ClippedTriangleBuffer.h" />
     <ClInclude Include="src\Collision.h" />
+    <ClInclude Include="src\SAT.h" />
     <ClInclude Include="src\Shape.h" />
     <ClInclude Include="src\DebugPhysicsRenderer.h" />
     <ClInclude Include="src\FragmentShader.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="src\RigidBody.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Tiles.h" />
+    <ClInclude Include="src\ToonShaderSIMD.h" />
     <ClInclude Include="src\TypeID.h" />
     <ClInclude Include="src\DebugMesh.h" />
     <ClInclude Include="src\GameManager.h" />
@@ -250,6 +252,7 @@
     <ClInclude Include="src\Vec4.h" />
     <ClInclude Include="src\Visitor.h" />
     <ClInclude Include="stb_image\stb_image.h" />
+    <ClInclude Include="tests\MathTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App\app.cpp" />
@@ -271,11 +274,13 @@
     <ClCompile Include="src\Rasterizer.cpp" />
     <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\RigidBody.cpp" />
+    <ClCompile Include="src\SAT.cpp" />
     <ClCompile Include="src\SIMDPixel.cpp" />
     <ClCompile Include="src\SIMDTriangle.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\Tiles.cpp" />
+    <ClCompile Include="src\ToonShaderSIMD.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Scene.cpp" />

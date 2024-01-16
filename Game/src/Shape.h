@@ -14,15 +14,6 @@ enum ShapeType
 class Shape
 {
 public:
-    float radius{};
-    float width{};
-    float height{};
-    std::vector<Vec2> polygonPoints;
-    std::vector<Vec2> debugPoints;
-    std::vector<Vec2> contactPoints;
-    Vec2 max{};
-    Vec2 min{};
-
 
     Shape() = default;
 
@@ -35,7 +26,7 @@ public:
     static Shape CreateCircle(float radius)
     {
         auto collider = Shape();
-        collider.radius = radius;
+        collider.Radius = radius;
         collider.ShapeEnum = CircleShape;
         return collider;
     }
@@ -44,8 +35,8 @@ public:
     {
         auto collider = Shape();
         collider.ShapeEnum = AABB;
-        collider.min = Vec2(-width/2, -height/2);
-        collider.max = Vec2(width/2, height/2);
+        collider.Min = Vec2(-width/2, -height/2);
+        collider.Max = Vec2(width/2, height/2);
         return collider;
     }
 
@@ -53,13 +44,23 @@ public:
     static Shape CreateRect(float width, float height)
     {
         auto collider = Shape();
-        collider.polygonPoints.push_back(Vec2(-width/2.0f, -height/2.0f));
-        collider.polygonPoints.push_back(Vec2(width/2.0f, -height/2.0f));
-        collider.polygonPoints.push_back(Vec2(width/2.0f, height/2.0f));
-        collider.polygonPoints.push_back(Vec2(-width / 2.0f, height / 2.0f));
+        collider.PolygonPoints.push_back(Vec2(-width/2.0f, -height/2.0f));
+        collider.PolygonPoints.push_back(Vec2(width/2.0f, -height/2.0f));
+        collider.PolygonPoints.push_back(Vec2(width/2.0f, height/2.0f));
+        collider.PolygonPoints.push_back(Vec2(-width / 2.0f, height / 2.0f));
         collider.ShapeEnum = PolygonShape;
         return collider;
     }
+
+
+    float Radius{};
+    float Width{};
+    float Height{};
+    std::vector<Vec2> PolygonPoints;
+    std::vector<Vec2> DebugPoints;
+    std::vector<Vec2> ContactPoints;
+    Vec2 Max{};
+    Vec2 Min{};
 
 private:
     ShapeType ShapeEnum{};

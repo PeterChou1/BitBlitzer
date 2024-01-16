@@ -5,67 +5,67 @@
 #include <cassert>
 
 Vec3::Vec3() :
-    x(0),
-    y(0),
-    z(0)
+    X(0),
+    Y(0),
+    Z(0)
 {
 }
 
 Vec3::Vec3(float value) :
-    x(value),
-    y(value),
-    z(value)
+    X(value),
+    Y(value),
+    Z(value)
 {
 }
 
 Vec3::Vec3(const Vec3& rhs) :
-    x(rhs.x),
-    y(rhs.y),
-    z(rhs.z)
+    X(rhs.X),
+    Y(rhs.Y),
+    Z(rhs.Z)
 {
 }
 
 Vec3::Vec3(float X, float Y, float Z) :
-    x(X),
-    y(Y),
-    z(Z)
+    X(X),
+    Y(Y),
+    Z(Z)
 {
 }
 
 Vec3::Vec3(const float* xyz) :
-    x(xyz[0]),
-    y(xyz[1]),
-    z(xyz[2])
+    X(xyz[0]),
+    Y(xyz[1]),
+    Z(xyz[2])
 {
 }
 
 Vec3& Vec3::operator =(const Vec3& rhs)
 {
-    x = rhs.x;
-    y = rhs.y;
-    z = rhs.z;
+    X = rhs.X;
+    Y = rhs.Y;
+    Z = rhs.Z;
     return *this;
 }
 
 Vec3& Vec3::operator =(const float* rhs)
 {
-    x = rhs[0];
-    y = rhs[1];
-    z = rhs[2];
+    X = rhs[0];
+    Y = rhs[1];
+    Z = rhs[2];
     return *this;
 }
 
 bool Vec3::operator ==(const Vec3& rhs) const
 {
-    if (x != rhs.x)
+    if (X != rhs.X)
     {
         return false;
     }
-    if (y != rhs.y)
+    if (Y != rhs.Y)
     {
         return false;
     }
-    if (z != rhs.z)
+    if (Z != rhs.Z)
     {
         return false;
     }
@@ -84,43 +84,43 @@ bool Vec3::operator !=(const Vec3& rhs) const
 Vec3 Vec3::operator +(const Vec3& rhs) const
 {
     Vec3 temp;
-    temp.x = x + rhs.x;
-    temp.y = y + rhs.y;
-    temp.z = z + rhs.z;
+    temp.X = X + rhs.X;
+    temp.Y = Y + rhs.Y;
+    temp.Z = Z + rhs.Z;
     return temp;
 }
 
 const Vec3& Vec3::operator +=(const Vec3& rhs)
 {
-    x += rhs.x;
-    y += rhs.y;
-    z += rhs.z;
+    X += rhs.X;
+    Y += rhs.Y;
+    Z += rhs.Z;
     return *this;
 }
 
 const Vec3& Vec3::operator -=(const Vec3& rhs)
 {
-    x -= rhs.x;
-    y -= rhs.y;
-    z -= rhs.z;
+    X -= rhs.X;
+    Y -= rhs.Y;
+    Z -= rhs.Z;
     return *this;
 }
 
 Vec3 Vec3::operator -(const Vec3& rhs) const
 {
     Vec3 temp;
-    temp.x = x - rhs.x;
-    temp.y = y - rhs.y;
-    temp.z = z - rhs.z;
+    temp.X = X - rhs.X;
+    temp.Y = Y - rhs.Y;
+    temp.Z = Z - rhs.Z;
     return temp;
 }
 
 Vec3 Vec3::operator *(const float rhs) const
 {
     Vec3 temp;
-    temp.x = x * rhs;
-    temp.y = y * rhs;
-    temp.z = z * rhs;
+    temp.X = X * rhs;
+    temp.Y = Y * rhs;
+    temp.Z = Z * rhs;
     return temp;
 }
 
@@ -128,53 +128,53 @@ Vec3 Vec3::operator *(const float rhs) const
 Vec3 Vec3::operator /(const float rhs) const
 {
     Vec3 temp;
-    temp.x = x / rhs;
-    temp.y = y / rhs;
-    temp.z = z / rhs;
+    temp.X = X / rhs;
+    temp.Y = Y / rhs;
+    temp.Z = Z / rhs;
     return temp;
 }
 
 const Vec3& Vec3::operator*=(const float rhs)
 {
-    x *= rhs;
-    y *= rhs;
-    z *= rhs;
+    X *= rhs;
+    Y *= rhs;
+    Z *= rhs;
     return *this;
 }
 
 
 const Vec3& Vec3::operator/=(const float rhs)
 {
-    x /= rhs;
-    y /= rhs;
-    z /= rhs;
+    X /= rhs;
+    Y /= rhs;
+    Z /= rhs;
     return *this;
 }
 
 float Vec3::operator[](const int idx) const
 {
     assert(idx >= 0 && idx < 3);
-    return (&x)[idx];
+    return (&X)[idx];
 }
 
 float& Vec3::operator[](const int idx)
 {
     assert(idx >= 0 && idx < 3);
-    return (&x)[idx];
+    return (&X)[idx];
 }
 
 Vec3 Vec3::Cross(const Vec3& rhs) const
 {
     Vec3 temp;
-    temp.x = (y * rhs.z) - (rhs.y * z);
-    temp.y = (rhs.x * z) - (x * rhs.z);
-    temp.z = (x * rhs.y) - (rhs.x * y);
+    temp.X = (Y * rhs.Z) - (rhs.Y * Z);
+    temp.Y = (rhs.X * Z) - (X * rhs.Z);
+    temp.Z = (X * rhs.Y) - (rhs.X * Y);
     return temp;
 }
 
 float Vec3::Dot(const Vec3& rhs) const
 {
-    float temp = (x * rhs.x) + (y * rhs.y) + (z * rhs.z);
+    float temp = (X * rhs.X) + (Y * rhs.Y) + (Z * rhs.Z);
     return temp;
 }
 
@@ -184,9 +184,9 @@ Vec3& Vec3::Normalize()
     float invMag = 1.0f / mag;
     if (0.0f * invMag == 0.0f * invMag)
     {
-        x *= invMag;
-        y *= invMag;
-        z *= invMag;
+        X *= invMag;
+        Y *= invMag;
+        Z *= invMag;
     }
     return *this;
 }
@@ -194,22 +194,22 @@ Vec3& Vec3::Normalize()
 float Vec3::GetMagnitude() const
 {
     float mag;
-    mag = x * x + y * y + z * z;
+    mag = X * X + Y * Y + Z * Z;
     mag = sqrtf(mag);
     return mag;
 }
 
 bool Vec3::IsValid() const
 {
-    if (x * 0.0f != x * 0.0f)
+    if (X * 0.0f != X * 0.0f)
     {
         return false;
     }
-    if (y * 0.0f != y * 0.0f)
+    if (Y * 0.0f != Y * 0.0f)
     {
         return false;
     }
-    if (z * 0.0f != z * 0.0f)
+    if (Z * 0.0f != Z * 0.0f)
     {
         return false;
     }
@@ -220,7 +220,7 @@ void Vec3::GetOrtho(Vec3& u, Vec3& v) const
 {
     Vec3 n = *this;
     n.Normalize();
-    const Vec3 w = (n.z * n.z > 0.9f * 0.9f) ? Vec3(1, 0, 0) : Vec3(0, 0, 1);
+    const Vec3 w = (n.Z * n.Z > 0.9f * 0.9f) ? Vec3(1, 0, 0) : Vec3(0, 0, 1);
     u = w.Cross(n);
     u.Normalize();
     v = n.Cross(u);
@@ -231,30 +231,6 @@ void Vec3::GetOrtho(Vec3& u, Vec3& v) const
 
 std::string Vec3::ToString() const
 {
-    return "{" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + "}";
+    return "{" + std::to_string(X) + "," + std::to_string(Y) + "," + std::to_string(Z) + "}";
 }
 
-Vec3 IntersectPlane(const Vec3& point, const Vec3& normal, Vec3& start, Vec3& end, float& scale)
-{
-    assert(normal.GetMagnitude() == 1.0 && "magnitude not 1");
-    const float planeDot = -normal.Dot(point);
-    const float ad = start.Dot(normal);
-    const float bd = end.Dot(normal);
-    const float t = (-planeDot - ad) / (bd - ad);
-    assert(bd - ad != 0 && "line parallel to line");
-    const Vec3 start2End = (end - start) * t;
-    scale = t;
-    return start + start2End;
-}
-
-float Dist(const Vec3& point, const Vec3& planeN, const Vec3& planeP)
-{
-    // Compute the vector from the plane point to the point
-    const Vec3 planeToPoint = point - planeP;
-    // Compute the dot product of the vector with the plane normal
-    const float dotProduct = planeToPoint.Dot(planeN);
-    // Compute the magnitude of the plane normal
-    const float normal_mag = planeN.GetMagnitude();
-    // Compute the distance as the absolute value of the dot product divided by the normal magnitude
-    return dotProduct / normal_mag;
-}

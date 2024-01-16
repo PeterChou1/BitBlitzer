@@ -1169,3 +1169,29 @@ inline bool AABB2CircleCollision(Vec2& boxPos, Vec2& circlePos, Shape& box, Shap
     
         }
     }
+
+
+        for (int x = 0; x < 1; x++)
+    {
+        Entity meshEntity = ECS.CreateEntity();
+        auto modelTransform = Transform(Vec3(0.0f, 0.0, 5.0), Quat(Vec3(0, 0, 1), 0.0));
+        auto meshRB = RigidBody(1.0f);
+        meshRB.Controlled = true;
+        //ECS.AddComponent<Mesh>(meshEntity, Mesh(Pacman));
+        ECS.AddComponent<Transform>(meshEntity, modelTransform);
+        ECS.AddComponent<RigidBody>(meshEntity, meshRB);
+    }
+
+        //for (int x = 0; x < APP_VIRTUAL_WIDTH; x++)
+    //{
+    //    for (int y = 0; y < APP_VIRTUAL_HEIGHT; y++)
+    //    {
+    //        unsigned char r, g, b;
+    //        m_ColorBuffer->GetColor(x, y, r, g, b);
+    //        App::DrawPoint(
+    //            static_cast<float>(x), 
+    //            static_cast<float>(y), 
+    //            r / 225.0, g / 255.0, b / 255.0 
+    //        );
+    //    }
+    //}

@@ -14,17 +14,17 @@ float Dot(uint8_t planeId, const Vec4& v)
     switch (planeId)
     {
     case LEFT_PLANE:
-        return v.x + v.w; /* v * (1 0 0 1) left */
+        return v.X + v.W; /* v * (1 0 0 1) left */
     case RIGHT_PLANE:
-        return -v.x + v.w; /* v * (-1 0 0 1) right */
+        return -v.X + v.W; /* v * (-1 0 0 1) right */
     case DOWN_PLANE:
-        return v.y + v.w; /* v * (0 1 0 1) down*/
+        return v.Y + v.W; /* v * (0 1 0 1) down*/
     case UP_PLANE:
-        return -v.y + v.w; /* v * (0 -1 0 1) up*/
+        return -v.Y + v.W; /* v * (0 -1 0 1) up*/
     case FAR_PLANE:
-        return v.z + v.w; /* v * (0 0 1 1) far */
+        return v.Z + v.W; /* v * (0 0 1 1) far */
     case NEAR_PLANE:
-        return -v.z + v.w; /* v * (0 0 -1 1) near */
+        return -v.Z + v.W; /* v * (0 0 -1 1) near */
     default:
         assert(false && "unreachable code");
     }
@@ -168,11 +168,11 @@ std::vector<Triangle> ClipAgainstPlane(Triangle& clip)
             Point& p2 = points[j - 1];
             Point& p3 = points[j];
 
-            Vertex n1 = v0 * p1.weights.x + v1 * p1.weights.y + v2 * p1.weights.z;
+            Vertex n1 = v0 * p1.weights.X + v1 * p1.weights.Y + v2 * p1.weights.Z;
             n1.proj = p1.position;
-            Vertex n2 = v0 * p2.weights.x + v1 * p2.weights.y + v2 * p2.weights.z;
+            Vertex n2 = v0 * p2.weights.X + v1 * p2.weights.Y + v2 * p2.weights.Z;
             n2.proj = p2.position;
-            Vertex n3 = v0 * p3.weights.x + v1 * p3.weights.y + v2 * p3.weights.z;
+            Vertex n3 = v0 * p3.weights.X + v1 * p3.weights.Y + v2 * p3.weights.Z;
             n3.proj = p3.position;
 
             Triangle newtri = Triangle(n1, n2, n3);
@@ -201,24 +201,24 @@ void Clipper::Clip()
 
     std::vector<unsigned int> coreID = m_RenderConstants->CoreIds;
     int coreInterval = m_RenderConstants->CoreInterval;
-    std::vector<Vertex>& vertexBuffer = m_VertexBuffer->buffer;
-    std::vector<std::uint32_t> indexBuffer = m_IndexBuffer->buffer;
+    std::vector<Vertex>& vertexBuffer = m_VertexBuffer->Buffer;
+    std::vector<std::uint32_t> indexBuffer = m_IndexBuffer->Buffer;
 
 
     Concurrent::ForEach(coreID.begin(), coreID.end(), [&](unsigned int binID)
     {
         const int start = binID * coreInterval;
         const auto end = (binID + 1) * coreInterval;
-        std::vector<Triangle>& binProjectedClip = m_ClippedTriangleBuffer->buffer[binID];
+        std::vector<Triangle>& binProjectedClip = m_ClippedTriangleBuffer->Buffer[binID];
 
         for (int i = start; i < end; i++)
         {
-            if (3 * i + 2 > m_IndexBuffer->buffer.size())
+            if (3 * i + 2 > m_IndexBuffer->Buffer.size())
                 break;
 
-            assert(m_IndexBuffer->buffer[3 * i] < vertexBuffer.size());
-            assert(m_IndexBuffer->buffer[3 * i + 1] < vertexBuffer.size());
-            assert(m_IndexBuffer->buffer[3 * i + 2] < vertexBuffer.size());
+            assert(m_IndexBuffer->Buffer[3 * i] < vertexBuffer.size());
+            assert(m_IndexBuffer->Buffer[3 * i + 1] < vertexBuffer.size());
+            assert(m_IndexBuffer->Buffer[3 * i + 2] < vertexBuffer.size());
 
             Vertex v1 = vertexBuffer[indexBuffer[3 * i]];
             Vertex v2 = vertexBuffer[indexBuffer[3 * i + 1]];
@@ -229,7 +229,7 @@ void Clipper::Clip()
             Vec3 normal = (v1.normal + v2.normal + v3.normal) / 3;
 
 
-            if (normal.Dot(v1.pos - m_Cam->pos) < 0.0)
+            if (normal.Dot(v1.pos - m_Cam->Position) < 0.0)
             {
                 std::vector<Triangle> clipped = ClipAgainstPlane(t);
                 // Output projected screenSpacePosition to raster space

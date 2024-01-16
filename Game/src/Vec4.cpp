@@ -4,49 +4,49 @@
 #include <cassert>
 
 
-Vec4::Vec4() : x(0), y(0), z(0), w(0)
+Vec4::Vec4() : X(0), Y(0), Z(0), W(0)
 {
 }
 
-Vec4::Vec4(const Vec3& rhs) : x(rhs.x), y(rhs.y), z(rhs.z), w(1)
+Vec4::Vec4(const Vec3& rhs) : X(rhs.X), Y(rhs.Y), Z(rhs.Z), W(1)
 {
 }
 
-Vec4::Vec4(const float value) : x(value), y(value), z(value), w(value)
+Vec4::Vec4(const float value) : X(value), Y(value), Z(value), W(value)
 {
 }
 
-Vec4::Vec4(const Vec4& rhs) : x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w)
+Vec4::Vec4(const Vec4& rhs) : X(rhs.X), Y(rhs.Y), Z(rhs.Z), W(rhs.W)
 {
 }
 
-Vec4::Vec4(float X, float Y, float Z, float W) : x(X), y(Y), z(Z), w(W)
+Vec4::Vec4(float X, float Y, float Z, float W) : X(X), Y(Y), Z(Z), W(W)
 {
 }
 
 Vec4::Vec4(const float* rhs)
 {
-    x = rhs[0];
-    y = rhs[1];
-    z = rhs[2];
-    w = rhs[3];
+    X = rhs[0];
+    Y = rhs[1];
+    Z = rhs[2];
+    W = rhs[3];
 }
 
 Vec4& Vec4::operator=(const Vec4& rhs)
 {
-    x = rhs.x;
-    y = rhs.y;
-    z = rhs.z;
-    w = rhs.w;
+    X = rhs.X;
+    Y = rhs.Y;
+    Z = rhs.Z;
+    W = rhs.W;
     return *this;
 }
 
 bool Vec4::operator==(const Vec4& rhs) const
 {
-    if (x != rhs.x) return false;
-    if (y != rhs.y) return false;
-    if (z != rhs.z) return false;
-    if (w != rhs.w) return false;
+    if (X != rhs.X) return false;
+    if (Y != rhs.Y) return false;
+    if (Z != rhs.Z) return false;
+    if (W != rhs.W) return false;
     return true;
 }
 
@@ -59,87 +59,87 @@ bool Vec4::operator!=(const Vec4& rhs) const
 Vec4 Vec4::operator+(const Vec4& rhs) const
 {
     Vec4 temp;
-    temp.x = x + rhs.x;
-    temp.y = y + rhs.y;
-    temp.z = z + rhs.z;
-    temp.w = w + rhs.w;
+    temp.X = X + rhs.X;
+    temp.Y = Y + rhs.Y;
+    temp.Z = Z + rhs.Z;
+    temp.W = W + rhs.W;
     return temp;
 }
 
 const Vec4& Vec4::operator+=(const Vec4& rhs)
 {
-    x += rhs.x;
-    y += rhs.y;
-    z += rhs.z;
-    w += rhs.w;
+    X += rhs.X;
+    Y += rhs.Y;
+    Z += rhs.Z;
+    W += rhs.W;
     return *this;
 }
 
 const Vec4& Vec4::operator-=(const Vec4& rhs)
 {
-    x -= rhs.x;
-    y -= rhs.y;
-    z -= rhs.z;
-    w -= rhs.w;
+    X -= rhs.X;
+    Y -= rhs.Y;
+    Z -= rhs.Z;
+    W -= rhs.W;
     return *this;
 }
 
 const Vec4& Vec4::operator*=(const Vec4& rhs)
 {
-    x *= rhs.x;
-    y *= rhs.y;
-    z *= rhs.z;
-    w *= rhs.w;
+    X *= rhs.X;
+    Y *= rhs.Y;
+    Z *= rhs.Z;
+    W *= rhs.W;
     return *this;
 }
 
 const Vec4& Vec4::operator/=(const Vec4& rhs)
 {
-    x /= rhs.x;
-    y /= rhs.y;
-    z /= rhs.z;
-    w /= rhs.w;
+    X /= rhs.X;
+    Y /= rhs.Y;
+    Z /= rhs.Z;
+    W /= rhs.W;
     return *this;
 }
 
 Vec4 Vec4::operator-(const Vec4& rhs) const
 {
     Vec4 temp;
-    temp.x = x - rhs.x;
-    temp.y = y - rhs.y;
-    temp.z = z - rhs.z;
-    temp.w = w - rhs.w;
+    temp.X = X - rhs.X;
+    temp.Y = Y - rhs.Y;
+    temp.Z = Z - rhs.Z;
+    temp.W = W - rhs.W;
     return temp;
 }
 
 Vec4 Vec4::operator*(float rhs) const
 {
     Vec4 temp;
-    temp.x = x * rhs;
-    temp.y = y * rhs;
-    temp.z = z * rhs;
-    temp.w = w * rhs;
+    temp.X = X * rhs;
+    temp.Y = Y * rhs;
+    temp.Z = Z * rhs;
+    temp.W = W * rhs;
     return temp;
 }
 
 float Vec4::operator[](int idx) const
 {
     assert(idx >= 0 && idx < 4);
-    return (&x)[idx];
+    return (&X)[idx];
 }
 
 float& Vec4::operator[](const int idx)
 {
     assert(idx >= 0 && idx < 4);
-    return (&x)[idx];
+    return (&X)[idx];
 }
 
 float Vec4::Dot(const Vec4& rhs) const
 {
-    float xx = x * rhs.x;
-    float yy = y * rhs.y;
-    float zz = z * rhs.z;
-    float ww = w * rhs.w;
+    float xx = X * rhs.X;
+    float yy = Y * rhs.Y;
+    float zz = Z * rhs.Z;
+    float ww = W * rhs.W;
     return (xx + yy + zz + ww);
 }
 
@@ -150,10 +150,10 @@ const Vec4& Vec4::Normalize()
 
     if (0.0f * invMag == 0.0f * invMag)
     {
-        x *= invMag;
-        y *= invMag;
-        z *= invMag;
-        w *= invMag;
+        X *= invMag;
+        Y *= invMag;
+        Z *= invMag;
+        W *= invMag;
     }
 
     return *this;
@@ -162,26 +162,26 @@ const Vec4& Vec4::Normalize()
 float Vec4::GetMagnitude() const
 {
     float mag;
-    mag = x * x + y * y + z * z + w * w;
+    mag = X * X + Y * Y + Z * Z + W * W;
     mag = sqrtf(mag);
     return mag;
 }
 
 bool Vec4::IsValid() const
 {
-    if (x * 0.0f != x * 0.0f)
+    if (X * 0.0f != X * 0.0f)
     {
         return false;
     }
-    if (y * 0.0f != y * 0.0f)
+    if (Y * 0.0f != Y * 0.0f)
     {
         return false;
     }
-    if (z * 0.0f != z * 0.0f)
+    if (Z * 0.0f != Z * 0.0f)
     {
         return false;
     }
-    if (w * 0.0f != w * 0.0f)
+    if (W * 0.0f != W * 0.0f)
     {
         return false;
     }
@@ -190,14 +190,14 @@ bool Vec4::IsValid() const
 
 Vec3 Vec4::ToVec3() const
 {
-    if (w != 0)
+    if (W != 0)
     {
-        return Vec3(x / w, y / w, z / w);
+        return Vec3(X / W, Y / W, Z / W);
     }
-    return Vec3(x, y, z);
+    return Vec3(X, Y, Z);
 }
 
 std::string Vec4::toString() const
 {
-    return "{" + std::to_string(x) + "," + std::to_string(y) + "," + std::to_string(z) + "," + std::to_string(w) + "}";
+    return "{" + std::to_string(X) + "," + std::to_string(Y) + "," + std::to_string(Z) + "," + std::to_string(W) + "}";
 }

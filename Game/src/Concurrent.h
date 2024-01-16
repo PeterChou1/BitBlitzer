@@ -8,7 +8,7 @@
 #include <queue>
 #include <thread>
 
-
+// comment this if you do not want multithreading
 #define PARALLEL
 
 class ThreadPool {

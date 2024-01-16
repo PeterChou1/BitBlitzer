@@ -55,7 +55,7 @@ struct Vertex
 
     void PerspectiveDivision()
     {
-        invW = 1 / proj.w;
+        invW = 1 / proj.W;
         proj *= invW;
         uv *= invW;
     }

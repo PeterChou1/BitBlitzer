@@ -31,7 +31,7 @@ Manifold::Manifold(Entity A, Entity B) : A(A), B(B)
 
 void Manifold::ResolveCollision()
 {
-    assert(std::abs(normal.GetMagnitude() - 1.0) < 0.01);
+    assert(std::abs(Normal.GetMagnitude() - 1.0) < 0.01);
 
     RigidBody& ABody = ECS.GetComponent<RigidBody>(A);
     RigidBody& BBody = ECS.GetComponent<RigidBody>(B);
@@ -44,7 +44,7 @@ void Manifold::ResolveCollision()
 
 
     Vec2 rv = BBody.Velocity - ABody.Velocity;
-    float vNormal = rv.Dot(normal);
+    float vNormal = rv.Dot(Normal);
 
     if (vNormal < 0.0f)
         return;
@@ -54,7 +54,7 @@ void Manifold::ResolveCollision()
     j /= invMassSum;
 
 
-    Vec2 impulse = normal * j;
+    Vec2 impulse = Normal * j;
 
     ABody.ApplyImpulse(impulse * -1);
     BBody.ApplyImpulse(impulse);
@@ -62,7 +62,7 @@ void Manifold::ResolveCollision()
 
 void Manifold::ResolveCollisionAngular()
 {
-    assert(std::abs(normal.GetMagnitude() - 1.0) < 0.01);
+    assert(std::abs(Normal.GetMagnitude() - 1.0) < 0.01);
 
     RigidBody& ABody = ECS.GetComponent<RigidBody>(A);
     RigidBody& BBody = ECS.GetComponent<RigidBody>(B);
@@ -73,7 +73,7 @@ void Manifold::ResolveCollisionAngular()
     std::vector<Vec2> contactA;
     std::vector<Vec2> contactB;
 
-    for (Vec2& contactPoint : contactPoints)
+    for (Vec2& contactPoint : ContactPoints)
     {
 
         Vec2 ra = contactPoint - ABody.Position;
@@ -90,15 +90,15 @@ void Manifold::ResolveCollisionAngular()
 
         Vec2 relativeVelocity = combinedVelocityB - combinedVelocityA;
 
-        float vNormal = relativeVelocity.Dot(normal);
+        float vNormal = relativeVelocity.Dot(Normal);
 
         if (vNormal < 0.0f)
         {
             return;
         }
 
-        float normalA = raPerp.Dot(normal);
-        float normalB = rbPerp.Dot(normal);
+        float normalA = raPerp.Dot(Normal);
+        float normalB = rbPerp.Dot(Normal);
 
         float denom = ABody.InvMass() + BBody.InvMass()
                     + (normalA * normalA) * ABody.InvInertia()
@@ -108,16 +108,16 @@ void Manifold::ResolveCollisionAngular()
         float j = -(1.0f + e) * vNormal;
 
         j /= denom;
-        j /= static_cast<float>(contactPoints.size());
+        j /= static_cast<float>(ContactPoints.size());
 
-        Vec2 impulse = normal * j;
+        Vec2 impulse = Normal * j;
 
         impulses.push_back(impulse);
         contactA.push_back(ra);
         contactB.push_back(rb);
     }
 
-    for (int i = 0; i < contactPoints.size(); i++)
+    for (int i = 0; i < ContactPoints.size(); i++)
     {
         ABody.ApplyImpulseAngular(impulses[i] * -1.0f, contactA[i]);
         BBody.ApplyImpulseAngular(impulses[i], contactB[i]);
@@ -130,8 +130,8 @@ void Manifold::PositionCorrection()
 {
     RigidBody& ABody = ECS.GetComponent<RigidBody>(A);
     RigidBody& BBody = ECS.GetComponent<RigidBody>(B);
-    const float percent = 0.2f;
-    Vec2 correction = normal * (penetration / (ABody.InvMass() + BBody.InvMass()) * percent);
+    const float percent = 0.8f;
+    Vec2 correction = Normal * (Penetration / (ABody.InvMass() + BBody.InvMass()) * percent);
     ABody.Position += correction * ABody.InvMass();
     BBody.Position -= correction * BBody.InvMass();
 }

@@ -121,6 +121,12 @@
     <ClCompile Include="src\Collision.cpp">
       <Filter>src\Systems\Physics</Filter>
     </ClCompile>
+    <ClCompile Include="src\ToonShaderSIMD.cpp">
+      <Filter>src\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\SAT.cpp">
+      <Filter>src\Systems\Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\app.h">
@@ -333,6 +339,15 @@
     <ClInclude Include="src\Collision.h">
       <Filter>src\Systems\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="src\ToonShaderSIMD.h">
+      <Filter>src\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="tests\MathTest.h">
+      <Filter>tests\MathTest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\SAT.h">
+      <Filter>src\Systems\Physics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -385,6 +400,15 @@
     </Filter>
     <Filter Include="src\Systems\Physics">
       <UniqueIdentifier>{ebcce2a7-0109-46ce-b636-342cdb6f5f02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests">
+      <UniqueIdentifier>{334cce93-a5f6-4b70-a06d-ddcf0b49ba12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests\MathTest">
+      <UniqueIdentifier>{221c2370-20e8-40ca-9fb5-16bfaeb81f3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tests\ECSTest">
+      <UniqueIdentifier>{3f977be0-5c1e-4be2-8cab-51ec4c7b26b1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

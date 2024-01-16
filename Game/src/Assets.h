@@ -5,11 +5,14 @@ enum ObjAsset
 {
     Spot,
     Furina,
+    Maze,
+    Pinball,
     Pacman
 };
 
 enum ShaderAsset
 {
     DefaultShader,
-    BlinnPhong
+    BlinnPhong,
+    ToonShader
 };

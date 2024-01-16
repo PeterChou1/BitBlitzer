@@ -2,73 +2,47 @@
 #include "Mat4.h"
 #include <math.h>
 #include <cassert>
-#include <immintrin.h>  // For AVX-512
 
 Mat4::Mat4(const Mat4& rhs)
 {
-    rows[0] = rhs.rows[0];
-    rows[1] = rhs.rows[1];
-    rows[2] = rhs.rows[2];
-    rows[3] = rhs.rows[3];
+    Rows[0] = rhs.Rows[0];
+    Rows[1] = rhs.Rows[1];
+    Rows[2] = rhs.Rows[2];
+    Rows[3] = rhs.Rows[3];
 }
 
 Mat4::Mat4(const float* mat)
 {
-    rows[0] = mat + 0;
-    rows[1] = mat + 4;
-    rows[2] = mat + 8;
-    rows[3] = mat + 12;
+    Rows[0] = mat + 0;
+    Rows[1] = mat + 4;
+    Rows[2] = mat + 8;
+    Rows[3] = mat + 12;
 }
 
 Mat4::Mat4(const Vec4& row0, const Vec4& row1, const Vec4& row2, const Vec4& row3)
 {
-    rows[0] = row0;
-    rows[1] = row1;
-    rows[2] = row2;
-    rows[3] = row3;
+    Rows[0] = row0;
+    Rows[1] = row1;
+    Rows[2] = row2;
+    Rows[3] = row3;
 }
 
 Mat4& Mat4::operator=(const Mat4& rhs)
 {
-    rows[0] = rhs.rows[0];
-    rows[1] = rhs.rows[1];
-    rows[2] = rhs.rows[2];
-    rows[3] = rhs.rows[3];
+    Rows[0] = rhs.Rows[0];
+    Rows[1] = rhs.Rows[1];
+    Rows[2] = rhs.Rows[2];
+    Rows[3] = rhs.Rows[3];
     return *this;
 }
 
 const Mat4& Mat4::operator*=(const float rhs)
 {
-    rows[0] *= rhs;
-    rows[1] *= rhs;
-    rows[2] *= rhs;
-    rows[3] *= rhs;
+    Rows[0] *= rhs;
+    Rows[1] *= rhs;
+    Rows[2] *= rhs;
+    Rows[3] *= rhs;
     return *this;
-}
-
-void Mat4::Zero()
-{
-    rows[0].Zero();
-    rows[1].Zero();
-    rows[2].Zero();
-    rows[3].Zero();
-}
-
-void Mat4::Identity()
-{
-    rows[0] = Vec4(1, 0, 0, 0);
-    rows[1] = Vec4(0, 1, 0, 0);
-    rows[2] = Vec4(0, 0, 1, 0);
-    rows[3] = Vec4(0, 0, 0, 1);
-}
-
-float Mat4::Trace() const
-{
-    const float xx = rows[0][0] * rows[0][0];
-    const float yy = rows[1][1] * rows[1][1];
-    const float zz = rows[2][2] * rows[2][2];
-    const float ww = rows[3][3] * rows[3][3];
-    return (xx + yy + zz + ww);
 }
 
 float Mat4::Determinant() const
@@ -78,7 +52,7 @@ float Mat4::Determinant() const
     for (int j = 0; j < 4; j++)
     {
         Mat3 minor = Minor(0, j);
-        det += rows[0][j] * minor.Determinant() * sign;
+        det += Rows[0][j] * minor.Determinant() * sign;
         sign = -sign;
     }
     return det;
@@ -91,7 +65,7 @@ Mat4 Mat4::Transpose() const
     {
         for (int j = 0; j < 4; j++)
         {
-            transpose.rows[i][j] = rows[j][i];
+            transpose.Rows[i][j] = Rows[j][i];
         }
     }
     return transpose;
@@ -104,10 +78,12 @@ Mat4 Mat4::Inverse() const
     {
         for (int j = 0; j < 4; j++)
         {
-            inv.rows[j][i] = Cofactor(i, j);
+            inv.Rows[j][i] = Cofactor(i, j);
         }
     }
     float det = Determinant();
+    // fail on non-invertible matrix
+    assert(det != 0.0f && "matrix not invertible");
     float invDet = 1.0f / det;
     inv *= invDet;
     return inv;
@@ -152,7 +128,7 @@ Mat3 Mat4::Minor(const int i, const int j) const
             {
                 continue;
             }
-            minor.rows[xx][yy] = rows[x][y];
+            minor.Rows[xx][yy] = Rows[x][y];
             xx++;
         }
         yy++;
@@ -167,39 +143,6 @@ float Mat4::Cofactor(const int i, const int j) const
     return C;
 }
 
-void Mat4::Orient(Vec3 pos, Vec3 fwd, Vec3 up)
-{
-    Vec3 left = up.Cross(fwd);
-
-    // For our coordinate system where:
-    // +x-axis = fwd
-    // +y-axis = left
-    // +z-axis = up
-    rows[0] = Vec4(fwd.x, left.x, up.x, pos.x);
-    rows[1] = Vec4(fwd.y, left.y, up.y, pos.y);
-    rows[2] = Vec4(fwd.z, left.z, up.z, pos.z);
-    rows[3] = Vec4(0, 0, 0, 1);
-}
-
-void Mat4::LookAt(Vec3 pos, Vec3 lookAt, Vec3 up)
-{
-    Vec3 fwd = pos - lookAt;
-    fwd.Normalize();
-    Vec3 right = up.Cross(fwd);
-    right.Normalize();
-    up = fwd.Cross(right);
-    up.Normalize();
-
-    // For NDC coordinate system where:
-    // +x-axis = right
-    // +y-axis = up
-    // +z-axis = fwd
-    rows[0] = Vec4(right.x, right.y, right.z, -pos.Dot(right));
-    rows[1] = Vec4(up.x, up.y, up.z, -pos.Dot(up));
-    rows[2] = Vec4(fwd.x, fwd.y, fwd.z, -pos.Dot(fwd));
-    rows[3] = Vec4(0, 0, 0, 1);
-}
-
 void Mat4::PerspectiveOpenGL(float fovy, float aspect_ratio, float near, float far)
 {
     const float pi = acosf(-1.0f);
@@ -209,20 +152,20 @@ void Mat4::PerspectiveOpenGL(float fovy, float aspect_ratio, float near, float f
     double top = scale;
     double bottom = -top;
 
-    rows[0] = Vec4(2 * near / (right - left), 0, (right + left) / (right - left), 0);
-    rows[1] = Vec4(0, 2 * near / (top - bottom), (top + bottom) / (top - bottom), 0);
-    rows[2] = Vec4(0, 0, -(far + near) / (far - near), (-2.0f * far * near) / (far - near));
-    rows[3] = Vec4(0, 0, -1, 0);
+    Rows[0] = Vec4(2 * near / (right - left), 0, (right + left) / (right - left), 0);
+    Rows[1] = Vec4(0, 2 * near / (top - bottom), (top + bottom) / (top - bottom), 0);
+    Rows[2] = Vec4(0, 0, -(far + near) / (far - near), (-2.0f * far * near) / (far - near));
+    Rows[3] = Vec4(0, 0, -1, 0);
 }
 
 
 Vec4 Mat4::operator*(const Vec4& rhs) const
 {
     Vec4 tmp;
-    tmp[0] = rows[0].Dot(rhs);
-    tmp[1] = rows[1].Dot(rhs);
-    tmp[2] = rows[2].Dot(rhs);
-    tmp[3] = rows[3].Dot(rhs);
+    tmp[0] = Rows[0].Dot(rhs);
+    tmp[1] = Rows[1].Dot(rhs);
+    tmp[2] = Rows[2].Dot(rhs);
+    tmp[3] = Rows[3].Dot(rhs);
     return tmp;
 }
 
@@ -235,10 +178,10 @@ Vec3 Mat4::operator*(const Vec3& rhs) const
 Mat4 Mat4::operator*(const float rhs) const
 {
     Mat4 tmp;
-    tmp.rows[0] = rows[0] * rhs;
-    tmp.rows[1] = rows[1] * rhs;
-    tmp.rows[2] = rows[2] * rhs;
-    tmp.rows[3] = rows[3] * rhs;
+    tmp.Rows[0] = Rows[0] * rhs;
+    tmp.Rows[1] = Rows[1] * rhs;
+    tmp.Rows[2] = Rows[2] * rhs;
+    tmp.Rows[3] = Rows[3] * rhs;
     return tmp;
 }
 
@@ -247,14 +190,14 @@ Mat4 Mat4::operator*(const Mat4& rhs) const
     Mat4 tmp;
     for (int i = 0; i < 4; i++)
     {
-        tmp.rows[i].x = rows[i].x * rhs.rows[0].x + rows[i].y * rhs.rows[1].x + rows[i].z * rhs.rows[2].x + rows[i].w *
-            rhs.rows[3].x;
-        tmp.rows[i].y = rows[i].x * rhs.rows[0].y + rows[i].y * rhs.rows[1].y + rows[i].z * rhs.rows[2].y + rows[i].w *
-            rhs.rows[3].y;
-        tmp.rows[i].z = rows[i].x * rhs.rows[0].z + rows[i].y * rhs.rows[1].z + rows[i].z * rhs.rows[2].z + rows[i].w *
-            rhs.rows[3].z;
-        tmp.rows[i].w = rows[i].x * rhs.rows[0].w + rows[i].y * rhs.rows[1].w + rows[i].z * rhs.rows[2].w + rows[i].w *
-            rhs.rows[3].w;
+        tmp.Rows[i].X = Rows[i].X * rhs.Rows[0].X + Rows[i].Y * rhs.Rows[1].X + Rows[i].Z * rhs.Rows[2].X + Rows[i].W *
+            rhs.Rows[3].X;
+        tmp.Rows[i].Y = Rows[i].X * rhs.Rows[0].Y + Rows[i].Y * rhs.Rows[1].Y + Rows[i].Z * rhs.Rows[2].Y + Rows[i].W *
+            rhs.Rows[3].Y;
+        tmp.Rows[i].Z = Rows[i].X * rhs.Rows[0].Z + Rows[i].Y * rhs.Rows[1].Z + Rows[i].Z * rhs.Rows[2].Z + Rows[i].W *
+            rhs.Rows[3].Z;
+        tmp.Rows[i].W = Rows[i].X * rhs.Rows[0].W + Rows[i].Y * rhs.Rows[1].W + Rows[i].Z * rhs.Rows[2].W + Rows[i].W *
+            rhs.Rows[3].W;
     }
     return tmp;
 }
@@ -262,11 +205,11 @@ Mat4 Mat4::operator*(const Mat4& rhs) const
 Vec4 Mat4::operator[](const int i) const
 {
     assert(i >= 0 && i < 4);
-    return rows[i];
+    return Rows[i];
 }
 
 Vec4& Mat4::operator[](const int i)
 {
     assert(i >= 0 && i < 4);
-    return rows[i];
+    return Rows[i];
 }

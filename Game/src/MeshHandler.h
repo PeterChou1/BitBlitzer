@@ -4,6 +4,7 @@
 #include "IndexBuffer.h"
 #include "Mesh.h"
 #include "RenderConstants.h"
+#include "Transform.h"
 #include "VertexBuffer.h"
 
 class MeshHandler

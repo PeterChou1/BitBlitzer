@@ -12,5 +12,5 @@ public:
     void Render();
 
 private:
-    std::shared_ptr<Camera> m_cam;
+    std::shared_ptr<Camera> m_Cam;
 };
