@@ -142,9 +142,7 @@ void Rasterizer::RasterizeTiles()
                     for (int x = minPt.X; x < maxPt.X; x += SIMDPixel::PIXEL_WIDTH)
                     {
                         SIMDFloat inTriangle =
-                            deltaXe1 <= 0.0f & deltaXe2 <= 0.0f & deltaXe3 <= 0.0f; // &
-                        //(deltaXe1 <= epsilon | deltaXe2 <= epsilon | deltaXe3 <= epsilon);
-
+                            deltaXe1 <= 0.0f & deltaXe2 <= 0.0f & deltaXe3 <= 0.0f;
 
                         if (SIMD::Any(inTriangle))
                         {

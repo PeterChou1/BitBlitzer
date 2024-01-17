@@ -119,7 +119,7 @@ void Manifold::ResolveCollisionAngular()
 
 void Manifold::PositionCorrection()
 {
-    const float percent = 0.8f;
+    const float percent = 1.0f;
     Vec2 correction = Normal * (Penetration / (A.InvMass() + B.InvMass()) * percent);
     A.Position += correction * A.InvMass();
     B.Position -= correction * B.InvMass();

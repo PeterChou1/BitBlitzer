@@ -1,10 +1,14 @@
+//---------------------------------------------------------------------------------
+// Mesh.h
+//---------------------------------------------------------------------------------
+// 
+// Provides A Simple Wrapper For Users To Load Meshes Through the Rendering System
+//
+
 #pragma once
 #include "Assets.h"
 
 
-/**
- * \brief 
- */
 struct Mesh
 {
     bool Loaded{};

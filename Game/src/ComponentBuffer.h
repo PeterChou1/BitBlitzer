@@ -1,3 +1,12 @@
+//---------------------------------------------------------------------------------
+// ComponentBuffer.h
+//---------------------------------------------------------------------------------
+// 
+//  Component Buffers are the core of the ECS implementation they store
+//  meant to store components in a contiguous array for fast cache access
+//
+
+
 #pragma once
 
 #include <array>

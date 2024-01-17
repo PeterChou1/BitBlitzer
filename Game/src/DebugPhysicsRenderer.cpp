@@ -78,30 +78,15 @@ void RenderPolygon(
     std::vector<Vertex>& vertexBuffer, 
     std::vector<Vec2>& polygonPoints,
     std::vector<Vec2>& debugPoints,
-    float angle,
-    Vec2& position,
     Vec3& color
 )
 {
-    std::vector<Vec2> translatedPolygon;
-    Mat2 matrix = Mat2(
-        Vec2(std::cos(angle), -std::sin(angle)),
-        Vec2(std::sin(angle), std::cos(angle))
-    );
     int polySize = polygonPoints.size();
 
     for (int i = 0; i < polySize; i++)
     {
-        Vec2 points = polygonPoints[i];
-        Vec2 translated =  matrix * points + position;
-        translatedPolygon.push_back(translated);
-    }
-
-
-    for (int i = 0; i < polySize; i++)
-    {
-        Vec2 pt1 = translatedPolygon[i];
-        Vec2 pt2 = translatedPolygon[i + 1 == polySize ? 0 : i + 1];
+        Vec2 pt1 = polygonPoints[i];
+        Vec2 pt2 = polygonPoints[i + 1 == polySize ? 0 : i + 1];
 
         Vec3 point1 = Vec3(pt1.X, pt1.Y, 5.0);
         Vec3 point2 = Vec3(pt2.X, pt2.Y, 5.0);
@@ -114,7 +99,6 @@ void RenderPolygon(
 
         vertexBuffer.push_back(vertex1);
         vertexBuffer.push_back(vertex2);
-
     }
 
 
@@ -149,7 +133,7 @@ void DebugPhysicsRenderer::Update(float deltaTime)
             auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
             ECS.AddComponent<Transform>(meshEntity, modelTransform);
             ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f));
-            ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
+            //ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
             accumulate = 0.0f;
         }
 
@@ -164,7 +148,7 @@ void DebugPhysicsRenderer::Update(float deltaTime)
             auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
             ECS.AddComponent<Transform>(meshEntity, modelTransform);
             ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f, 1.0f));
-            ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
+            //ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
             accumulate = 0.0f;
         }
 
@@ -192,7 +176,7 @@ void DebugPhysicsRenderer::Render()
             RenderCircle(debugVertexBuffer, shape.Radius, r.Position, r.Color);
             break;
         case PolygonShape:
-            RenderPolygon(debugVertexBuffer, shape.PolygonPoints, shape.DebugPoints, r.Angular, r.Position, r.Color);
+            RenderPolygon(debugVertexBuffer, shape.PolygonPoints, shape.DebugPoints, r.Color);
             break;
         }
 
@@ -249,6 +233,7 @@ void DebugPhysicsRenderer::Render()
         App::DrawDot(v.proj.X, v.proj.Y, 0.01, 1.0, 0.0, 0.0);
     }
 
-
+    std::string rSize = "Amount of RigidBodies: " + std::to_string(ECS.Visit<RigidBody>().size());
+    App::Print(100, 150, rSize.c_str());
 
 }

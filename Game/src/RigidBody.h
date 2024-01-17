@@ -9,18 +9,6 @@
 #include "AABB.h"
 
 
-/**
- * \brief Since the transform class is 3d we have three ways
- *        to slice the 3d coordinates to sync up with our 2d
- *        physics system
- */
-enum SlicePlane
-{
-    XY,
-    XZ,
-    YZ
-};
-
 class RigidBody
 {
 public:
@@ -94,7 +82,7 @@ public:
 
     void ForwardTransform(Transform& transform, SlicePlane plane) const
     {
-        transform.SetPosition2D(Position);
+        transform.SetPosition2D(Position, plane);
         switch (plane)
         {
         case YZ:

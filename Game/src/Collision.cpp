@@ -159,11 +159,15 @@ void Polygon2Polygon(Manifold& m, RigidBody& A, RigidBody& B)
 
     assert(AShape.GetShapeType() == PolygonShape && BShape.GetShapeType() == PolygonShape);
 
-    auto polyA = Utils::TranslatePoints(AShape.PolygonPoints, A.Angular, A.Position);
-    auto polyB = Utils::TranslatePoints(BShape.PolygonPoints, B.Angular, B.Position);
+    const auto& polyA = AShape.PolygonPoints;
+    const auto& polyB = BShape.PolygonPoints;
 
     // find Minimum Translation Vector (MTV)
-    m.Collided = FindMTVPolygon(polyA, polyB, m.Normal, m.Penetration);
+    m.Collided = FindMTVPolygon(
+        polyA, polyB,
+        AShape.EdgeNormals, BShape.EdgeNormals,
+        m.Normal, m.Penetration
+    );
 
     if (!m.Collided)
         return;
@@ -197,12 +201,13 @@ void Circle2Polygon(Manifold& m, RigidBody& A, RigidBody& B)
     Shape& AShape = A.Shape;
     Shape& BShape = B.Shape;
     assert(AShape.GetShapeType() == PolygonShape && BShape.GetShapeType() == CircleShape);
-    std::vector<Vec2> poly = Utils::TranslatePoints(AShape.PolygonPoints, A.Angular, A.Position);
+    std::vector<Vec2>& poly = AShape.PolygonPoints;
 
     // Use SAT to find circle normal and penetration
-    m.Collided = FindMTVCircle(B.Position, BShape.Radius, poly, m.Normal, m.Penetration);
-
-    m.Normal = m.Normal;
+    m.Collided = FindMTVCircle(
+        B.Position, BShape.Radius, poly, AShape.EdgeNormals,
+        m.Normal, m.Penetration
+    );
 
     if (!m.Collided)
         return;

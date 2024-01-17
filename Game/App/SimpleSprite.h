@@ -1,6 +1,6 @@
 //-----------------------------------------------------------------------------
 // SimpleSprite.h
-// Privides a very simple DSOUND wrapper to load and play wav files.
+// Provides a very simple DSOUND wrapper to load and play wav files.
 //-----------------------------------------------------------------------------
 #ifndef _SIMPLESPRITE_H_
 #define _SIMPLESPRITE_H_

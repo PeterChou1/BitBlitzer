@@ -7,6 +7,7 @@
 extern ECSManager ECS;
 
 
+
 DebugCamera::DebugCamera()
 {
     m_Cam = ECS.GetResource<Camera>();
@@ -55,14 +56,4 @@ void DebugCamera::Render()
 {
     std::string pos = "Position x:" + std::to_string(m_Cam->Position.X) + " y: " + std::to_string(m_Cam->Position.Y) + " z: " + std::to_string(m_Cam->Position.Z);
     App::Print(100, 100, pos.c_str());
-
-    bool button0 = App::GetController().CheckButton(XINPUT_GAMEPAD_A, false);
-    bool button1 = App::GetController().CheckButton(XINPUT_GAMEPAD_B, false);
-    bool button2 = App::GetController().CheckButton(XINPUT_GAMEPAD_X, false);
-
-    std::string buttonCheck = "button 0: " + std::to_string(button0) + " "
-                              "button 1: " + std::to_string(button1) + " "
-                              "button 2: " + std::to_string(button2);
-
-    App::Print(100, 150, buttonCheck.c_str());
 }

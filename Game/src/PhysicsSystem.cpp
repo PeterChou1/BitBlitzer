@@ -14,29 +14,30 @@ extern ECSManager ECS;
 constexpr float StepTime = 16.0f;
 constexpr float dt = StepTime / 1000.0f;
 constexpr float MaxTime = 50.0f;
-constexpr float GravityScale = 3.0f;
-Vec2 Gravity = Vec2(0.0f, 10.0f * GravityScale);
+constexpr float GravityScale = 5.0f;
+Vec2 Gravity = Vec2(0.0f, -10.0f * GravityScale);
 
 
-
-void PhysicsSystem::SyncTransform()
+void PhysicsSystem::SyncData()
 {
     // Sync Transform -> RigidBody
+    // Sync ECS -> m_RigidBodies
+    m_RigidBodies.clear();
     for (auto& e : ECS.Visit<RigidBody, Transform>())
     {
         RigidBody& rigidbody = ECS.GetComponent<RigidBody>(e);
-
         rigidbody.Color = Vec3(1.0f, 0.0f, 0.0f);
+        m_RigidBodies.emplace_back(e, rigidbody);
 
         if (rigidbody.Controlled || !rigidbody.Initialized)
         {
             Transform& transform = ECS.GetComponent<Transform>(e);
             rigidbody.SyncTransform(transform, XY);
             rigidbody.RecomputeAABB();
+            rigidbody.Shape.RecomputePoints(rigidbody.Angular, rigidbody.Position);
             if (!rigidbody.Initialized) rigidbody.Initialized = true;
         }
     }
-
 }
 
 void PhysicsSystem::ForwardTransform()
@@ -50,9 +51,9 @@ void PhysicsSystem::ForwardTransform()
     }
 }
 
+
 void PhysicsSystem::Update(float deltaTime)
 {
-
     m_Accumulate += deltaTime;
 
     if (m_Accumulate > MaxTime)
@@ -61,7 +62,7 @@ void PhysicsSystem::Update(float deltaTime)
     // Physics is updated once every 100ms
     while (m_Accumulate > StepTime)
     {
-        SyncTransform();
+        SyncData();
         for (int i = 0; i < STEP_ITERATION; i++)
         {
             Step();
@@ -69,24 +70,26 @@ void PhysicsSystem::Update(float deltaTime)
         }
         m_Accumulate -= MaxTime;
     }
-
 }
 
 void PhysicsSystem::Step()
 {
-
     float deltaTime = dt / STEP_ITERATION;
 
     // Broad Phase Collision
 
     std::vector<Manifold> collisions;
-    for (auto& e1 : ECS.Visit<RigidBody>())
+    for (auto& collisionPair1 : m_RigidBodies)
     {
-        for (auto& e2 : ECS.Visit<RigidBody>())
+        for (auto& collisionPair2 : m_RigidBodies)
         {
+            Entity e1 = collisionPair1.first;
+            Entity e2 = collisionPair2.first;
             if (e1 == e2 || e1 > e2) continue;
-            RigidBody& r1 = ECS.GetComponent<RigidBody>(e1);
-            RigidBody& r2 = ECS.GetComponent<RigidBody>(e2);
+
+            RigidBody& r1 = collisionPair1.second;
+            RigidBody& r2 = collisionPair2.second;
+
             // don't bother resolving collision between two infinite mass 
             if (r1.InvMass() == 0.0 && r2.InvMass() == 0.0f) continue;
 
@@ -100,26 +103,27 @@ void PhysicsSystem::Step()
     }
 
     // Integrate Forces
-    for (auto& e : ECS.Visit<RigidBody>())
+    for (auto& collisionPair : m_RigidBodies)
     {
-        RigidBody& rigidbody = ECS.GetComponent<RigidBody>(e);
-    
+        RigidBody& rigidbody = collisionPair.second;
+
         if (rigidbody.InvMass() == 0.0) continue;
-    
+
         rigidbody.Force += Gravity;
-        rigidbody.Velocity -= rigidbody.Force * rigidbody.InvMass() * deltaTime;
+        rigidbody.Velocity += rigidbody.Force * rigidbody.InvMass() * deltaTime;
+
     }
-    
+
     // Resolve Collision
     for (auto& manifold : collisions)
     {
         manifold.ResolveCollisionAngular();
     }
-    
+
     // Integrate Velocity
-    for (auto& e : ECS.Visit<RigidBody>())
+    for (auto& collisionPair : m_RigidBodies)
     {
-        RigidBody& rigidbody = ECS.GetComponent<RigidBody>(e);
+        RigidBody& rigidbody = collisionPair.second;
         rigidbody.IntegrateVelocityAngular(deltaTime);
     }
 
@@ -129,15 +133,14 @@ void PhysicsSystem::Step()
         manifold.PositionCorrection();
     }
 
+
     // Clear All Forces
     // Sync Rigid Body -> Transform
-    for (auto& e : ECS.Visit<RigidBody>())
+    for (auto& collisionPair : m_RigidBodies)
     {
-        RigidBody& rigidbody = ECS.GetComponent<RigidBody>(e);
+        RigidBody& rigidbody = collisionPair.second;
         rigidbody.Force = Vec2(0.0f, 0.0f);
+        rigidbody.Shape.RecomputePoints(rigidbody.Angular, rigidbody.Position);
         rigidbody.RecomputeAABB();
     }
-    
-
-
 }

@@ -32,21 +32,17 @@ bool overlap(const std::pair<float, float>& a, const std::pair<float, float>& b)
 bool FindMTVCircle(
     Vec2& center, float radius,
     std::vector<Vec2> poly,
+    std::vector<Vec2> normals,
     Vec2& collisionNormal,
     float& overlapAmount
 )
 {
     overlapAmount = std::numeric_limits<float>::max();
 
-    std::vector<Vec2> edges;
-    for (size_t i = 0; i < poly.size(); i++)
-        edges.push_back(poly[i] - poly[(i + 1) % poly.size()]);
-
     // Seperating Axis Thereom
-    for (const Vec2& edge : edges) {
+    for (const Vec2& axis : normals) {
         bool flip = true;
 
-        Vec2 axis = edge.Cross(-1.0).Normalize();
         auto proj1 = project(poly, axis);
         auto proj2 = projectCircle(center, radius, axis);
 
@@ -84,26 +80,18 @@ bool FindMTVCircle(
     }
 }
 
-bool FindMTVPolygon(
-    const std::vector<Vec2>& poly1, const std::vector<Vec2>& poly2,
-    Vec2& collisionNormal,
-    float& overlapAmount
-) {
-    overlapAmount = std::numeric_limits<float>::max();
 
-    // Test all edges of both polygons
-    std::vector<Vec2> edges;
-    for (size_t i = 0; i < poly1.size(); i++)
-        edges.push_back(poly1[i] - poly1[(i + 1) % poly1.size()]);
-    for (size_t i = 0; i < poly2.size(); i++)
-        edges.push_back(poly2[i] - poly2[(i + 1) % poly2.size()]);
-
-    // Seperating Axis Thereom
-
-    for (const Vec2& edge : edges) {
+bool SATPolygon(
+    const std::vector<Vec2>& poly1, 
+    const std::vector<Vec2>& poly2,
+    const std::vector<Vec2>& normals,
+    float& overlapAmount,
+    Vec2& collisionNormal
+)
+{
+    for (const Vec2& axis : normals)
+    {
         bool flip = true;
-
-        Vec2 axis = edge.Cross(-1.0).Normalize();
         auto proj1 = project(poly1, axis);
         auto proj2 = project(poly2, axis);
 
@@ -139,6 +127,25 @@ bool FindMTVPolygon(
             }
         }
     }
+
+    return true;
+
+}
+
+bool FindMTVPolygon(
+    const std::vector<Vec2>& poly1, const std::vector<Vec2>& poly2,
+    const std::vector<Vec2>& normals1, const std::vector<Vec2>& normals2,
+    Vec2& collisionNormal,
+    float& overlapAmount
+) {
+    overlapAmount = std::numeric_limits<float>::max();
+
+    // Test all edges of both polygons
+    if (!SATPolygon(poly1, poly2, normals1, overlapAmount, collisionNormal))
+        return false;
+
+    if (!SATPolygon(poly1, poly2, normals2, overlapAmount, collisionNormal))
+        return false;
 
     return true;
 }

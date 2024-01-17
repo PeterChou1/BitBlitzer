@@ -41,12 +41,10 @@ void Scene::Setup()
     AssetServer& loader = AssetServer::GetInstance();
     loader.LoadLevelAssets(levelAssets);
     // Ground
-    CreateRigidBodyRect(0.0f, -5.0f, 20.0, 1.0, 0.0f);
+    CreateRigidBodyRect(0.0f, -5.0f, 30.0, 1.0, 0.0f);
     // Side walls
-    CreateRigidBodyRect(-10.0f, 0.0f, 1.0, 10.0, 0.0f);
-    CreateRigidBodyRect(10.0f, 0.0f, 1.0, 10.0, 0.0f);
-
-    CreateRigidBodyCircle(0.0f, 0.0f, 2.0f);
+    CreateRigidBodyRect(-15.0f, 0.0f, 1.0, 10.0, 0.0f);
+    CreateRigidBodyRect(15.0f, 0.0f, 1.0, 10.0, 0.0f);
 
     // Entity meshEntity = ECS.CreateEntity();
     // auto modelTransform = Transform(Vec3(0.0, 0.0, 5.0), Quat(Vec3(0, 0, 1), 0.0));
