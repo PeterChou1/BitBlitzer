@@ -1,3 +1,9 @@
+//---------------------------------------------------------------------------------
+// DebugPhysicsRenderer.h
+//---------------------------------------------------------------------------------
+//
+// Basic debug System used to render physics object not for gameplay use
+//
 #pragma once
 #include <memory>
 

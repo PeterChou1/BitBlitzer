@@ -1,3 +1,12 @@
+//---------------------------------------------------------------------------------
+// EntityManager.h
+//---------------------------------------------------------------------------------
+// 
+// Manages All Entity in the ECS System
+// An Entity Manager maps an Entity to their Signature
+// which denotes which component they own
+// 
+
 #pragma once
 #include <array>
 #include <cassert>
@@ -68,7 +77,14 @@ public:
     void Clear()
     {
         //clear queue
-        m_AvailableEntities = {};
+        for (Entity entity = 0; entity < MAX_ENTITIES; ++entity)
+        {
+            m_AvailableEntities.push(entity);
+        }
+        for (Signature& signature : m_Signatures)
+        {
+            signature.reset();
+        }
         m_LivingEntityCount = 0;
     }
 

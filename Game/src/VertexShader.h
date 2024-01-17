@@ -1,3 +1,10 @@
+//---------------------------------------------------------------------------------
+// VertexShader.h
+//---------------------------------------------------------------------------------
+//
+// Multithreaded Vertex Shader outputs vertexs in the vertex
+// buffer to clip space
+//
 #pragma once
 #include <memory>
 

@@ -1,3 +1,11 @@
+//---------------------------------------------------------------------------------
+// SIMDTriangle.h
+//---------------------------------------------------------------------------------
+//
+// SIMDTriangle wraps around a normal triangle this is simply to make it
+// easier to work with SIMD operations during rasterization see comments
+// in Triangle.h for more explanation on which each fields mean
+//
 #pragma once
 #include "SIMD.h"
 #include "Triangle.h"

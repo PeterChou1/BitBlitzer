@@ -1,7 +1,15 @@
+//---------------------------------------------------------------------------------
+// RigidBody.h
+//---------------------------------------------------------------------------------
+//
+// Represent a physics body in the physics System a rigid body can be a circle
+// or any concave polygon
+//
 #pragma once
 
-#include <cassert>
+
 #include <vector>
+
 #include "Vec2.h"
 #include "Vec3.h"
 #include "Shape.h"
@@ -12,148 +20,53 @@
 class RigidBody
 {
 public:
-    // states that change
 
     RigidBody() = default;
 
-    // Circle Constructor
-    RigidBody(float radius)
-    {
-        Shape = Shape::CreateCircle(radius);
-        RigidBodyAABB = AABB(radius);
-        float area = radius * radius * 3.141;
-        float mass = DEFAULT_DENSITY * area;
-        float inertia = 0.5f * mass * radius * radius;
-        m_InvMass = 1.0f / mass;
-        m_InvInertia = 1.0f / inertia;
-    }
+    /**
+     * \brief 
+     * \param radius 
+     */
+    RigidBody(float radius);
 
-    // Square Constructor
-    RigidBody(float width, float height)
-    {
-        Shape = Shape::CreateRect(width, height);
-        RigidBodyAABB = AABB(Shape.PolygonPoints);
-        float area = width * height;
-        float mass = area * DEFAULT_DENSITY;
-        float inertia = (1.0f / 12.0f) * mass * (width * width + height * height);
-        m_InvMass = 1.0f / mass;
-        m_InvInertia = 1.0f / inertia;
-        m_Restitution = DEFAULT_RESTITUTION;
-    }
+    /**
+     * \brief Construct A Rectangle RigidBody Based on width and height
+     * \param width 
+     * \param height 
+     */
+    RigidBody(float width, float height);
 
-    RigidBody(std::vector<Vec2> polygons)
-    {
-        assert(false && "not implemented");
-    }
+    /**
+     * \brief Construct a RigidBody based on 
+     * \param polygons 
+     */
+    RigidBody(std::vector<Vec2> polygons);
 
-    void SetStatic(bool isStatic)
-    {
-        if (isStatic)
-        {
-            m_InvMass = 0.0f;
-            m_InvInertia = 0.0f;
-        }
-    }
+    /**
+     * \brief Setting the body to infinite mass
+     * \param isStatic 
+     */
+    void SetStatic(bool isStatic);
 
+    void SyncTransform(Transform& transform, SlicePlane plane);
 
-    void SyncTransform(Transform& transform, SlicePlane plane)
-    {
-        float roll, pitch, yaw;
-        transform.Rotation.GetEulerAngles(roll, pitch, yaw);
-        switch (plane)
-        {
-        case YZ:
-            Position.X = transform.Position.Y;
-            Position.Y = transform.Position.Z;
-            Angular = roll;
-            break;
-        case XZ:
-            Position.X = transform.Position.X;
-            Position.Y = transform.Position.Z;
-            Angular = pitch;
-            break;
-        case XY:
-            Position.X = transform.Position.X;
-            Position.Y = transform.Position.Y;
-            Angular = yaw;
-            break;
-        }
-    }
+    void ForwardTransform(Transform& transform, SlicePlane plane) const;
 
-    void ForwardTransform(Transform& transform, SlicePlane plane) const
-    {
-        transform.SetPosition2D(Position, plane);
-        switch (plane)
-        {
-        case YZ:
-            transform.UpdateRow(AngularDelta);
-            break;
-        case XZ:
-            transform.UpdatePitch(AngularDelta);
-            break;
-        case XY:
-            transform.UpdateYaw(AngularDelta);
-        }
-    }
+    void RecomputeAABB();
 
-    void RecomputeAABB()
-    {
-        RigidBodyAABB.RecomputeAABB(Position, Angular, Shape.GetShapeType());
-    }
+    void ApplyImpulse(const Vec2& impulse);
 
-    void ApplyForce(const Vec2& f)
-    {
-        Force += f;
-    }
+    void ApplyImpulseAngular(const Vec2& impulse, const Vec2& contactVector);
 
-    void IntegrateForce(float deltaTime)
-    {
-        if (m_InvMass == 0.0f) return;
-        Velocity += Force * m_InvMass * deltaTime;
-    }
+    void IntegrateVelocity(float deltaTime);
 
+    void IntegrateVelocityAngular(float deltaTime);
 
-    void ApplyImpulse(const Vec2& impulse)
-    {
-        Velocity += impulse * m_InvMass;
-    }
+    float InvMass() const;
 
-    void ApplyImpulseAngular(const Vec2& impulse, const Vec2& contactVector)
-    {
-        Velocity += impulse * m_InvMass;
-        AngularVelocity += contactVector.Cross(impulse) * m_InvInertia;
-    }
+    float InvInertia() const;
 
-
-    void IntegrateVelocity(float deltaTime)
-    {
-        if (m_InvMass == 0.0f) return;
-        Position += Velocity * deltaTime;
-    }
-
-
-    void IntegrateVelocityAngular(float deltaTime)
-    {
-        if (m_InvMass == 0.0f) return;
-        Position += Velocity * deltaTime;
-        AngularDelta = AngularVelocity * deltaTime;
-        Angular += AngularDelta;
-    }
-
-    float InvMass() const 
-    {
-        return m_InvMass;
-    }
-
-    float InvInertia() const
-    {
-        return m_InvInertia;
-    }
-
-    float Restitution() const
-    {
-        return m_Restitution;
-    }
+    float Restitution() const;
 
     // use to sync rigid body with their transform
     bool Initialized{};

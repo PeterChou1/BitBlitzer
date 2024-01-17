@@ -1,3 +1,11 @@
+//---------------------------------------------------------------------------------
+// PixelBuffer.h
+//---------------------------------------------------------------------------------
+//
+// The Pixel Buffer stores all pixels rasterized during the rasterization stage of the
+// pipeline at the end of rasterization the pixels are compared against the depth
+// buffer for filtering 
+//
 #pragma once
 #include <numeric>
 #include <unordered_map>
@@ -33,15 +41,17 @@ public:
         CoreInterval = 0;
         TriangleCount = 0;
     }
-    
+    // Maps which mesh entity has which shaders attach to it
     std::unordered_map<Entity, ShaderAsset> EntityToShaderAsset;
     // Maps which entity has which index/vertex ranges in the index and
     // vertex buffer
     std::unordered_map<Entity, BufferRange> EntityToVertexRange;
     std::unordered_map<Entity, BufferRange> EntityToIndexRange;
-
+    // Gives each core on the system an ID
     std::vector<std::uint32_t> CoreIds;
+    // Used by clipper during multithreading clipping
     int CoreInterval{};
     unsigned int CoreCount{};
+    // total triangle count of Triangle in the System
     std::uint32_t TriangleCount{};
 };

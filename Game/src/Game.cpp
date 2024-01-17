@@ -36,6 +36,7 @@ void Update(float deltaTime)
 void Render()
 {
     manager.Render();
+    ECS.FlushECS();
 }
 
 //------------------------------------------------------------------------

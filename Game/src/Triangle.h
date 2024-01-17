@@ -1,16 +1,29 @@
+//---------------------------------------------------------------------------------
+// Triangle.h
+//---------------------------------------------------------------------------------
+// 
+// Wrapper class for three vertices + values used to compute rasterization using
+// Edge Functions
+//
 #pragma once
+
 #include "Vertex.h"
 
 struct Triangle
 {
+    // Vertex loaded from the obj file
     Vertex verts[3]{};
+
+    // Precomputed values used for Edge function rasterization
     int B0{}, C0{}, B1{},
         C1{}, B2{}, C2{};
 
+    // Indexs used to Reject or Accept a Tile
     int rejectIndex0{}, acceptIndex0{},
         rejectIndex1{}, acceptIndex1{},
         rejectIndex2{}, acceptIndex2{};
 
+    // AABB computed for the triangle used optimization to speedup rasterization
     int maxX{}, maxY{};
     int minX{}, minY{};
 
@@ -18,6 +31,7 @@ struct Triangle
     int BinID{};
     int BinIndex{};
 
+    // Inverse Determinant Used to calculate barycentric coordinates
     float invDet{};
 
     Triangle() = default;
@@ -38,9 +52,10 @@ struct Triangle
 
     void PerspectiveDivision();
 
+
     bool Setup(int id, int index);
 
-    // edge function 
+
     float EdgeFunc0(Vec2& p) const
     {
         return B0 * (p.X - verts[0].proj.X) - C0 * (p.Y - verts[0].proj.Y);

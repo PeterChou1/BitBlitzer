@@ -1,6 +1,12 @@
+//---------------------------------------------------------------------------------
+// Asset.h
+//---------------------------------------------------------------------------------
+// 
+// Defines Enum Used by the AssetServer to locate where an asset is located
+//
 #pragma once
 
-// define graphics assets
+// Graphical Assets .obj files
 enum ObjAsset
 {
     Spot,
@@ -10,6 +16,7 @@ enum ObjAsset
     Pacman
 };
 
+// Shaders -> See SIMDShader.h for more details
 enum ShaderAsset
 {
     DefaultShader,

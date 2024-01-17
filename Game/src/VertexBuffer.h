@@ -1,3 +1,10 @@
+//---------------------------------------------------------------------------------
+// VertexBuffer.h
+//---------------------------------------------------------------------------------
+//
+// The VertexBuffer stores all vertices in the game scene that make up
+// the loaded meshes
+//
 #pragma once
 #include <vector>
 

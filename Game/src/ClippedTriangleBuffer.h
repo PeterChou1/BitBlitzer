@@ -1,3 +1,10 @@
+//---------------------------------------------------------------------------------
+// ClippedTriangleBuffer.h
+//---------------------------------------------------------------------------------
+//
+// ClippedTriangleBuffer stores the clipped triangles when the Clipper is done
+// clipping them for use in the next stage of the pipeline
+//
 #pragma once
 #include <thread>
 #include <vector>

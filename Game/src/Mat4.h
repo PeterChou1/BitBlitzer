@@ -1,7 +1,12 @@
+//---------------------------------------------------------------------------------
+// Mat4.h
+//---------------------------------------------------------------------------------
+//
+// Basic Implementation of a 4d Matrix
+//
 #pragma once
 #include "Vec4.h"
 #include "Mat3.h"
-/* ================================ Mat4 ================================ */
 
 class Mat4
 {
@@ -22,10 +27,11 @@ public:
     float Determinant() const;
     Mat4 Transpose() const;
     Mat4 Inverse() const;
-    // fast inverse specifically for affine matrix
+    /// fast inverse specifically for affine matrix
     Mat4 AffineInverse() const;
     Mat3 Minor(int i, int j) const;
     float Cofactor(int i, int j) const;
+    /// Construct An Open GL Perspective Matrix
     void PerspectiveOpenGL(float fovy, float aspect_ratio, float near, float far);
     Vec4 operator*(const Vec4& rhs) const;
     Vec3 operator*(const Vec3& rhs) const;

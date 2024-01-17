@@ -1,3 +1,10 @@
+//---------------------------------------------------------------------------------
+// Shape.h
+//---------------------------------------------------------------------------------
+//
+// Class used to represent a shape within rigid body stores
+// all shape information in the class depending on what shape it is
+//
 #pragma once
 
 #include "Utils.h"

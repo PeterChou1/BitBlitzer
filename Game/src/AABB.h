@@ -1,3 +1,11 @@
+//---------------------------------------------------------------------------------
+// AABB.h
+//---------------------------------------------------------------------------------
+//
+// Axis Align Bounding Box Used for cheap broad phase intersection test
+// before the narrow phase
+//
+
 #pragma once
 #include <cassert>
 #include <vector>
@@ -15,13 +23,22 @@ struct AABB
 
     AABB() = default;
 
+    /**
+     * \brief Computes AABB for Circle
+     * \param radius of circle
+     */
     AABB(float radius)
     {
         OriginalMax = Vec2(radius, radius);
         OriginalMin = Vec2(-radius, -radius);
+        Min = OriginalMin;
+        Max = OriginalMax;
     }
 
-    // Compute AABB for polygon
+    /**
+     * \brief Compute AABB for a polygon
+     * \param points points in the polygon
+     */
     AABB(const std::vector<Vec2>& points)
     {
         assert(!points.empty() && "Points Empty");
@@ -30,6 +47,9 @@ struct AABB
         Max = OriginalMax;
     }
 
+    /**
+     * \brief Recomputes AABB at the end of physics pipeline
+     */
     void RecomputeAABB(const Vec2& newPosition, float newAngle, ShapeType shapeType)
     {
         Vec2 topRight = OriginalMax;
@@ -66,7 +86,10 @@ struct AABB
     }
 };
 
-
+/**
+ * \brief AABB intersection test returns true depending if A and B
+ *        are colliding
+ */
 inline bool AABBTest(AABB& A, AABB& B)
 {
     if (A.Max.X < B.Min.X || A.Min.X > B.Max.X) return false;

@@ -1,3 +1,10 @@
+//---------------------------------------------------------------------------------
+// UnlitSIMD.h
+//---------------------------------------------------------------------------------
+//
+// Basic Unlit Shader shades the color based off the texture
+// removes all lighting calculation
+//
 #pragma once
 #include "SIMDShader.h"
 

@@ -1,9 +1,14 @@
+//---------------------------------------------------------------------------------
+// Resources.h
+//---------------------------------------------------------------------------------
+// 
+// Resources are global class that are initialized only once during
+// the game startup in the ECS system they can optionally reset every the ECS system
+// is cleared
+//
 #pragma once
 
-/**
- * \brief Resources are global class that are initialized only once
- *        during the startup of the Game
- */
+
 class Resource
 {
 public:

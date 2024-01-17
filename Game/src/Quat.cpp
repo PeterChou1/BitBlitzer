@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "Quat.h"
+
+#include <cassert>
 #include <math.h>
 #include <cmath>;
 
@@ -57,23 +59,22 @@ Quat& Quat::operator*=(const Quat& rhs)
 Quat Quat::operator*(const Quat& rhs) const
 {
     Quat temp;
-    temp.W = (W * rhs.W) - (X * rhs.X) - (Y * rhs.Y) - (Z * rhs.Z);
-    temp.X = (X * rhs.W) + (W * rhs.X) + (Y * rhs.Z) - (Z * rhs.Y);
-    temp.Y = (Y * rhs.W) + (W * rhs.Y) + (Z * rhs.X) - (X * rhs.Z);
-    temp.Z = (Z * rhs.W) + (W * rhs.Z) + (X * rhs.Y) - (Y * rhs.X);
+    temp.W = W * rhs.W - X * rhs.X - Y * rhs.Y - Z * rhs.Z;
+    temp.X = X * rhs.W + W * rhs.X + Y * rhs.Z - Z * rhs.Y;
+    temp.Y = Y * rhs.W + W * rhs.Y + Z * rhs.X - X * rhs.Z;
+    temp.Z = Z * rhs.W + W * rhs.Z + X * rhs.Y - Y * rhs.X;
     return temp;
 }
 
 void Quat::Normalize()
 {
-    float invMag = 1.0f / GetMagnitude();
-    if (0.0f * invMag == 0.0f * invMag)
-    {
-        X = X * invMag;
-        Y = Y * invMag;
-        Z = Z * invMag;
-        W = W * invMag;
-    }
+    float magnitude = GetMagnitude();
+    assert(magnitude != 0.0);
+    float invMag = 1.0f / magnitude;
+    X = X * invMag;
+    Y = Y * invMag;
+    Z = Z * invMag;
+    W = W * invMag;
 }
 
 void Quat::Invert()
@@ -93,7 +94,7 @@ Quat Quat::Inverse() const
 
 float Quat::MagnitudeSquared() const
 {
-    return ((X * X) + (Y * Y) + (Z * Z) + (W * W));
+    return X * X + Y * Y + Z * Z + W * W;
 }
 
 float Quat::GetMagnitude() const
@@ -108,27 +109,6 @@ Vec3 Quat::RotatePoint(const Vec3& rhs) const
     return Vec3(final.X, final.Y, final.Z);
 }
 
-bool Quat::IsValid() const
-{
-    if (X * 0 != X * 0)
-    {
-        return false;
-    }
-    if (Y * 0 != Y * 0)
-    {
-        return false;
-    }
-    if (Z * 0 != Z * 0)
-    {
-        return false;
-    }
-    if (W * 0 != W * 0)
-    {
-        return false;
-    }
-    return true;
-}
-
 Mat3 Quat::RotateMatrix(const Mat3& rhs) const
 {
     Mat3 mat;
@@ -138,13 +118,8 @@ Mat3 Quat::RotateMatrix(const Mat3& rhs) const
     return mat;
 }
 
-
-/**
- * \brief Code referenced here https://automaticaddison.com/how-to-convert-a-quaternion-into-euler-angles-in-python/
- * \param roll 
- * \param pitch 
- * \param yaw 
- */
+/// Code Implementation Based On
+/// https://automaticaddison.com/how-to-convert-a-quaternion-into-euler-angles-in-python/s
 void Quat::GetEulerAngles(float& roll, float& pitch, float& yaw) const
 {
     // Calculate roll (rotation around x)

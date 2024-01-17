@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "../App/app.h"
 #include "ECSManager.h"
+#include "RenderConstants.h"
 
 extern ECSManager ECS;
 
@@ -32,11 +33,11 @@ void DebugCamera::Move(float deltaTime)
 
     if (App::GetController().GetLeftThumbStickY() > 0.5f)
     {
-        delta += m_Cam->Forward * speed;
+        delta += m_Cam->Backward * speed;
     }
     if (App::GetController().GetLeftThumbStickY() < -0.5f)
     {
-        delta -= m_Cam->Forward * speed;
+        delta -= m_Cam->Backward * speed;
     }
 
     if (App::IsKeyPressed('Q'))
@@ -54,6 +55,13 @@ void DebugCamera::Move(float deltaTime)
 
 void DebugCamera::Render()
 {
-    std::string pos = "Position x:" + std::to_string(m_Cam->Position.X) + " y: " + std::to_string(m_Cam->Position.Y) + " z: " + std::to_string(m_Cam->Position.Z);
-    App::Print(100, 100, pos.c_str());
+    //std::string pos = "Position x:" + std::to_string(m_Cam->Position.X) + " y: " + std::to_string(m_Cam->Position.Y) + " z: " + std::to_string(m_Cam->Position.Z);
+    //App::Print(100, 100, pos.c_str());
+
+    auto constants = ECS.GetResource<RenderConstants>();
+
+    std::string triCount = "Triangle Count: " + std::to_string(constants->TriangleCount);
+
+    App::Print(100, 100, triCount.c_str());
+
 }

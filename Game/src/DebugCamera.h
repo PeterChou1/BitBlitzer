@@ -1,3 +1,9 @@
+//---------------------------------------------------------------------------------
+// DebugCamera.h
+//---------------------------------------------------------------------------------
+//
+// Basic Camera System used for debugging not for gameplay use
+//
 #pragma once
 #include <memory>
 #include "Camera.h"

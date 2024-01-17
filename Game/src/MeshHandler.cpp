@@ -19,7 +19,9 @@ MeshHandler::MeshHandler()
 void MeshHandler::Update()
 {
     std::vector<Entity> MarkedForDeletion;
+
     auto& EntityToShaderAsset = m_RenderConstants->EntityToShaderAsset;
+
 
     for (const auto e : ECS.Visit<Transform, Mesh>())
     {
@@ -37,10 +39,6 @@ void MeshHandler::Update()
             AddMesh(e, mesh, transform, shaderID);
             mesh.Loaded = true;
         }
-        else if (mesh.MarkedForDeletion)
-        {
-            MarkedForDeletion.push_back(e);
-        }
         else if (transform.IsDirty)
         {
             UpdateMeshTransform(e, transform);
@@ -52,6 +50,11 @@ void MeshHandler::Update()
             UpdateMeshShader(e, shaderID);
         }
 
+    }
+
+    for (const auto e : ECS.VisitDeleted<Transform, Mesh>())
+    {
+        MarkedForDeletion.push_back(e);
     }
 
     if (!MarkedForDeletion.empty())
@@ -73,19 +76,15 @@ void MeshHandler::DeleteMeshes(const std::vector<Entity>& entities)
             vertexRangesToRemove.push_back(EntityToVertexRange[entity]);
             EntityToVertexRange.erase(entity);
         }
-
         if (EntityToIndexRange.count(entity))
         {
             indexRangesToRemove.push_back(EntityToIndexRange[entity]);
             EntityToIndexRange.erase(entity);
         }
-
         if (EntityToShaderAsset.count(entity))
         {
             EntityToShaderAsset.erase(entity);
         }
-
-        ECS.RemoveComponent<Mesh>(entity);
     }
 
     // Step 2: Sort ranges to facilitate efficient removal
@@ -135,7 +134,7 @@ void MeshHandler::DeleteMeshes(const std::vector<Entity>& entities)
     Utils::EraseRanges(vertexRangesToRemove, m_VertexBuffer->Buffer);
     Utils::EraseRanges(indexRangesToRemove, m_IndexBuffer->Buffer);
 
-    m_RenderConstants->TriangleCount = m_IndexBuffer->Buffer.size() / 3;
+    m_RenderConstants->TriangleCount = m_IndexBuffer->Buffer.size() / 3.0f;
     unsigned int CoreCount = m_RenderConstants->CoreCount;
     m_RenderConstants->CoreInterval = (m_RenderConstants->TriangleCount + CoreCount - 1) / CoreCount;
 }
@@ -146,10 +145,10 @@ void MeshHandler::UpdateMeshTransform(Entity entity, Transform& transform)
     auto begin = m_VertexBuffer->Buffer.begin() + range.first;
     auto end = m_VertexBuffer->Buffer.begin() + range.second;
     std::for_each(begin, end, [&](Vertex& v)
-        {
-            v.pos = transform.TransformVec3(v.localPosition);
-            v.normal = transform.TransformNormal(v.localNormal);
-        });
+    {
+        v.pos = transform.TransformVec3(v.localPosition);
+        v.normal = transform.TransformNormal(v.localNormal);
+    });
     transform.IsDirty = false;
 }
 
@@ -159,9 +158,9 @@ void MeshHandler::UpdateMeshShader(Entity entity, ShaderAsset shaderID)
     auto begin = m_VertexBuffer->Buffer.begin() + range.first;
     auto end = m_VertexBuffer->Buffer.begin() + range.second;
     std::for_each(begin, end, [&](Vertex& v)
-        {
-            v.shader_id = shaderID;
-        });
+    {
+        v.shader_id = shaderID;
+    });
 
 }
 

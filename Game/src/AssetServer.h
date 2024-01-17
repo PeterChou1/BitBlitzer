@@ -1,6 +1,15 @@
+//---------------------------------------------------------------------------------
+// AssetServer.h
+//---------------------------------------------------------------------------------
+// 
+// An AssetServer responsible for handling loading of all
+// obj/textures/shader files in the game
+//
 #pragma once
+
 #include <unordered_map>
 #include <set>
+
 #include "Assets.h"
 #include "BlingPhong.h"
 #include "Material.h"
@@ -9,10 +18,6 @@
 #include "ToonShaderSIMD.h"
 #include "UnlitSIMD.h"
 
-/*
- * /brief An AssetServer is responsible for handling loading of all
- *       obj/textures/shader files in the game
- */
 class AssetServer
 {
 protected:
@@ -22,13 +27,22 @@ public:
     AssetServer(AssetServer& other) = delete;
     void operator=(const AssetServer&) = delete;
 
+    /**
+     * \brief The Asset Server is A Global Singleton that is instantiated only once
+     *        GetInstance retrieves this Object
+     * \return 
+     */
     static AssetServer& GetInstance()
     {
         static AssetServer instance;
         return instance;
     }
 
-
+    /**
+     * \brief Clears the loaded geometry and loads geometry and associated
+     *        textures from the AssetList
+     * \param AssetList Specify which assets loaded
+     */
     void LoadLevelAssets(const std::set<ObjAsset>& AssetList)
     {
         // clear previous loaded assets
@@ -43,6 +57,14 @@ public:
         }
     }
 
+    /**
+     * \brief Given a texture ID returns a material
+     *        When a we load a vertex every Vertex is given a texID correspond
+     *        to material it belongs to this method is used to retrieve it
+     *        when we Fragment Shade
+     * \param texID 
+     * \return 
+     */
     Material& GetMaterial(int texID)
     {
         assert(texID <= textureList.size() && "texID does not exist");
@@ -53,11 +75,23 @@ public:
         return textureList[texID];
     }
 
+    /**
+     * \brief Returns a Shader given a shaderID 
+     * \param shaderID
+     * \return
+     */
     SIMDShader* GetShader(ShaderAsset shaderID)
     {
         return LookUpShader(shaderID);
     }
 
+    /**
+     * \brief Returns a Mesh Obj given its ID
+     *        NOTE: this objID must be loaded with LoadLevelAssets
+     *              or else it will throw an error
+     * \param shaderID
+     * \return
+     */
     MeshInstance& GetObj(ObjAsset objID)
     {
         assert(assets.find(objID) != assets.end() && "Obj Not Loaded");

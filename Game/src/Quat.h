@@ -1,3 +1,9 @@
+//---------------------------------------------------------------------------------
+// Quat.h
+//---------------------------------------------------------------------------------
+//
+// Basic Implementation of a Quaternion
+//
 #pragma once
 #include "Vec3.h"
 #include "Mat3.h"
@@ -22,9 +28,7 @@ public:
     Vec3 RotatePoint(const Vec3& rhs) const;
     Mat3 RotateMatrix(const Mat3& rhs) const;
     void GetEulerAngles(float& roll, float& pitch, float& yaw) const;
-
     Vec3 xyz() const { return Vec3(X, Y, Z); }
-    bool IsValid() const;
     Mat3 ToMat3() const;
     Vec4 ToVec4() const { return Vec4(W, X, Y, Z); }
     static Quat FromRotationMatrix(Mat3& m);

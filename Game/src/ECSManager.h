@@ -1,26 +1,56 @@
+//---------------------------------------------------------------------------------
+// ECSManager.h
+//---------------------------------------------------------------------------------
+// 
+// The ECSManager is the interface with which the Developer Interfaces
+// with the ECS System it manages the global state of the game
+// ECS stands for Entity Component System,
+// Broadly speaking:
+//   - Entities are containers for Components
+//   - Components are data class
+//   - Systems act on the Components
+//
+// The ECS System implementation currently allows for the addition
+// of resources which are globally unique entities that are instantiate once
+// per game 
+//
 #pragma once
+
+#include <memory>
+#include <set>
+
 #include "ComponentManager.h"
 #include "EntityManager.h"
 #include "VisitorManager.h"
 #include "Entity.h"
-#include <memory>
-#include <set>
-
 #include "Resource.h"
 
 class ECSManager
 {
 public:
 
+    /**
+     * \brief Initialized all subcomponents of the ECS system
+     */
     void Init()
     {
         // Create pointers to each manager
         m_ComponentManager = std::make_shared<ComponentManager>();
         m_EntityManager = std::make_shared<EntityManager>();
         m_VisitorManager = std::make_shared<VisitorManager>();
-
     }
 
+    /**
+     * \brief Meant for internal use flushes deleted Entity list
+     */
+    void FlushECS()
+    {
+        m_VisitorManager->FlushDeletedEntities();
+    }
+
+    /**
+     * \brief Resets the ECS System by clearing everything
+     */
     void Reset()
     {
         m_ComponentManager->Clear();
@@ -33,13 +63,20 @@ public:
     }
 
 
-    // Entity methods
+    /**
+     * \brief Creates an Entity in the ECS System
+     * \return an Entity ID
+     */
     Entity CreateEntity()
     {
         return m_EntityManager->CreateEntity();
     }
 
-
+    /**
+     * \brief Visit all entities that hold a particular Ts Components
+     * \tparam Ts Component Types the entities have
+     * \return all Entity that hold Ts data types 
+     */
     template <typename... Ts>
     std::set<Entity> Visit()
     {
@@ -56,28 +93,47 @@ public:
     }
 
 
+    /**
+     * \brief Visit all entities that hold a particular set of Entity
+     *        that were deleted by other Systems in this game loop
+     *
+     * \tparam Ts Component Types to Visit
+     * \return All Entity that hold Ts data types that were deleted by
+     *         other systems
+     */
+    template <typename... Ts>
+    std::set<Entity> VisitDeleted()
+    {
+        std::shared_ptr<Visitor<Ts...>> v;
+        if (IsVisitorRegistered<Visitor<Ts...>>())
+        {
+            v = GetVisitor<Visitor<Ts...>>();
+        }
+        else
+        {
+            v = RegisterVisitor<Visitor<Ts...>>();
+        }
+
+        return v->m_DeletedEntities;
+    }
+
+
+    /**
+     * \brief Remove the Entity from the ECS System
+     */
     void DestroyEntity(Entity entity)
     {
+        auto signature = m_EntityManager->GetSignature(entity);
+        m_VisitorManager->EntityDeleted(entity, signature);
         m_EntityManager->DestroyEntity(entity);
-
         m_ComponentManager->EntityDestroyed(entity);
-
         m_VisitorManager->EntityDestroyed(entity);
     }
 
-    template <typename T>
-    bool IsVisitorRegistered() const
-    {
-        return m_VisitorManager->IsVisitorRegistered<T>();
-    }
 
-    template <typename T>
-    std::shared_ptr<T> GetVisitor()
-    {
-        return m_VisitorManager->GetVisitor<T>();
-    }
-
-
+    /**
+     * \brief Add Component T to Entity
+     */
     template <typename T>
     void AddComponent(Entity entity, T component)
     {
@@ -90,37 +146,42 @@ public:
         m_VisitorManager->EntitySignatureChanged(entity, signature);
     }
 
-
+    /**
+     * \brief Remove Component T from Entity
+     */
     template <typename T>
     void RemoveComponent(Entity entity)
     {
         m_ComponentManager->RemoveComponent<T>(entity);
-
         auto signature = m_EntityManager->GetSignature(entity);
+        m_VisitorManager->EntityDeleted(entity, signature);
         signature.set(m_ComponentManager->GetComponentType<T>(), false);
         m_EntityManager->SetSignature(entity, signature);
-
         m_VisitorManager->EntitySignatureChanged(entity, signature);
     }
 
+    /**
+     * \brief Check if Entity has Component T
+     */
     template <typename T>
     bool HasComponent(Entity entity) const
     {
         return m_ComponentManager->HasComponent<T>(entity);
     }
 
+    /**
+     * \brief GetComponent T from Entity
+     */
     template <typename T>
     T& GetComponent(Entity entity)
     {
         return m_ComponentManager->GetComponent<T>(entity);
     }
 
-    template <typename T>
-    ComponentType GetComponentType()
-    {
-        return m_ComponentManager->GetComponentType<T>();
-    }
-
+    /**
+     * \brief Registered a Resource within the ECS System
+     *        Note you cannot register a resource twice
+     */
     template <typename T>
     void RegisterResource(T resource)
     {
@@ -131,6 +192,9 @@ public:
         m_Resources.push_back(std::make_shared<T>(resource));
     }
 
+    /**
+     * \brief Get a Registered Resource T
+     */
     template <typename T>
     std::shared_ptr<T> GetResource()
     {
@@ -148,6 +212,24 @@ public:
     }
 
 private:
+    template <typename T>
+    ComponentTypeID GetComponentType()
+    {
+        return m_ComponentManager->GetComponentType<T>();
+    }
+
+
+    template <typename T>
+    std::shared_ptr<T> GetVisitor()
+    {
+        return m_VisitorManager->GetVisitor<T>();
+    }
+
+    template <typename T>
+    bool IsVisitorRegistered() const
+    {
+        return m_VisitorManager->IsVisitorRegistered<T>();
+    }
 
     // Component methods
     template <typename T>

@@ -1,3 +1,9 @@
+//---------------------------------------------------------------------------------
+// Mat3.h
+//---------------------------------------------------------------------------------
+//
+// Basic Implementation of a 3d Matrix
+//
 #pragma once
 #include "Vec3.h"
 #include "Mat2.h"
@@ -33,6 +39,7 @@ public:
     Vec3 operator[](const int i) const;
     Vec3& operator[](const int i);
 
+    /// Converts a Rotation Matrix to a Quaternion
     static Mat3 FromQuat(const Quat& q);
 
     Vec3 Rows[3];

@@ -1,4 +1,11 @@
+//---------------------------------------------------------------------------------
+// DepthBuffer.h
+//---------------------------------------------------------------------------------
+//
+// The DepthBuffer is used to store all depth information during rasterization
+//
 #pragma once
+
 #include <cassert>
 #include <vector>
 

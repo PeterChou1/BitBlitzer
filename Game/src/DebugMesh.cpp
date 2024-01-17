@@ -14,7 +14,7 @@ void DebugMesh::Update(float deltaTime)
 
     std::vector<Entity> entities;
 
-    for (auto e : ECS.Visit<RigidBody, Transform>())
+    for (auto e : ECS.Visit<Mesh, Transform>())
     {
         entities.push_back(e);
     }
@@ -22,23 +22,17 @@ void DebugMesh::Update(float deltaTime)
     if (!entities.empty())
     {
 
-        Entity first = entities.back();
+        Entity last = entities.back();
 
-        //auto& meshFirst = ECS.GetComponent<Mesh>(first);
-        auto& transformFirst = ECS.GetComponent<Transform>(first);
-
+        auto& transformFirst = ECS.GetComponent<Transform>(last);
         float speed = 1.0f * (deltaTime / 1000.0f);
 
-        
+        if (App::IsKeyPressed('Z'))
+        {
+            ECS.DestroyEntity(last);
+        }
 
-        //rot *= (deltaTime / 100.0f);
 
-        //if (App::IsKeyPressed('Z'))
-        //{
-        //    // delete the first
-        //    // entities
-        //    meshFirst.markedForDeletion = true;
-        //}
         if (App::IsKeyPressed('R'))
         {
             Quat rot = Quat(Vec3(0, 0, 1.0), 1.0 * (deltaTime / 1000.0f));

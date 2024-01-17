@@ -1,15 +1,25 @@
+//---------------------------------------------------------------------------------
+// SIMD.h
+//---------------------------------------------------------------------------------
+//
+// Wrapper class for all SIMD (AVX2) operations because intel intrinsics look very ugly
+// If your processor does not support AVX2 please uncomment #define SIMD_AVAILABLE below
+//
 #pragma once
+
 #include <immintrin.h>
-#include "Vec2.h"
-#include "Vec3.h"
 #include <cmath>
 
-// -- uncomment this if your processor does not support AVX2 --
-#define SIMD
+#include "Vec2.h"
+#include "Vec3.h"
 
-#ifdef SIMD
+// -- uncomment this if your processor does not support AVX2 --
+#define SIMD_AVAILABLE
+
+#ifdef SIMD_AVAILABLE
+
 /*
-* /brief Float based on avx2
+* /brief Float based on avx2 wraps around 8 pixels
 */
 class SIMDFloat
 {
@@ -458,30 +468,46 @@ namespace SIMD
     static SIMDFloat ONE = 1.0;
     static SIMDFloat ZERO = 0.0;
 
-#ifdef SIMD 
+#ifdef SIMD_AVAILABLE
+    /**
+     * \brief Return true if all 8 floats are true
+     */
     inline bool All(const SIMDFloat& rhs)
     {
         return _mm256_movemask_ps(rhs.AVX256) == 255;
-    };
+    }
 
+    /**
+     * \brief Return true if any 8 floats are true
+     */
     inline bool Any(const SIMDFloat& rhs)
     {
         return _mm256_movemask_ps(rhs.AVX256) != 0x0;
     };
 
-    // if mask bit == 0 than A bit will be chosen
-    // if mask bit == 1 than B bit will be chosen
+    /**
+     * \brief Selects A or B based on Mask
+     *        if mask[i] == 1 then B is selected
+     *        if mask[i] == 0 then A is selected
+     */
     inline SIMDFloat Select(const SIMDFloat& mask, SIMDFloat& a, SIMDFloat& b)
     {
         return _mm256_blendv_ps(a.AVX256, b.AVX256, mask.AVX256);
     }
 
-    // get max between a and b
+    /**
+     * \brief Get max from both A and B
+     * \return Combined SIMDFloat with larger members from one of two floats
+     */
     inline SIMDFloat Max(SIMDFloat a, SIMDFloat b)
     {
         return Select(a > b, b, a);
     }
 
+    /**
+     * \brief Get max from both A and B
+     * \return Combined SIMDFloat with larger members from one of two floats
+     */
     inline SIMDFloat Min(SIMDFloat a, SIMDFloat b)
     {
         return Select(a > b, a, b);
@@ -536,8 +562,10 @@ namespace SIMD
     }
 
 #endif
-    // clamp c between a and b
-    // require: a < b
+    /**
+     * \brief Clamp c between a and b
+     *        a < b
+     */
     inline SIMDFloat Clamp(SIMDFloat a, SIMDFloat b, SIMDFloat c)
     {
         return Min(b, Max(a, c));

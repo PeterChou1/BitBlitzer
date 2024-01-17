@@ -1,7 +1,13 @@
+//---------------------------------------------------------------------------------
+// Clipper.h
+//---------------------------------------------------------------------------------
+// Multi-threaded Clipper that runs on all cores of the machine
+// Clips the triangle and outputs the clipped Triangle to raster space
+// See: https://chaosinmotion.com/2016/05/22/3d-clipping-in-homogeneous-coordinates/
+//
 #pragma once
-#include <cstdint>
+
 #include <memory>
-#include <vector>
 
 #include "Camera.h"
 #include "ClippedTriangleBuffer.h"

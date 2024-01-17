@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
 #include <cmath>
-#include "Rasterizer.h"
 
+#include "Rasterizer.h"
 #include "Concurrent.h"
 #include "ECSManager.h"
 #include "SIMDTriangle.h"

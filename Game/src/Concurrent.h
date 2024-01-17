@@ -1,3 +1,10 @@
+//---------------------------------------------------------------------------------
+// Concurrent.h
+//---------------------------------------------------------------------------------
+//
+// Multithreading wrapper classes since c++14 doesn't have std::execution::parallel_policy
+//
+
 #pragma once
 #include <functional>
 #include <algorithm>
@@ -10,6 +17,7 @@
 
 // comment this if you do not want multithreading
 #define PARALLEL
+
 
 class ThreadPool {
 public:

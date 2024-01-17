@@ -1,10 +1,19 @@
+//---------------------------------------------------------------------------------
+// VisitorManager.h
+//---------------------------------------------------------------------------------
+//
+// Manages All Visitor In the ECS System See Visitor.h for more information
+// This class maps every Visitor to an Entity Signature that it is keeping track of
+//
 #pragma once
-#include "Entity.h"
-#include "Visitor.h"
+
 #include <cassert>
 #include <memory>
 #include <unordered_map>
 #include <type_traits>
+
+#include "Entity.h"
+#include "Visitor.h"
 
 class VisitorManager
 {
@@ -36,11 +45,10 @@ public:
 
         assert(m_Visitor.find(typeName) == m_Visitor.end() && "Registering system more than once.");
 
-        // Create a pointer to the system and return it so it can be used externally
-        auto system = std::make_shared<T>();
+        auto visitor = std::make_shared<T>();
 
-        m_Visitor.insert({typeName, system});
-        return system;
+        m_Visitor.insert({typeName, visitor });
+        return visitor;
     }
 
     template <typename T>
@@ -56,34 +64,52 @@ public:
 
     void EntityDestroyed(Entity entity)
     {
-        // Erase a destroyed entity from all system lists
-        // mEntities is a set so no check needed
         for (auto const& pair : m_Visitor)
         {
-            auto const& system = pair.second;
+            auto const& visitor = pair.second;
+            visitor->m_Entities.erase(entity);
+        }
+    }
 
-            system->m_Entities.erase(entity);
+    void EntityDeleted(Entity entity, Signature entitySignature)
+    {
+        for (auto const& pair : m_Visitor)
+        {
+            auto const& type = pair.first;
+            auto const& visitor = pair.second;
+            auto const& systemSignature = m_Signatures[type];
+
+            if ((entitySignature & systemSignature) == systemSignature)
+            {
+                visitor->m_DeletedEntities.insert(entity);
+            }
+        }
+    }
+
+    void FlushDeletedEntities()
+    {
+        for (auto const& pair : m_Visitor)
+        {
+            auto const& visitor = pair.second;
+            visitor->m_DeletedEntities.clear();
         }
     }
 
     void EntitySignatureChanged(Entity entity, Signature entitySignature)
     {
-        // Notify each system that an entity's signature changed
         for (auto const& pair : m_Visitor)
         {
             auto const& type = pair.first;
-            auto const& system = pair.second;
+            auto const& visitor = pair.second;
             auto const& systemSignature = m_Signatures[type];
 
-            // Entity signature matches system signature - insert into set
             if ((entitySignature & systemSignature) == systemSignature)
             {
-                system->m_Entities.insert(entity);
+                visitor->m_Entities.insert(entity);
             }
-            // Entity signature does not match system signature - erase from set
             else
             {
-                system->m_Entities.erase(entity);
+                visitor->m_Entities.erase(entity);
             }
         }
     }
@@ -96,9 +122,9 @@ public:
     }
 
 private:
-    // Map from system type string pointer to a signature
+    // Map from type string pointer to a signature
     std::unordered_map<const char*, Signature> m_Signatures{};
 
-    // Map from system type string pointer to a system pointer
+    // Map from type string pointer to a Visitor
     std::unordered_map<const char*, std::shared_ptr<VisitorBase>> m_Visitor{};
 };

@@ -1,3 +1,10 @@
+//---------------------------------------------------------------------------------
+// GameManager.h
+//---------------------------------------------------------------------------------
+//
+// Manages All Scenes in the Game as well as Systems/Resources
+// Common to all scenes such as the Render and Physics System
+// 
 #pragma once
 #include "stdafx.h"
 
@@ -13,10 +20,6 @@
 #include "Rasterizer.h"
 #include "VertexShader.h"
 
-/**
- * \brief The game manager is responsible for managing all game scenes
- *        loading/unloading scene as well as handling the rendering pipeline
- */
 class GameManager
 {
 public:

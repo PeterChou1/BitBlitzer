@@ -1,3 +1,11 @@
+//---------------------------------------------------------------------------------
+// Tile.h
+//---------------------------------------------------------------------------------
+//
+// Tile is used to segment the display so to allow multi-threaded rendering
+// every core is assigned a tile so the rendering pipeline can remain lock free
+// and not worry about data races
+//
 #pragma once
 
 #include <thread>

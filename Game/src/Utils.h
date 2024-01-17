@@ -1,5 +1,12 @@
+//---------------------------------------------------------------------------------
+// Utils.h
+//---------------------------------------------------------------------------------
+//
+// Implements a couple of useful utility functions
+//
 #pragma once
 #include <string>
+#include <unordered_map>
 
 #include "MeshInstance.h"
 #include "Entity.h"

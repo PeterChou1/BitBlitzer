@@ -1,3 +1,10 @@
+//---------------------------------------------------------------------------------
+// Collision.h
+//---------------------------------------------------------------------------------
+//
+// Implements Collision routines for all the shapes in the physics system
+//
+
 #pragma once
 #include "Manifolds.h"
 #include "RigidBody.h"

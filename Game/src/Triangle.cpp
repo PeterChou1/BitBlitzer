@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "Triangle.h"
 
 void Triangle::PerspectiveDivision()

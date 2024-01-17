@@ -1,10 +1,11 @@
 #include "stdafx.h"
-#include "Utils.h"
+
 #include <fstream>
-#include <iostream>
 #include <unordered_map>
 #include <sstream>
 #include <vector>
+
+#include "Utils.h"
 #include "Triangle.h"
 
 

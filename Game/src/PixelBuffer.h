@@ -1,4 +1,13 @@
+//---------------------------------------------------------------------------------
+// PixelBuffer.h
+//---------------------------------------------------------------------------------
+//
+// The Pixel Buffer stores all pixels rasterized during the rasterization stage of the
+// pipeline at the end of rasterization the pixels are compared against the depth
+// buffer for filtering 
+//
 #pragma once
+
 #include <vector>
 
 #include "Resource.h"
@@ -24,8 +33,8 @@ public:
     }
 
     /**
-     * \brief Once pixel has been rasterized accumulate the pixel so we can distribute the pixels evenly across threads
-     * \param depth
+     * \brief Once pixel has been rasterized accumulate the pixel
+     *        so we can distribute the pixels evenly across threads
      */
     void AccumulatePixel(const DepthBuffer& depth)
     {

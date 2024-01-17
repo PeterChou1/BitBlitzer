@@ -1,6 +1,14 @@
+//---------------------------------------------------------------------------------
+// ColorBuffer.h
+//---------------------------------------------------------------------------------
+//
+// The ColorBuffer is used to store all the pixel that the fragment shader outputs
+//
 #pragma once
+
 #include <vector>
 #include <cassert>
+
 #include "Concurrent.h"
 #include "Resource.h"
 
@@ -11,7 +19,6 @@ public:
 
     ColorBuffer(int width, int height) : m_Height(height), m_Width(width)
     {
-        // RBG
         m_Buffer.resize((width + 1) * (height + 1) * 3);
     }
 

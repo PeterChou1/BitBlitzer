@@ -1,11 +1,10 @@
 #include "stdafx.h"
-#include "../stb_image/stb_image.h"
-#include "Material.h"
-#include <utility>
+
 #include <cassert>
 #include <iostream>
-#include "Material.h"
 
+#include "../stb_image/stb_image.h"
+#include "Material.h"
 
 // Custom deleter function for stbi_image_free
 struct STBImageDeleter

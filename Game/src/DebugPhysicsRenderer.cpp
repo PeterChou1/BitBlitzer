@@ -128,12 +128,12 @@ void DebugPhysicsRenderer::Update(float deltaTime)
             App::GetMousePos(x, y);
             Vec3 planePoint = Vec3(0, 0, 5);
             Vec3 planeNormal = Vec3(0, 0, -1);
-            Vec3 point = m_Cam->RasterSpaceToWorldPoint(x, y, planePoint, planeNormal);
+            Vec3 point = m_Cam->ScreenSpaceToWorldPoint(x, y, planePoint, planeNormal);
             Entity meshEntity = ECS.CreateEntity();
             auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
             ECS.AddComponent<Transform>(meshEntity, modelTransform);
             ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f));
-            //ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
+            ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
             accumulate = 0.0f;
         }
 
@@ -143,12 +143,12 @@ void DebugPhysicsRenderer::Update(float deltaTime)
             App::GetMousePos(x, y);
             Vec3 planePoint = Vec3(0, 0, 5);
             Vec3 planeNormal = Vec3(0, 0, -1);
-            Vec3 point = m_Cam->RasterSpaceToWorldPoint(x, y, planePoint, planeNormal);
+            Vec3 point = m_Cam->ScreenSpaceToWorldPoint(x, y, planePoint, planeNormal);
             Entity meshEntity = ECS.CreateEntity();
             auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
             ECS.AddComponent<Transform>(meshEntity, modelTransform);
             ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f, 1.0f));
-            //ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
+            ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
             accumulate = 0.0f;
         }
 

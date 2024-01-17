@@ -1,10 +1,14 @@
+//---------------------------------------------------------------------------------
+// SIMDPixel.h
+//---------------------------------------------------------------------------------
+//
+// SIMDPixel is a wrapper class around sets of 8 pixels
+//
 #pragma once
 #include "SIMD.h"
 #include "Triangle.h"
 
-/*
-* /brief sets of 8 pixels (4 x 2)
-*/
+
 class SIMDPixel
 {
 public:

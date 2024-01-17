@@ -143,6 +143,8 @@ float Mat4::Cofactor(const int i, const int j) const
     return C;
 }
 
+/// Code Based on:
+/// Based on https://www.scratchapixel.com/lessons/3d-basic-rendering/perspective-and-orthographic-projection-matrix/opengl-perspective-projection-matrix.html
 void Mat4::PerspectiveOpenGL(float fovy, float aspect_ratio, float near, float far)
 {
     const float pi = acosf(-1.0f);

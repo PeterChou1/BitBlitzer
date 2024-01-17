@@ -1,11 +1,24 @@
 #include "stdafx.h"
 #include <cassert>
-#include "Clipper.h"
 
+#include "Clipper.h"
 #include "Concurrent.h"
 #include "ECSManager.h"
-#include "Point.h"
 #include "Triangle.h"
+
+struct Point
+{
+    Vec4 position{};
+    Vec3 weights{};
+
+    Point()
+    {
+    }
+
+    Point(const Vec4& point, const Vec3& weights) : position(point), weights(weights)
+    {
+    }
+};
 
 constexpr uint8_t LEFT_PLANE = 1 << 0, RIGHT_PLANE = 1 << 1, DOWN_PLANE = 1 << 2, UP_PLANE = 1 << 3, NEAR_PLANE = 1 << 4, FAR_PLANE = 1 << 5;
 

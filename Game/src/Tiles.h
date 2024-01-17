@@ -1,3 +1,9 @@
+//---------------------------------------------------------------------------------
+// Tiles.h
+//---------------------------------------------------------------------------------
+//
+// Container classes for all tiles see Tile.h for more information
+//
 #pragma once
 #include "Resource.h"
 #include "Tile.h"

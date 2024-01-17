@@ -1,4 +1,11 @@
+//---------------------------------------------------------------------------------
+// PhysicsSystem.h
+//---------------------------------------------------------------------------------
+//
+// Implements the Physics Pipeline and main class for simulating RigidBody Physics
+//
 #pragma once
+
 #include <vector>
 
 #include "RigidBody.h"

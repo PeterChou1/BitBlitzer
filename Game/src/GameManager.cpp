@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "GameManager.h"
 #include "ECSManager.h"
 #include "IndexBuffer.h"
@@ -43,7 +44,6 @@ void GameManager::Setup()
     m_MeshHandler = std::make_unique<MeshHandler>(MeshHandler());
     m_PhysicsSystem = std::make_unique<PhysicsSystem>(PhysicsSystem());
     m_DebugPhysicsRender = std::make_unique<DebugPhysicsRenderer>(DebugPhysicsRenderer());
-
     scene.Setup();
 }
 

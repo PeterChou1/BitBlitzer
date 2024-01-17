@@ -1,4 +1,12 @@
+//---------------------------------------------------------------------------------
+// MeshHandler.h
+//---------------------------------------------------------------------------------
+//
+// Handles all meshes information in the rendering system
+// responsible for adding deleting meshes/updating shaders for a mesh
+//
 #pragma once
+
 #include <memory>
 
 #include "IndexBuffer.h"

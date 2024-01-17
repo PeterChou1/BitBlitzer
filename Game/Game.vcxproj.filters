@@ -231,9 +231,6 @@
     <ClInclude Include="src\Vertex.h">
       <Filter>src\Graphics</Filter>
     </ClInclude>
-    <ClInclude Include="src\Point.h">
-      <Filter>src\Graphics</Filter>
-    </ClInclude>
     <ClInclude Include="src\Triangle.h">
       <Filter>src\Graphics</Filter>
     </ClInclude>

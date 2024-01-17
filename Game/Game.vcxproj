@@ -214,7 +214,6 @@
     <ClInclude Include="src\AssetServer.h" />
     <ClInclude Include="src\Lights.h" />
     <ClInclude Include="src\Mesh.h" />
-    <ClInclude Include="src\Point.h" />
     <ClInclude Include="src\SIMDShader.h" />
     <ClInclude Include="src\SIMDPixel.h" />
     <ClInclude Include="src\SIMD.h" />

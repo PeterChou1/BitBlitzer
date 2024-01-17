@@ -1,4 +1,12 @@
+//---------------------------------------------------------------------------------
+// TypeID.h
+//---------------------------------------------------------------------------------
+// 
+// TypeID are a way generating a unique value per component registered in the
+// ECS System
+//
 #pragma once
+
 #include "Entity.h"
 
 template<typename T>
