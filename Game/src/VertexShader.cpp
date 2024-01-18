@@ -17,6 +17,6 @@ void VertexShader::Shade()
     auto& buffer = m_VertexBuffer->Buffer;
     Concurrent::ForEach(buffer.begin(), buffer.end(), [&](Vertex& v)
     {
-        v.proj = m_cam->Proj * Vec4(m_cam->WorldToCamera(v.pos));
+        v.Projection = m_cam->Proj * Vec4(m_cam->WorldToCamera(v.Position));
     });
 }

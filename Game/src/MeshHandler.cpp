@@ -14,6 +14,7 @@ MeshHandler::MeshHandler()
     m_RenderConstants = ECS.GetResource<RenderConstants>();
     m_VertexBuffer = ECS.GetResource<VertexBuffer>();
     m_IndexBuffer = ECS.GetResource<IndexBuffer>();
+
 }
 
 void MeshHandler::Update()
@@ -49,7 +50,6 @@ void MeshHandler::Update()
         {
             UpdateMeshShader(e, shaderID);
         }
-
     }
 
     for (const auto e : ECS.VisitDeleted<Transform, Mesh>())
@@ -146,8 +146,8 @@ void MeshHandler::UpdateMeshTransform(Entity entity, Transform& transform)
     auto end = m_VertexBuffer->Buffer.begin() + range.second;
     std::for_each(begin, end, [&](Vertex& v)
     {
-        v.pos = transform.TransformVec3(v.localPosition);
-        v.normal = transform.TransformNormal(v.localNormal);
+        v.Position = transform.TransformVec3(v.LocalPosition);
+        v.Normal = transform.TransformNormal(v.LocalNormal);
     });
     transform.IsDirty = false;
 }
@@ -159,7 +159,7 @@ void MeshHandler::UpdateMeshShader(Entity entity, ShaderAsset shaderID)
     auto end = m_VertexBuffer->Buffer.begin() + range.second;
     std::for_each(begin, end, [&](Vertex& v)
     {
-        v.shader_id = shaderID;
+        v.ShaderID = shaderID;
     });
 
 }
@@ -182,7 +182,7 @@ void MeshHandler::AddMesh(Entity entity, Mesh mesh, Transform& transform, Shader
 
     for (auto& vertex : instance.vertices)
     {
-        vertex.shader_id = shaderID;
+        vertex.ShaderID = shaderID;
         m_VertexBuffer->Buffer.push_back(vertex);
     }
     for (const auto id : instance.indices)

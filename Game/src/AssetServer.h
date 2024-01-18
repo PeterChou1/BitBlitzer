@@ -59,7 +59,7 @@ public:
 
     /**
      * \brief Given a texture ID returns a material
-     *        When a we load a vertex every Vertex is given a texID correspond
+     *        When we load a vertex every Vertex is given a texID corresponding
      *        to material it belongs to this method is used to retrieve it
      *        when we Fragment Shade
      * \param texID 

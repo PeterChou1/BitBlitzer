@@ -41,6 +41,27 @@ Material::Material(const char* fileName,
     assert(texLoaded && "Failed to Load Material");
 }
 
+void Material::LoadMaterial(const char* fileName)
+{
+    if (hasTexture)
+    {
+        texture.reset();
+    }
+    const bool texLoaded = LoadTexture(fileName);
+    assert(texLoaded && "Failed to Load Material");
+}
+
+void Material::ResetMaterial()
+{
+    if (hasTexture)
+    {
+        texture.reset();
+        hasTexture = false;
+    }
+    diffuse = Vec3(0.0f, 0.0f, 0.0f);
+    ambient = Vec3(0.0f, 0.0f, 0.0f);
+    specular = Vec3(0.0f, 0.0f, 0.0f);
+}
 
 void Material::SampleSIMD(SIMDVec2& tex, SIMDFloat& r, SIMDFloat& g, SIMDFloat& b) const
 {

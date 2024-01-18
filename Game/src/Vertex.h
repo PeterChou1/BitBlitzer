@@ -2,7 +2,7 @@
 // Vertex.h
 //---------------------------------------------------------------------------------
 // 
-// A Vertex loaded in an obj file
+// A Vertex loaded from an obj file contains normals, position, UV coordinates
 //
 #pragma once
 
@@ -13,65 +13,74 @@
 #include "Vec4.h"
 #include "Assets.h"
 
+enum CubeMapFaces
+{
+    None,
+    Back,
+    Bottom,
+    Front,
+    Left,
+    Right,
+    Top
+};
+
 struct Vertex
 {
+    CubeMapFaces cubeMapID = None;
     // Shader ID of this vertex
-    ShaderAsset shader_id{};
+    ShaderAsset ShaderID{};
     // texture ID of the texture that shade this vertex
-    int tex_id{};
-    Vec3 color{};
+    int TextureID{};
+    Vec3 Color{};
     // texture uv
-    Vec2 uv{};
-    // local data
-    Vec3 localPosition;
-    Vec3 localNormal;
-    // world space data
-    Vec3 pos{};
-    // vertex normal
-    Vec3 normal{};
+    Vec2 UV{};
+    // vertex in local space
+    Vec3 LocalPosition;
+    Vec3 LocalNormal;
+    // vertex in world space
+    Vec3 Position{};
+    Vec3 Normal{};
     // 4d homogenous coordinates output by vertex shader 
-    Vec4 proj{};
+    Vec4 Projection{};
     // inverse w used for perspective corrected interpolation
-    float invW{};
+    float InverseW{};
 
-    Vertex()
+    Vertex() = default;
+
+    Vertex(const Vec3& pos) : Position(pos)
     {
     }
 
-    Vertex(Vec3& pos) : pos(pos)
+    Vertex(const Vec3& pos, const Vec2& tex) : UV(tex), Position(pos)
     {
     }
 
-    Vertex(Vec3& pos, Vec2& tex) : pos(pos), uv(tex)
-    {
-    }
-
-    Vertex(Vec3& pos, Vec3& normal, Vec2& tex) : uv(tex), pos(pos), normal(normal)
+    Vertex(const Vec3& pos, const Vec3& normal, const Vec2& tex) : UV(tex), Position(pos), Normal(normal)
     {
     }
 
     // used as a hashing function for when we're loading obj files
     std::string ToString()
     {
-        return "{" + std::to_string(tex_id) + 
-                     localPosition.ToString() + 
-                     localNormal.ToString() + 
-                     uv.ToString() + "}" ;
+        return "{" + std::to_string(TextureID) + 
+                     LocalPosition.ToString() + 
+                     LocalNormal.ToString() + 
+                     UV.ToString() + "}" ;
     }
 
     void PerspectiveDivision()
     {
-        invW = 1 / proj.W;
-        proj *= invW;
-        uv *= invW;
+        InverseW = 1 / Projection.W;
+        Projection *= InverseW;
+        UV *= InverseW;
     }
 
-    Vertex operator*(float t) const
+    Vertex operator*(const float t) const
     {
         auto copy = *this;
-        copy.pos *= t;
-        copy.uv *= t;
-        copy.normal *= t;
+        copy.Position *= t;
+        copy.UV *= t;
+        copy.Normal *= t;
         return copy;
     }
 
@@ -80,9 +89,9 @@ struct Vertex
     {
         auto copy = *this;
 
-        copy.pos += v.pos;
-        copy.uv += v.uv;
-        copy.normal += v.normal;
+        copy.Position += v.Position;
+        copy.UV += v.UV;
+        copy.Normal += v.Normal;
 
         return copy;
     }
@@ -90,7 +99,7 @@ struct Vertex
 
     bool operator==(const Vertex& rhs) const
     {
-        return uv == rhs.uv && normal == rhs.normal &&
-            pos == rhs.pos && invW == rhs.invW && tex_id == rhs.tex_id;
+        return UV == rhs.UV && Normal == rhs.Normal &&
+            Position == rhs.Position && InverseW == rhs.InverseW && TextureID == rhs.TextureID;
     }
 };

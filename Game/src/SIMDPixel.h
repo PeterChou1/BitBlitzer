@@ -27,15 +27,15 @@ public:
      */
     void Interpolate(Triangle& t)
     {
-        auto t1 = SIMDVec2(t.verts[0].uv);
-        auto t2 = SIMDVec2(t.verts[1].uv);
-        auto t3 = SIMDVec2(t.verts[2].uv);
-        auto n1 = SIMDVec3(t.verts[0].normal);
-        auto n2 = SIMDVec3(t.verts[1].normal);
-        auto n3 = SIMDVec3(t.verts[2].normal);
-        auto p1 = SIMDVec3(t.verts[0].pos);
-        auto p2 = SIMDVec3(t.verts[1].pos);
-        auto p3 = SIMDVec3(t.verts[2].pos);
+        auto t1 = SIMDVec2(t.verts[0].UV);
+        auto t2 = SIMDVec2(t.verts[1].UV);
+        auto t3 = SIMDVec2(t.verts[2].UV);
+        auto n1 = SIMDVec3(t.verts[0].Normal);
+        auto n2 = SIMDVec3(t.verts[1].Normal);
+        auto n3 = SIMDVec3(t.verts[2].Normal);
+        auto p1 = SIMDVec3(t.verts[0].Position);
+        auto p2 = SIMDVec3(t.verts[1].Position);
+        auto p3 = SIMDVec3(t.verts[2].Position);
 
         TextureCoord = (t1 * Alpha + t2 * Beta + t3 * Gamma) / Depth;
         Normal = (n1 * Alpha + n2 * Beta + n3 * Gamma) / Depth;

@@ -24,10 +24,10 @@ void RenderAABB(std::vector<Vertex>& vertexBuffer,
     Vertex bottomRight = bR;
     Vertex bottomLeft = bL;
 
-    topRight.color = color;
-    topLeft.color = color;
-    bottomRight.color = color;
-    bottomLeft.color = color;
+    topRight.Color = color;
+    topLeft.Color = color;
+    bottomRight.Color = color;
+    bottomLeft.Color = color;
 
     // -- push back top right line --
     vertexBuffer.push_back(topRight);
@@ -64,8 +64,8 @@ void RenderCircle(std::vector<Vertex>& vertexBuffer, int radius, Vec2 pos, Vec3 
         Vertex p1 = point1;
         Vertex p2 = point2;
 
-        p1.color = color;
-        p2.color = color;
+        p1.Color = color;
+        p2.Color = color;
 
         // Transform and add the points to the vertex buffer
         vertexBuffer.push_back(p1);
@@ -94,8 +94,8 @@ void RenderPolygon(
         Vertex vertex1 = Vertex(point1);
         Vertex vertex2 = Vertex(point2);
 
-        vertex1.color = color;
-        vertex2.color = color;
+        vertex1.Color = color;
+        vertex2.Color = color;
 
         vertexBuffer.push_back(vertex1);
         vertexBuffer.push_back(vertex2);
@@ -106,7 +106,7 @@ void RenderPolygon(
     {
         Vec3 point = Vec3(pt.X, pt.Y, 5.0);
         Vertex v = Vertex(point);
-        v.color = Vec3(1.0, 1.0, 1.0);
+        v.Color = Vec3(1.0, 1.0, 1.0);
         vertexBuffer.push_back(v);
     }
 }
@@ -189,7 +189,7 @@ void DebugPhysicsRenderer::Render()
 
     Concurrent::ForEach(debugVertexBuffer.begin(), debugVertexBuffer.end(), [&](Vertex& v)
     {
-        v.proj = m_Cam->Proj * Vec4(m_Cam->WorldToCamera(v.pos));
+        v.Projection = m_Cam->Proj * Vec4(m_Cam->WorldToCamera(v.Position));
     });
 
 
@@ -206,16 +206,16 @@ void DebugPhysicsRenderer::Render()
         start.PerspectiveDivision();
         end.PerspectiveDivision();
 
-        m_Cam->ToRasterSpaceDebug(start.proj);
-        m_Cam->ToRasterSpaceDebug(end.proj);
+        m_Cam->ToRasterSpaceDebug(start.Projection);
+        m_Cam->ToRasterSpaceDebug(end.Projection);
 
-        float startX = start.proj.X;
-        float startY = start.proj.Y;
+        float startX = start.Projection.X;
+        float startY = start.Projection.Y;
 
-        float endX = end.proj.X;
-        float endY = end.proj.Y;
+        float endX = end.Projection.X;
+        float endY = end.Projection.Y;
 
-        Vec3 color = start.color;
+        Vec3 color = start.Color;
 
         App::DrawLine(startX, startY, endX, endY, color.X, color.Y, color.Z);
 
@@ -223,14 +223,14 @@ void DebugPhysicsRenderer::Render()
 
     Concurrent::ForEach(debugPoints.begin(), debugPoints.end(), [&](Vertex& v)
     {
-        v.proj = m_Cam->Proj * Vec4(m_Cam->WorldToCamera(v.pos));
+        v.Projection = m_Cam->Proj * Vec4(m_Cam->WorldToCamera(v.Position));
     });
 
     for (Vertex& v : debugPoints) 
     {
         v.PerspectiveDivision();
-        m_Cam->ToRasterSpaceDebug(v.proj);
-        App::DrawDot(v.proj.X, v.proj.Y, 0.01, 1.0, 0.0, 0.0);
+        m_Cam->ToRasterSpaceDebug(v.Projection);
+        App::DrawDot(v.Projection.X, v.Projection.Y, 0.01, 1.0, 0.0, 0.0);
     }
 
     std::string rSize = "Amount of RigidBodies: " + std::to_string(ECS.Visit<RigidBody>().size());

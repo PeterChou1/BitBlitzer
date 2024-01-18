@@ -33,8 +33,7 @@ void GameManager::Setup()
     ECS.RegisterResource(ColorBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT));
     ECS.RegisterResource(RenderConstants());
 
-
-    // Initialize Render Systems
+    // Initialize Common Systems
     m_VertexShader = std::make_unique<VertexShader>(VertexShader());
     m_Clipper = std::make_unique<Clipper>(Clipper());
     m_Rasterizer = std::make_unique<Rasterizer>(Rasterizer());
@@ -66,7 +65,7 @@ void GameManager::Render()
     m_DebugCamera->Render();
     m_DebugPhysicsRender->Render();
 
-    // Clear Render Pipeline to get ready for next pass
+    // Clear Render Pipeline to get ready for next render pass
     ECS.GetResource<ClippedTriangleBuffer>()->ResetResource();
     ECS.GetResource<Tiles>()->ResetResource();
     ECS.GetResource<DepthBuffer>()->ResetResource();

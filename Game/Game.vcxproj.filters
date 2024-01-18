@@ -348,6 +348,9 @@
     <ClInclude Include="src\Collider.h">
       <Filter>src\Systems\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="src\Cubemap.h">
+      <Filter>src\Resources</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">

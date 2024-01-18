@@ -21,8 +21,8 @@ struct MeshInstance
     {
         for (Vertex& v : vertices)
         {
-            v.pos = t.TransformVec3(v.localPosition);
-            v.normal = t.TransformNormal(v.localNormal);
+            v.Position = t.TransformVec3(v.LocalPosition);
+            v.Normal = t.TransformNormal(v.LocalNormal);
         }
     }
 };

@@ -15,22 +15,37 @@
 class Material
 {
 public:
+
+    Material() = default;
+
     /**
-     * \brief Loads an Material without a texture
+     * \brief Loads a Material without a texture
      */
     Material(Vec3 ambient, Vec3 diffuse, Vec3 specular, float highlight);
 
     /**
-     * \brief Loads a texture from filename + Phong Model terms
+     * \brief Loads a Material with texture + Phong Model terms
      */
     Material(const char* fileName, Vec3 ambient, Vec3 diffuse, Vec3 specular, float highlight);
+
+
+    /**
+     * \brief Load a new texture deleting the old one
+     * \param fileName 
+     */
+    void LoadMaterial(const char* fileName);
+
+    /**
+     * \brief Reset material clearing texture and lighting terms
+     */
+    void ResetMaterial();
 
     /**
      * \brief Samples 8 pixels at once 
      * \param tex UV coordinates of the 8 pixels
-     * \param r
-     * \param g 
-     * \param b 
+     * \param r output red channel
+     * \param g output green channel
+     * \param b output blue channel
      */
     void SampleSIMD(SIMDVec2& tex, SIMDFloat& r, SIMDFloat& g, SIMDFloat& b) const;
 

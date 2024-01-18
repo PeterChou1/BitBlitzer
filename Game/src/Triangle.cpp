@@ -14,12 +14,12 @@ bool Triangle::Setup(int id, int index)
     BinIndex = index;
     BinID = id;
 
-    B0 = static_cast<int>(verts[1].proj.Y - verts[0].proj.Y);
-    C0 = static_cast<int>(verts[1].proj.X - verts[0].proj.X);
-    B1 = static_cast<int>(verts[2].proj.Y - verts[1].proj.Y);
-    C1 = static_cast<int>(verts[2].proj.X - verts[1].proj.X);
-    B2 = static_cast<int>(verts[0].proj.Y - verts[2].proj.Y);
-    C2 = static_cast<int>(verts[0].proj.X - verts[2].proj.X);
+    B0 = static_cast<int>(verts[1].Projection.Y - verts[0].Projection.Y);
+    C0 = static_cast<int>(verts[1].Projection.X - verts[0].Projection.X);
+    B1 = static_cast<int>(verts[2].Projection.Y - verts[1].Projection.Y);
+    C1 = static_cast<int>(verts[2].Projection.X - verts[1].Projection.X);
+    B2 = static_cast<int>(verts[0].Projection.Y - verts[2].Projection.Y);
+    C2 = static_cast<int>(verts[0].Projection.X - verts[2].Projection.X);
 
     const int det = C2 * -B1 + C1 * B2;
 
@@ -45,10 +45,10 @@ bool Triangle::Setup(int id, int index)
     Vec2 edgeNoraml3 = Vec2(-B2, C2);
 
     // set up bounding box
-    maxX = static_cast<int>(std::max<float>(std::max<float>(verts[0].proj.X, verts[1].proj.X), verts[2].proj.X));
-    maxY = static_cast<int>(std::max<float>(std::max<float>(verts[0].proj.Y, verts[1].proj.Y), verts[2].proj.Y));
-    minX = static_cast<int>(std::min<float>(std::min<float>(verts[0].proj.X, verts[1].proj.X), verts[2].proj.X));
-    minY = static_cast<int>(std::min<float>(std::min<float>(verts[0].proj.Y, verts[1].proj.Y), verts[2].proj.Y));
+    maxX = static_cast<int>(std::max<float>(std::max<float>(verts[0].Projection.X, verts[1].Projection.X), verts[2].Projection.X));
+    maxY = static_cast<int>(std::max<float>(std::max<float>(verts[0].Projection.Y, verts[1].Projection.Y), verts[2].Projection.Y));
+    minX = static_cast<int>(std::min<float>(std::min<float>(verts[0].Projection.X, verts[1].Projection.X), verts[2].Projection.X));
+    minY = static_cast<int>(std::min<float>(std::min<float>(verts[0].Projection.Y, verts[1].Projection.Y), verts[2].Projection.Y));
 
 
     if (edgeNormal1.X > 0)

@@ -145,37 +145,37 @@ bool Utils::LoadInstance(std::string filename,
                 }
 
                 int vIndex = std::stoi(vertexIndex) - 1;
-                v.localPosition = temp_vertices[vIndex];
+                v.LocalPosition = temp_vertices[vIndex];
 
                 if (UV && !uvIndex.empty())
                 {
                     int uvIdx = std::stoi(uvIndex) - 1;
-                    v.uv.X = temp_uvs[uvIdx].X;
-                    v.uv.Y = std::abs(temp_uvs[uvIdx].Y - 1);
+                    v.UV.X = temp_uvs[uvIdx].X;
+                    v.UV.Y = std::abs(temp_uvs[uvIdx].Y - 1);
                 }
 
                 if (Normal && !normalIndex.empty())
                 {
                     int nIdx = std::stoi(normalIndex) - 1;
-                    v.localNormal = temp_normals[nIdx];
+                    v.LocalNormal = temp_normals[nIdx];
                 }
             }
 
             if (!Normal)
             {
-                Vec3 lineA = vertarray[0].localPosition - vertarray[1].localPosition;
-                Vec3 lineB = vertarray[0].localPosition - vertarray[2].localPosition;
+                Vec3 lineA = vertarray[0].LocalPosition - vertarray[1].LocalPosition;
+                Vec3 lineB = vertarray[0].LocalPosition - vertarray[2].LocalPosition;
                 Vec3 normal = lineA.Cross(lineB);
                 normal.Normalize();
-                vertarray[0].localNormal = normal;
-                vertarray[1].localNormal = normal;
-                vertarray[2].localNormal = normal;
+                vertarray[0].LocalNormal = normal;
+                vertarray[1].LocalNormal = normal;
+                vertarray[2].LocalNormal = normal;
             }
 
             for (Vertex& v : vertarray)
             {
                 std::string VString = v.ToString();
-                v.tex_id = cur_texID;
+                v.TextureID = cur_texID;
                 if (vertexMap.find(VString) == vertexMap.end())
                 {
                     vertexMap[VString] = mesh.vertices.size();

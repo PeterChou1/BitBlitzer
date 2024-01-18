@@ -192,6 +192,7 @@
     <ClInclude Include="src\ClippedTriangleBuffer.h" />
     <ClInclude Include="src\Collider.h" />
     <ClInclude Include="src\Collision.h" />
+    <ClInclude Include="src\Cubemap.h" />
     <ClInclude Include="src\SAT.h" />
     <ClInclude Include="src\Shape.h" />
     <ClInclude Include="src\DebugPhysicsRenderer.h" />

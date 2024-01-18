@@ -42,12 +42,12 @@ struct Triangle
 
     int GetTextureID() const
     {
-        return verts[0].tex_id;
+        return verts[0].TextureID;
     }
 
     ShaderAsset GetShaderID()
     {
-        return verts[0].shader_id;
+        return verts[0].ShaderID;
     }
 
     void PerspectiveDivision();
@@ -58,17 +58,17 @@ struct Triangle
 
     float EdgeFunc0(Vec2& p) const
     {
-        return B0 * (p.X - verts[0].proj.X) - C0 * (p.Y - verts[0].proj.Y);
+        return B0 * (p.X - verts[0].Projection.X) - C0 * (p.Y - verts[0].Projection.Y);
     }
 
     float EdgeFunc1(Vec2& p) const
     {
-        return B1 * (p.X - verts[1].proj.X) - C1 * (p.Y - verts[1].proj.Y);
+        return B1 * (p.X - verts[1].Projection.X) - C1 * (p.Y - verts[1].Projection.Y);
     }
 
     float EdgeFunc2(Vec2& p) const
     {
-        return B2 * (p.X - verts[2].proj.X) - C2 * (p.Y - verts[2].proj.Y);
+        return B2 * (p.X - verts[2].Projection.X) - C2 * (p.Y - verts[2].Projection.Y);
     }
 
     bool CheckInTriangle(Vec2& point) const;

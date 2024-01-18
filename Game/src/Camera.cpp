@@ -48,7 +48,6 @@ Vec3 Camera::WorldToCamera(const Vec3& point)
     return CamTransform.Inverse * point;
 }
 
-
 /**
  * \brief Helper Function for Ray Casting
  */
@@ -58,7 +57,7 @@ Vec3 RayCastPlane(Vec3 rayPoint, Vec3 rayDirection, Vec3& planePt, Vec3& planeNo
     float dotProduct = planeNormal.Dot(rayDirection);
 
     // Check for zero (or near-zero) dot product, indicating the ray is parallel to the plane
-    if (std::abs(dotProduct) < 1e-6) {
+    if (std::abs(dotProduct) < std::numeric_limits<float>::epsilon()) {
         // No intersection, or line lies within the plane
         return Vec3(0, 0, 0);
     }
