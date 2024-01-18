@@ -13,7 +13,8 @@ enum ObjAsset
     Furina,
     Maze,
     Pinball,
-    Pacman
+    Pacman,
+    Box
 };
 
 // Shaders -> See SIMDShader.h for more details
@@ -21,5 +22,6 @@ enum ShaderAsset
 {
     DefaultShader,
     BlinnPhong,
-    ToonShader
+    ToonShader,
+    UnlitShader
 };

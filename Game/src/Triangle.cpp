@@ -33,6 +33,7 @@ bool Triangle::Setup(int id, int index)
         C2 *= -1;
     }
 
+    // triangle has no face early reject
     if (det == 0)
     {
         return false;

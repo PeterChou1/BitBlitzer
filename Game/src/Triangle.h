@@ -40,6 +40,11 @@ struct Triangle
     {
     }
 
+    CubeMapFaces GetCubmapID()
+    {
+        return verts[0].CubeMapID;
+    }
+
     int GetTextureID() const
     {
         return verts[0].TextureID;

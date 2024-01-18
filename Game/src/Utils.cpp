@@ -49,7 +49,7 @@ std::vector<Vec2> Utils::TranslatePoints(const std::vector<Vec2>& points, const 
     return translatedPolygon;
 }
 
-
+/// Not the cleanest code but it gets the job done
 bool Utils::LoadInstance(std::string filename,
     MeshInstance& mesh,
     std::vector<Material>& textureList)
@@ -124,7 +124,6 @@ bool Utils::LoadInstance(std::string filename,
             for (int i = 0; i < 3; i++)
             {
                 Vertex& v = vertarray[i];
-                // v.id = id;
                 std::string vertex = varray[i];
                 std::istringstream vertexStream(vertex);
                 std::string vertexIndex, uvIndex, normalIndex;

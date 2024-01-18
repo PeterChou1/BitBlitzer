@@ -32,6 +32,7 @@ void GameManager::Setup()
     ECS.RegisterResource(PixelBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT));
     ECS.RegisterResource(ColorBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT));
     ECS.RegisterResource(RenderConstants());
+    ECS.RegisterResource(CubeMap());
 
     // Initialize Common Systems
     m_VertexShader = std::make_unique<VertexShader>(VertexShader());

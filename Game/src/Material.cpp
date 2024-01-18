@@ -48,6 +48,7 @@ void Material::LoadMaterial(const char* fileName)
         texture.reset();
     }
     const bool texLoaded = LoadTexture(fileName);
+    hasTexture = true;
     assert(texLoaded && "Failed to Load Material");
 }
 

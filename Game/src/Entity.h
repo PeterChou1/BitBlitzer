@@ -21,5 +21,3 @@ using ComponentTypeID = std::size_t;
 constexpr ComponentTypeID MAX_COMPONENTS = 32;
 // A Signature is used to by the ECS system to identify which Entity Own which Component
 using Signature = std::bitset<MAX_COMPONENTS>;
-
-using Index = uint32_t;

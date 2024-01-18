@@ -12,6 +12,7 @@ FragmentShader::FragmentShader()
     m_PixelBuffer = ECS.GetResource<PixelBuffer>();
     m_ClippedTriangle = ECS.GetResource<ClippedTriangleBuffer>();
     m_ColorBuffer = ECS.GetResource<ColorBuffer>();
+    m_CubeMap = ECS.GetResource<CubeMap>();
     m_Cam = ECS.GetResource<Camera>();
 }
 
@@ -26,9 +27,20 @@ void FragmentShader::Shade()
     {
         Triangle& triangle = ClippedTriangle[pixel.BinId][pixel.BinIndex];
         pixel.Interpolate(triangle);
-        Material& texture = loader.GetMaterial(triangle.GetTextureID());
+
+
         SIMDShader* shader = loader.GetShader(triangle.GetShaderID());
-        shader->Shade(pixel, m_Lights, texture, *m_Cam);
+        if (triangle.GetCubmapID() != NotACubeMap)
+        {
+            Material& texture = m_CubeMap->GetMaterial(triangle.GetCubmapID());
+            shader->Shade(pixel, m_Lights, texture, *m_Cam);
+        }
+        else
+        {
+            Material& texture = loader.GetMaterial(triangle.GetTextureID());
+            shader->Shade(pixel, m_Lights, texture, *m_Cam);
+        }
+
         SIMDVec3 color = pixel.Color * 255.0;
 
         color.X = color.X.floor();
@@ -76,6 +88,6 @@ void FragmentShader::Shade()
         }
     });
 
-    // Blit to OpenGL Texture
+    // Render to OpenGL Texture
     App::RenderTexture(m_ColorBuffer->GetBuffer());
 }

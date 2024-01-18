@@ -11,6 +11,7 @@
 
 #include "Camera.h"
 #include "ClippedTriangleBuffer.h"
+#include "CubeMap.h"
 #include "IndexBuffer.h"
 #include "RenderConstants.h"
 #include "VertexBuffer.h"
@@ -24,6 +25,7 @@ public:
     void Clip();
 
 private:
+    std::shared_ptr<CubeMap> m_CubeMap;
     std::shared_ptr<RenderConstants> m_RenderConstants;
     std::shared_ptr<IndexBuffer> m_IndexBuffer;
     std::shared_ptr<Camera> m_Cam;

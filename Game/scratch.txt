@@ -1195,3 +1195,26 @@ inline bool AABB2CircleCollision(Vec2& boxPos, Vec2& circlePos, Shape& box, Shap
     //        );
     //    }
     //}
+
+
+    void CreateRigidBodyRect(float x, float y, float width, float height, float rotation)
+{
+    float radians = (3.141f  / 180.0f) * rotation;
+
+    Entity entity = ECS.CreateEntity();
+    auto transform = Transform(Vec3(x, y, 5.0f), Quat(Vec3(0.0f, 0.0f, 1.0f), radians));
+    ECS.AddComponent<Transform>(entity, transform);
+    auto rigidbody = RigidBody(width, height);
+    rigidbody.SetStatic(true);
+    ECS.AddComponent<RigidBody>(entity, rigidbody);
+}
+
+void CreateRigidBodyCircle(float x, float y, float radius)
+{
+    Entity entity = ECS.CreateEntity();
+    auto transform = Transform(Vec3(x, y, 5.0f), Quat(Vec3(0.0f, 0.0f, 1.0f), 0.0));
+    ECS.AddComponent<Transform>(entity, transform);
+    auto rigidbody = RigidBody(radius);
+    rigidbody.SetStatic(true);
+    ECS.AddComponent<RigidBody>(entity, rigidbody);
+} 

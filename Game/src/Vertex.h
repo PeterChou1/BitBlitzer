@@ -15,18 +15,19 @@
 
 enum CubeMapFaces
 {
-    None,
-    Back,
-    Bottom,
-    Front,
-    Left,
-    Right,
-    Top
+    NotACubeMap,
+    BackFace,
+    BottomFace,
+    FrontFace,
+    LeftFace,
+    RightFace,
+    TopFace
 };
 
 struct Vertex
 {
-    CubeMapFaces cubeMapID = None;
+    // used for cube map textures
+    CubeMapFaces CubeMapID = NotACubeMap;
     // Shader ID of this vertex
     ShaderAsset ShaderID{};
     // texture ID of the texture that shade this vertex
@@ -47,15 +48,15 @@ struct Vertex
 
     Vertex() = default;
 
-    Vertex(const Vec3& pos) : Position(pos)
+    Vertex(const Vec3& pos) : LocalPosition(pos)
     {
     }
 
-    Vertex(const Vec3& pos, const Vec2& tex) : UV(tex), Position(pos)
+    Vertex(const Vec3& pos, const Vec2& tex) : UV(tex), LocalPosition(pos)
     {
     }
 
-    Vertex(const Vec3& pos, const Vec3& normal, const Vec2& tex) : UV(tex), Position(pos), Normal(normal)
+    Vertex(const Vec3& pos, const Vec3& normal, const Vec2& tex) : UV(tex), LocalPosition(pos), LocalNormal(normal)
     {
     }
 

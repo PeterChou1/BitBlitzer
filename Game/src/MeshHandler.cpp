@@ -14,6 +14,8 @@ MeshHandler::MeshHandler()
     m_RenderConstants = ECS.GetResource<RenderConstants>();
     m_VertexBuffer = ECS.GetResource<VertexBuffer>();
     m_IndexBuffer = ECS.GetResource<IndexBuffer>();
+    m_Cam = ECS.GetResource<Camera>();
+    m_CubeMap = ECS.GetResource<CubeMap>();
 
 }
 
@@ -23,6 +25,21 @@ void MeshHandler::Update()
 
     auto& EntityToShaderAsset = m_RenderConstants->EntityToShaderAsset;
 
+    if (m_VertexBuffer->Buffer.empty() && m_CubeMap->CubeMapEnabled)
+    {
+        m_CubeMap->GetCubeMapVertices(
+            m_Cam->Farplane,
+            m_VertexBuffer->Buffer,
+            m_IndexBuffer->Buffer,
+            m_RenderConstants->CubemapeRange
+        );
+        UpdateCubeMapTransform();
+    }
+
+    if (m_Cam->CamTransform.IsDirty && m_CubeMap->CubeMapEnabled)
+    {
+        UpdateCubeMapTransform();
+    }
 
     for (const auto e : ECS.Visit<Transform, Mesh>())
     {
@@ -59,6 +76,17 @@ void MeshHandler::Update()
 
     if (!MarkedForDeletion.empty())
         DeleteMeshes(MarkedForDeletion);
+}
+
+void MeshHandler::UpdateCubeMapTransform()
+{
+    BufferRange range = m_RenderConstants->CubemapeRange;
+    auto begin = m_VertexBuffer->Buffer.begin() + range.first;
+    auto end = m_VertexBuffer->Buffer.begin() + range.second;
+    std::for_each(begin, end, [&](Vertex& v)
+        {
+            v.Position = m_Cam->Position + v.LocalPosition;
+        });
 }
 
 void MeshHandler::DeleteMeshes(const std::vector<Entity>& entities)

@@ -6,25 +6,18 @@
 //
 
 #pragma once
-#include "AABB.h"
 #include "ECSManager.h"
-
-typedef void (*ColliderCallback) (ECSManager& ECS, Entity e);
 
 /**
  * \brief A Collider Detects 
  */
 class Collider
 {
-    Collider(
-        float width,
-        float height,
-        ColliderCallback callback
-    ) : m_Callback(callback)
-    {
-        
-    }
+    Collider() = default;
 
-    ColliderCallback m_Callback;
-    AABB aabb;
+    virtual void OnEnter(ECSManager ecs, Entity e) = 0;
+
+    virtual void OnExit(ECSManager ecs, Entity e) = 0;
+
+
 };

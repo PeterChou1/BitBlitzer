@@ -43,7 +43,7 @@ public:
     // vertex buffer
     std::unordered_map<Entity, BufferRange> EntityToVertexRange;
     std::unordered_map<Entity, BufferRange> EntityToIndexRange;
-    std::unordered_map<CubeMapFaces, BufferRange> FaceToBufferRange;
+    BufferRange CubemapeRange;
     // Gives each core on the system an ID
     std::vector<std::uint32_t> CoreIds;
     // Used by clipper during multithreading clipping

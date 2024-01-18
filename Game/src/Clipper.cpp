@@ -206,6 +206,7 @@ Clipper::Clipper()
     m_VertexBuffer = ECS.GetResource<VertexBuffer>();
     m_IndexBuffer = ECS.GetResource<IndexBuffer>();
     m_ClippedTriangleBuffer = ECS.GetResource<ClippedTriangleBuffer>();
+    m_CubeMap = ECS.GetResource<CubeMap>();
     m_Cam = ECS.GetResource<Camera>();
 }
 
@@ -218,11 +219,11 @@ void Clipper::Clip()
     std::vector<std::uint32_t> indexBuffer = m_IndexBuffer->Buffer;
 
 
-    Concurrent::ForEach(coreID.begin(), coreID.end(), [&](unsigned int binID)
+    Concurrent::ForEach(coreID.begin(), coreID.end(), [&](unsigned int threadID)
     {
-        const int start = binID * coreInterval;
-        const auto end = (binID + 1) * coreInterval;
-        std::vector<Triangle>& binProjectedClip = m_ClippedTriangleBuffer->Buffer[binID];
+        const int start = threadID * coreInterval;
+        const auto end = (threadID + 1) * coreInterval;
+        std::vector<Triangle>& binProjectedClip = m_ClippedTriangleBuffer->Buffer[threadID];
 
         for (int i = start; i < end; i++)
         {
@@ -239,10 +240,11 @@ void Clipper::Clip()
             // back face culling
             auto t = Triangle(v1, v2, v3);
 
+
             Vec3 normal = (v1.Normal + v2.Normal + v3.Normal) / 3;
 
-
-            if (normal.Dot(v1.Position - m_Cam->Position) < 0.0)
+            // Cube map vertices don't have normals so allow them in regardless
+            if (normal.Dot(v1.Position - m_Cam->Position) < 0.0 || v1.CubeMapID != NotACubeMap)
             {
                 std::vector<Triangle> clipped = ClipAgainstPlane(t);
                 // Output projected screenSpacePosition to raster space
@@ -251,7 +253,7 @@ void Clipper::Clip()
                     m_Cam->ToRasterSpace(clip.verts[0].Projection);
                     m_Cam->ToRasterSpace(clip.verts[1].Projection);
                     m_Cam->ToRasterSpace(clip.verts[2].Projection);
-                    if (clip.Setup(binID, binProjectedClip.size()))
+                    if (clip.Setup(threadID, binProjectedClip.size()))
                     {
                         binProjectedClip.push_back(clip);
                     }

@@ -114,6 +114,8 @@ private:
             return "./Assets/NoNormalsPinball.obj";
         case Pacman:
             return "./Assets/PacmanModel.obj";
+        case Box:
+            return "./Assets/BoxTest.obj";
         }
         assert(false && "not possible");
     }
@@ -133,6 +135,8 @@ private:
             return &BlinnPhongShaderInstance;
         case ToonShader:
             return &ToonShaderInstance;
+        case UnlitShader:
+            return &UnlitShaderInstance;
         }
 
         assert(false && "not possible");
