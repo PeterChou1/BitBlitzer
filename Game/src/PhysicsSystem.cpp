@@ -5,6 +5,7 @@
 #include "PhysicsSystem.h"
 #include "ECSManager.h"
 #include "Manifolds.h"
+#include "Mesh.h"
 #include "RigidBody.h"
 #include "Transform.h"
 
@@ -14,9 +15,14 @@ extern ECSManager ECS;
 constexpr float StepTime = 16.0f;
 constexpr float dt = StepTime / 1000.0f;
 constexpr float MaxTime = 50.0f;
-constexpr float GravityScale = 5.0f;
+constexpr float GravityScale = 50.0f;
 Vec2 Gravity = Vec2(0.0f, -10.0f * GravityScale);
 
+
+PhysicsSystem::PhysicsSystem()
+{
+    m_CallbackSystem = ECS.GetResource<ColliderCallbackSystem>();
+}
 
 void PhysicsSystem::SyncData()
 {
@@ -29,12 +35,13 @@ void PhysicsSystem::SyncData()
         rigidbody.Color = Vec3(1.0f, 0.0f, 0.0f);
         m_RigidBodies.emplace_back(e, rigidbody);
 
-        if (rigidbody.Controlled || !rigidbody.Initialized)
+        if (!rigidbody.Initialized)
         {
             Transform& transform = ECS.GetComponent<Transform>(e);
             rigidbody.SyncTransform(transform, XY);
             rigidbody.RecomputeAABB();
             rigidbody.Shape.RecomputePoints(rigidbody.Angular, rigidbody.Position);
+
             if (!rigidbody.Initialized) rigidbody.Initialized = true;
         }
     }
@@ -68,16 +75,17 @@ void PhysicsSystem::Update(float deltaTime)
             Step();
             ForwardTransform();
         }
+        m_CallbackSystem->Update();
         m_Accumulate -= MaxTime;
     }
 }
 
 void PhysicsSystem::Step()
 {
+    m_Collisions.clear();
     float deltaTime = dt / STEP_ITERATION;
 
     // Broad Phase Collision
-
     std::vector<Manifold> collisions;
     for (auto& collisionPair1 : m_RigidBodies)
     {
@@ -95,9 +103,19 @@ void PhysicsSystem::Step()
 
             if (AABBTest(r1.RigidBodyAABB, r2.RigidBodyAABB))
             {
-                Manifold m = Manifold(r1, r2);
+                // Narrow phase
+                // NOTE: Right now narrow phase detection is the bottleneck
+                //       implementing spatial acceleration structures like
+                //       quad trees probably won't speed up physics step computation
+                Manifold m = Manifold(e1, e2, r1, r2);
                 if (m.Collided)
-                    collisions.push_back(m);
+                {
+                    m_Collisions.push_back(m);
+                    if (m_CallbackSystem->HasRegisterCallback({r1.Category, r2.Category}))
+                    {
+                        m_CallbackSystem->SubmitForCallback(e1, e2);
+                    }
+                }
             }
         }
     }
@@ -115,9 +133,12 @@ void PhysicsSystem::Step()
     }
 
     // Resolve Collision
-    for (auto& manifold : collisions)
+    for (auto& manifold : m_Collisions)
     {
-        manifold.ResolveCollisionAngular();
+        if (manifold.A.Collidable && manifold.B.Collidable) 
+        {
+            manifold.ResolveCollisionAngular();
+        }
     }
 
     // Integrate Velocity
@@ -128,11 +149,10 @@ void PhysicsSystem::Step()
     }
 
     // Correct Position
-    for (auto& manifold : collisions)
+    for (auto& manifold : m_Collisions)
     {
         manifold.PositionCorrection();
     }
-
 
     // Clear All Forces
     // Sync Rigid Body -> Transform

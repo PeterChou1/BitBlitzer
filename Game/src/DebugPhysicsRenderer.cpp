@@ -15,10 +15,10 @@ extern ECSManager ECS;
 void RenderAABB(std::vector<Vertex>& vertexBuffer, 
                   Vec2 min, Vec2 max, Vec3 color)
 {
-    Vec3 tR = Vec3(max.X, max.Y, 5.0f);
-    Vec3 tL = Vec3(min.X, max.Y, 5.0f);
-    Vec3 bR = Vec3(max.X, min.Y, 5.0f);
-    Vec3 bL = Vec3(min.X, min.Y, 5.0f);
+    Vec3 tR = Vec3(max.X, max.Y, 0.0f);
+    Vec3 tL = Vec3(min.X, max.Y, 0.0f);
+    Vec3 bR = Vec3(max.X, min.Y, 0.0f);
+    Vec3 bL = Vec3(min.X, min.Y, 0.0f);
     Vertex topRight = tR;
     Vertex topLeft = tL;
     Vertex bottomRight = bR;
@@ -54,11 +54,11 @@ void RenderCircle(std::vector<Vertex>& vertexBuffer, int radius, Vec2 pos, Vec3 
     {
         // Calculate the x and y coordinates for the current point
         float theta = i * increment;
-        Vec3 point1 = Vec3(radius * cosf(theta), radius * sinf(theta), 5.0f);
+        Vec3 point1 = Vec3(radius * cosf(theta), radius * sinf(theta), 0.0f);
         point1.X += pos.X; point1.Y += pos.Y;
         // Calculate the x and y coordinates for the next point
         theta = (i + 1) * increment;
-        Vec3 point2 = Vec3(radius * cosf(theta), radius * sinf(theta), 5.0f);
+        Vec3 point2 = Vec3(radius * cosf(theta), radius * sinf(theta), 0.0f);
         point2.X += pos.X; point2.Y += pos.Y;
 
         Vertex p1 = point1;
@@ -88,8 +88,8 @@ void RenderPolygon(
         Vec2 pt1 = polygonPoints[i];
         Vec2 pt2 = polygonPoints[i + 1 == polySize ? 0 : i + 1];
 
-        Vec3 point1 = Vec3(pt1.X, pt1.Y, 5.0);
-        Vec3 point2 = Vec3(pt2.X, pt2.Y, 5.0);
+        Vec3 point1 = Vec3(pt1.X, pt1.Y, 0.0);
+        Vec3 point2 = Vec3(pt2.X, pt2.Y, 0.0);
 
         Vertex vertex1 = Vertex(point1);
         Vertex vertex2 = Vertex(point2);
@@ -104,7 +104,7 @@ void RenderPolygon(
 
     for (Vec2& pt : debugPoints)
     {
-        Vec3 point = Vec3(pt.X, pt.Y, 5.0);
+        Vec3 point = Vec3(pt.X, pt.Y, 0.0);
         Vertex v = Vertex(point);
         v.Color = Vec3(1.0, 1.0, 1.0);
         vertexBuffer.push_back(v);
@@ -126,14 +126,13 @@ void DebugPhysicsRenderer::Update(float deltaTime)
         {
             float x = 0.0f, y = 0.0f;
             App::GetMousePos(x, y);
-            Vec3 planePoint = Vec3(0, 0, 5);
+            Vec3 planePoint = Vec3(0, 0, 0);
             Vec3 planeNormal = Vec3(0, 0, -1);
             Vec3 point = m_Cam->ScreenSpaceToWorldPoint(x, y, planePoint, planeNormal);
             Entity meshEntity = ECS.CreateEntity();
             auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
             ECS.AddComponent<Transform>(meshEntity, modelTransform);
             ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f));
-            ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
             accumulate = 0.0f;
         }
 
@@ -141,17 +140,15 @@ void DebugPhysicsRenderer::Update(float deltaTime)
         {
             float x = 0.0f, y = 0.0f;
             App::GetMousePos(x, y);
-            Vec3 planePoint = Vec3(0, 0, 5);
+            Vec3 planePoint = Vec3(0, 0, 0);
             Vec3 planeNormal = Vec3(0, 0, -1);
             Vec3 point = m_Cam->ScreenSpaceToWorldPoint(x, y, planePoint, planeNormal);
             Entity meshEntity = ECS.CreateEntity();
             auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
             ECS.AddComponent<Transform>(meshEntity, modelTransform);
             ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f, 1.0f));
-            ECS.AddComponent<Mesh>(meshEntity, Mesh(Spot));
             accumulate = 0.0f;
         }
-
     } 
 
     
@@ -182,7 +179,7 @@ void DebugPhysicsRenderer::Render()
 
         for (Vec2& pts : shape.ContactPoints)
         {
-            Vec3 point = Vec3(pts.X, pts.Y, 5.0);
+            Vec3 point = Vec3(pts.X, pts.Y, 0.0);
             debugPoints.push_back(point);
         }
     }
@@ -230,7 +227,7 @@ void DebugPhysicsRenderer::Render()
     {
         v.PerspectiveDivision();
         m_Cam->ToRasterSpaceDebug(v.Projection);
-        App::DrawDot(v.Projection.X, v.Projection.Y, 0.01, 1.0, 0.0, 0.0);
+        App::DrawCircle(v.Projection.X, v.Projection.Y, 0.01, 1.0, 0.0, 0.0);
     }
 
     std::string rSize = "Amount of RigidBodies: " + std::to_string(ECS.Visit<RigidBody>().size());

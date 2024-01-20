@@ -71,7 +71,7 @@ public:
         }
     }
 
-    void EntityDeleted(Entity entity, Signature entitySignature)
+    void EntitySignatureDeleted(Entity entity, Signature entitySignature)
     {
         for (auto const& pair : m_Visitor)
         {

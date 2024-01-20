@@ -28,6 +28,9 @@ void Circle2Circle(Manifold& m, RigidBody& A, RigidBody& B)
     if (!m.Collided)
         return;
 
+    if (!A.Collidable || !B.Collidable)
+        return;
+
     Vec2 n = APos - BPos;
     float r = AShape.Radius + BShape.Radius;
 
@@ -172,6 +175,9 @@ void Polygon2Polygon(Manifold& m, RigidBody& A, RigidBody& B)
     if (!m.Collided)
         return;
 
+    if (!A.Collidable || !B.Collidable)
+        return;
+
     Edge AEdge{};
     Edge BEdge{};
 
@@ -210,6 +216,9 @@ void Circle2Polygon(Manifold& m, RigidBody& A, RigidBody& B)
     );
 
     if (!m.Collided)
+        return;
+
+    if (!A.Collidable || !B.Collidable)
         return;
 
     float minSquaredDistance = std::numeric_limits<float>::infinity();

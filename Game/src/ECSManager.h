@@ -124,7 +124,7 @@ public:
     void DestroyEntity(Entity entity)
     {
         auto signature = m_EntityManager->GetSignature(entity);
-        m_VisitorManager->EntityDeleted(entity, signature);
+        m_VisitorManager->EntitySignatureDeleted(entity, signature);
         m_EntityManager->DestroyEntity(entity);
         m_ComponentManager->EntityDestroyed(entity);
         m_VisitorManager->EntityDestroyed(entity);
@@ -154,7 +154,7 @@ public:
     {
         m_ComponentManager->RemoveComponent<T>(entity);
         auto signature = m_EntityManager->GetSignature(entity);
-        m_VisitorManager->EntityDeleted(entity, signature);
+        m_VisitorManager->EntitySignatureDeleted(entity, signature);
         signature.set(m_ComponentManager->GetComponentType<T>(), false);
         m_EntityManager->SetSignature(entity, signature);
         m_VisitorManager->EntitySignatureChanged(entity, signature);

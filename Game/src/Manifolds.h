@@ -15,7 +15,7 @@
 class Manifold
 {
 public:
-    Manifold(RigidBody& A, RigidBody& B);
+    Manifold(Entity idA, Entity idB, RigidBody& A, RigidBody& B);
 
     /**
      * \brief Resolve collision while ignoring rotation
@@ -34,6 +34,8 @@ public:
      */
     void PositionCorrection();
 
+    Entity idA;
+    Entity idB;
     RigidBody& A;
     RigidBody& B;
     // whether or not A and B collided

@@ -20,8 +20,10 @@ void FragmentShader::Shade()
 {
     AssetServer& loader = AssetServer::GetInstance();
     std::vector<std::vector<Triangle>> ClippedTriangle = m_ClippedTriangle->Buffer;
+
+    // No multiple light support for now 
     std::vector<PointLight> m_Lights;
-    m_Lights.push_back({ Vec3(0, 5, 5), Vec3(1, 1, 1), 40.0 });
+    m_Lights.push_back({ Vec3(0, 25, 2.0), Vec3(1, 1, 1), 40.0 });
     
     Concurrent::ForEach(m_PixelBuffer->begin(), m_PixelBuffer->end(), [&](SIMDPixel& pixel)
     {
@@ -89,5 +91,16 @@ void FragmentShader::Shade()
     });
 
     // Render to OpenGL Texture
-    App::RenderTexture(m_ColorBuffer->GetBuffer());
+    // App::RenderTexture(m_ColorBuffer->GetBuffer());
+    // This does not work using multithreading
+    for (int y = 0; y < APP_VIRTUAL_HEIGHT; y++)
+    {
+        for (int x = 0; x < APP_VIRTUAL_WIDTH; x++)
+        {
+            unsigned char r, g, b;
+            m_ColorBuffer->GetColor(x, y, r, g, b);
+            App::DrawLine(x, y, x + 1.0f, y + 1.0f, r / 255.0, g / 255.0, b / 255.0);
+        }
+    
+    }
 }

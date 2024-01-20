@@ -48,25 +48,28 @@ struct Vertex
 
     Vertex() = default;
 
-    Vertex(const Vec3& pos) : LocalPosition(pos)
+    Vertex(const Vec3& pos) : LocalPosition(pos), Position(pos)
     {
     }
 
-    Vertex(const Vec3& pos, const Vec2& tex) : UV(tex), LocalPosition(pos)
+    Vertex(const Vec3& pos, const Vec2& tex) :
+        UV(tex), LocalPosition(pos), Position(pos)
     {
     }
 
-    Vertex(const Vec3& pos, const Vec3& normal, const Vec2& tex) : UV(tex), LocalPosition(pos), LocalNormal(normal)
+    Vertex(const Vec3& pos, const Vec3& normal, const Vec2& tex) :
+        UV(tex), LocalPosition(pos), LocalNormal(normal),
+        Position(pos), Normal(normal)
     {
     }
 
     // used as a hashing function for when we're loading obj files
     std::string ToString()
     {
-        return "{" + std::to_string(TextureID) + 
-                     LocalPosition.ToString() + 
-                     LocalNormal.ToString() + 
-                     UV.ToString() + "}" ;
+        return "{" + std::to_string(TextureID) +
+            LocalPosition.ToString() +
+            LocalNormal.ToString() +
+            UV.ToString() + "}";
     }
 
     void PerspectiveDivision()

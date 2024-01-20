@@ -41,7 +41,7 @@ namespace App
         glEnd();
     }
 
-    void DrawDot(float sx, float sy, float radius, float r, float g, float b)
+    void DrawCircle(float sx, float sy, float radius, float r, float g, float b)
     {
 #if APP_USE_VIRTUAL_RES
         APP_VIRTUAL_TO_NATIVE_COORDS(sx, sy);

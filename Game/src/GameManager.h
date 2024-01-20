@@ -18,19 +18,44 @@
 #include "MeshHandler.h"
 #include "PhysicsSystem.h"
 #include "Rasterizer.h"
+#include "Scene.h"
 #include "VertexShader.h"
 
 class GameManager
 {
 public:
 
+    /**
+     * \brief  Set up the game instance as well as all scenes in the game
+     */
     void Setup();
 
+    /**
+     * \brief Update loop runs current active scene as well as physics loop
+     * \param deltaTime 
+     */
     void Update(float deltaTime);
 
+    /**
+     * \brief Runs the Render pipeline
+     */
     void Render();
 
+
+    /**
+     * \brief Registers a scene within the game
+     */
+    void RegisterScene(const std::string& sceneName, std::unique_ptr<Scene> scene);
+
+    /**
+     * \brief Resets the ECS and sets a new current scene
+     * \param sceneName 
+     */
+    void SetActiveScene(const std::string& sceneName);
+
 private:
+    std::string m_ActiveScene;
+    std::unordered_map<std::string, std::unique_ptr<Scene>> m_SceneMap;
 
     std::unique_ptr<VertexShader> m_VertexShader;
     std::unique_ptr<Clipper> m_Clipper;

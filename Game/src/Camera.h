@@ -38,9 +38,9 @@ public:
 
     /**
      * \brief Reset camera position and orientation
-     * \param camPos Vector to set camera position
-     * \param camTarget Vector to set camera target 
-     * \param camUp Vector to set up Vector
+     * \param camPos where the camera is located at
+     * \param camTarget postion of where the camera is looking at
+     * \param camUp what the camera considers is "up"
      */
     void SetPosition(Vec3 camPos, Vec3 camTarget, Vec3 camUp);
 
@@ -92,4 +92,14 @@ public:
      * \return point on the plane
      */
     Vec3 ScreenSpaceToWorldPoint(float x, float y, Vec3& planePt, Vec3& planeNormal);
+
+
+    /**
+     * \brief The exact opposite of screen space to world point
+     *        Translate a world point to a point on the screen
+     * \param point 
+     * \return 
+     */
+    Vec2 WorldPointToScreenSpace(Vec3 point);
+
 };

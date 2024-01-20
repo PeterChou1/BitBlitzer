@@ -19,7 +19,10 @@
 #ifdef SIMD_AVAILABLE
 
 /*
-* /brief Float based on avx2 wraps around 8 pixels
+* /brief Float based on avx2 please see the intel intrinsics 
+*        most methods here are self-explanatory
+*        for more information see here:
+*        https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html#avxnewtechs=AVX2
 */
 class SIMDFloat
 {

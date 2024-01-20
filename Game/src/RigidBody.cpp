@@ -14,6 +14,9 @@ RigidBody::RigidBody(float radius)
     float inertia = 0.5f * mass * radius * radius;
     m_InvMass = 1.0f / mass;
     m_InvInertia = 1.0f / inertia;
+    m_Restitution = DEFAULT_RESTITUTION;
+    StaticFriction = DEFAULT_STATIC_FRICTION;
+    DynamicFriction = DEFAULT_DYNAMIC_FRICTION;
 }
 
 RigidBody::RigidBody(float width, float height)
@@ -26,6 +29,8 @@ RigidBody::RigidBody(float width, float height)
     m_InvMass = 1.0f / mass;
     m_InvInertia = 1.0f / inertia;
     m_Restitution = DEFAULT_RESTITUTION;
+    StaticFriction = DEFAULT_STATIC_FRICTION;
+    DynamicFriction = DEFAULT_DYNAMIC_FRICTION;
 }
 
 RigidBody::RigidBody(std::vector<Vec2> polygons)
@@ -33,13 +38,10 @@ RigidBody::RigidBody(std::vector<Vec2> polygons)
     assert(false && "not implemented");
 }
 
-void RigidBody::SetStatic(bool isStatic)
+void RigidBody::SetStatic()
 {
-    if (isStatic)
-    {
-        m_InvMass = 0.0f;
-        m_InvInertia = 0.0f;
-    }
+    m_InvMass = 0.0f;
+    m_InvInertia = 0.0f;
 }
 
 void RigidBody::SyncTransform(Transform& transform, SlicePlane plane)
@@ -72,13 +74,13 @@ void RigidBody::ForwardTransform(Transform& transform, SlicePlane plane) const
     switch (plane)
     {
     case YZ:
-        transform.UpdateRow(AngularDelta);
+        transform.UpdateYaw(AngularDelta);
         break;
     case XZ:
         transform.UpdatePitch(AngularDelta);
         break;
     case XY:
-        transform.UpdateYaw(AngularDelta);
+        transform.UpdateRow(AngularDelta);
     }
 }
 

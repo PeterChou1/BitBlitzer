@@ -7,21 +7,20 @@
 #include "DepthBuffer.h"
 #include "PixelBuffer.h"
 #include "ClippedTriangleBuffer.h"
+#include "GameState.h"
 #include "RenderConstants.h"
-#include "Scene.h"
 #include "Tiles.h"
 #include "../App/AppSettings.h"
 
+// Initialized at the start of the Game
 extern ECSManager ECS;
-
-
-Scene scene;
-
+// User defined function to Register Scenes
 
 void GameManager::Setup()
 {
     // setup opengl rendering instance
-    App::SetupGL();
+    // App::SetupGL();
+
     // Register Resources Required For Rendering
     ECS.RegisterResource(Camera());
     ECS.RegisterResource(VertexBuffer());
@@ -33,39 +32,46 @@ void GameManager::Setup()
     ECS.RegisterResource(ColorBuffer(APP_VIRTUAL_WIDTH, APP_VIRTUAL_HEIGHT));
     ECS.RegisterResource(RenderConstants());
     ECS.RegisterResource(CubeMap());
+    ECS.RegisterResource(GameState());
+    ECS.RegisterResource(ColliderCallbackSystem());
 
     // Initialize Common Systems
-    m_VertexShader = std::make_unique<VertexShader>(VertexShader());
-    m_Clipper = std::make_unique<Clipper>(Clipper());
-    m_Rasterizer = std::make_unique<Rasterizer>(Rasterizer());
-    m_FragmentShader = std::make_unique<FragmentShader>(FragmentShader());
-    m_DebugCamera = std::make_unique<DebugCamera>(DebugCamera());
-    m_DebugMesh = std::make_unique<DebugMesh>(DebugMesh());
-    m_MeshHandler = std::make_unique<MeshHandler>(MeshHandler());
-    m_PhysicsSystem = std::make_unique<PhysicsSystem>(PhysicsSystem());
-    m_DebugPhysicsRender = std::make_unique<DebugPhysicsRenderer>(DebugPhysicsRenderer());
-    scene.Setup();
+    m_VertexShader = std::make_unique<VertexShader>();
+    m_Clipper = std::make_unique<Clipper>();
+    m_Rasterizer = std::make_unique<Rasterizer>();
+    m_FragmentShader = std::make_unique<FragmentShader>();
+    m_MeshHandler = std::make_unique<MeshHandler>();
+    m_PhysicsSystem = std::make_unique<PhysicsSystem>();
+    // Debug Systems 
+    m_DebugCamera = std::make_unique<DebugCamera>();
+    m_DebugMesh = std::make_unique<DebugMesh>();
+    m_DebugPhysicsRender = std::make_unique<DebugPhysicsRenderer>();
 }
 
 void GameManager::Update(float deltaTime)
 {
-    m_DebugCamera->Move(deltaTime);
+    assert(m_SceneMap.count(m_ActiveScene) > 0 && "Active Scene Name Not registered");
+    // m_DebugCamera->Move(deltaTime);
     m_DebugMesh->Update(deltaTime);
-    m_MeshHandler->Update();
     m_PhysicsSystem->Update(deltaTime);
+    m_MeshHandler->Update();
     m_DebugPhysicsRender->Update(deltaTime);
+    m_SceneMap[m_ActiveScene]->Update(deltaTime);
 }
 
 void GameManager::Render()
 {
+    assert(m_SceneMap.count(m_ActiveScene) > 0 && "Active Scene Name Not registered");
     // Render Pipeline
     m_VertexShader->Shade();
     m_Clipper->Clip();
     m_Rasterizer->Rasterize();
     m_FragmentShader->Shade();
+    // Debug Stuff
     m_DebugCamera->Render();
     m_DebugPhysicsRender->Render();
-
+    // Rendering for the active scene
+    m_SceneMap[m_ActiveScene]->Render();
     // Clear Render Pipeline to get ready for next render pass
     ECS.GetResource<ClippedTriangleBuffer>()->ResetResource();
     ECS.GetResource<Tiles>()->ResetResource();
@@ -73,3 +79,18 @@ void GameManager::Render()
     ECS.GetResource<PixelBuffer>()->ResetResource();
     ECS.GetResource<ColorBuffer>()->ResetResource();
 }
+
+void GameManager::RegisterScene(const std::string& sceneName, std::unique_ptr<Scene> scene)
+{
+    m_SceneMap[sceneName] = std::move(scene);
+    m_SceneMap[sceneName]->Start();
+}
+
+void GameManager::SetActiveScene(const std::string& sceneName)
+{
+    ECS.Reset();
+    m_ActiveScene = sceneName;
+    assert(m_SceneMap.count(sceneName) > 0 && "Scene name does not exist");
+    m_SceneMap[m_ActiveScene]->Setup();
+}
+

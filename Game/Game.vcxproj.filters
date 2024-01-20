@@ -64,9 +64,6 @@
     <ClCompile Include="src\GameManager.cpp">
       <Filter>src\Engine\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene.cpp">
-      <Filter>src\Engine\Scene</Filter>
-    </ClCompile>
     <ClCompile Include="src\Triangle.cpp">
       <Filter>src\Engine\Graphics</Filter>
     </ClCompile>
@@ -115,9 +112,6 @@
     <ClCompile Include="src\Manifolds.cpp">
       <Filter>src\Engine\CoreSystems\Physics</Filter>
     </ClCompile>
-    <ClCompile Include="src\RigidBody.cpp">
-      <Filter>src\Engine\CoreSystems\Physics</Filter>
-    </ClCompile>
     <ClCompile Include="src\Collision.cpp">
       <Filter>src\Engine\CoreSystems\Physics</Filter>
     </ClCompile>
@@ -126,6 +120,24 @@
     </ClCompile>
     <ClCompile Include="src\SAT.cpp">
       <Filter>src\Engine\CoreSystems\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RigidBody.cpp">
+      <Filter>src\Engine\Components</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Level1.cpp">
+      <Filter>src\GameLogic\GameScenes</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CameraController.cpp">
+      <Filter>src\GameLogic\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LaunchController.cpp">
+      <Filter>src\GameLogic\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ColliderCallbackSystem.cpp">
+      <Filter>src\Engine\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ProjectileCowCollider.cpp">
+      <Filter>src\GameLogic\Colliders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -321,9 +333,6 @@
     <ClInclude Include="src\Shape.h">
       <Filter>src\Engine\CoreSystems\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="src\RigidBody.h">
-      <Filter>src\Engine\CoreSystems\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="src\PhysicsSystem.h">
       <Filter>src\Engine\CoreSystems\Physics</Filter>
     </ClInclude>
@@ -345,11 +354,35 @@
     <ClInclude Include="src\SAT.h">
       <Filter>src\Engine\CoreSystems\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="src\Collider.h">
-      <Filter>src\Engine\CoreSystems\Physics</Filter>
-    </ClInclude>
     <ClInclude Include="src\CubeMap.h">
       <Filter>src\Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RigidBody.h">
+      <Filter>src\Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Cows.h">
+      <Filter>src\GameLogic\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Level1.h">
+      <Filter>src\GameLogic\GameScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\CameraController.h">
+      <Filter>src\GameLogic\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\LaunchController.h">
+      <Filter>src\GameLogic\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GameState.h">
+      <Filter>src\GameLogic\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColliderCategory.h">
+      <Filter>src\GameLogic\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColliderCallbackSystem.h">
+      <Filter>src\Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProjectileCowCollider.h">
+      <Filter>src\GameLogic\Colliders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -421,6 +454,21 @@
     </Filter>
     <Filter Include="src\Engine\Debug">
       <UniqueIdentifier>{53c0005a-3aab-41a3-b8b1-8e59bad99f4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GameLogic\Systems">
+      <UniqueIdentifier>{98d177e5-3013-4eea-af36-acab25c5a2ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GameLogic\Components">
+      <UniqueIdentifier>{f18ffc0e-a2cb-47f5-bdb6-0b367e50ad93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GameLogic\GameScenes">
+      <UniqueIdentifier>{85990b90-8b69-440c-983b-825210c7933d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GameLogic\Resources">
+      <UniqueIdentifier>{c92b9530-5e16-49d7-a7a4-27c99cefc4f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\GameLogic\Colliders">
+      <UniqueIdentifier>{1a2237ab-d70e-4af4-86bd-d9151d2f455c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

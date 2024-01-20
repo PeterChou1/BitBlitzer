@@ -9,12 +9,9 @@
 // Graphical Assets .obj files
 enum ObjAsset
 {
+    SlingShot,
     Spot,
-    Furina,
-    Maze,
-    Pinball,
-    Pacman,
-    Box
+    Robot
 };
 
 // Shaders -> See SIMDShader.h for more details

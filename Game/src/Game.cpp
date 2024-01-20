@@ -3,21 +3,29 @@
 //------------------------------------------------------------------------
 #include "stdafx.h"
 //------------------------------------------------------------------------
+#include <memory>
+
 #include "ECSManager.h"
 #include "GameManager.h"
+#include "Level1.h"
 //------------------------------------------------------------------------
 
 
 ECSManager ECS;
-GameManager manager;
+GameManager GameSceneManager;
 
 //------------------------------------------------------------------------
 // Called before first update. Do any initial setup here.
 //------------------------------------------------------------------------
 void Init()
 {
+    // These must be initialized before any other systems
     ECS.Init();
-    manager.Setup();
+    GameSceneManager.Setup();
+    // Register all game scenes below
+    std::unique_ptr<Scene> Scene1 = std::make_unique<Level1>();
+    GameSceneManager.RegisterScene("Level1", std::move(Scene1));
+    GameSceneManager.SetActiveScene("Level1");
 }
 
 //------------------------------------------------------------------------
@@ -26,7 +34,7 @@ void Init()
 //------------------------------------------------------------------------
 void Update(float deltaTime)
 {
-    manager.Update(deltaTime);
+    GameSceneManager.Update(deltaTime);
 }
 
 //------------------------------------------------------------------------
@@ -35,7 +43,7 @@ void Update(float deltaTime)
 //------------------------------------------------------------------------
 void Render()
 {
-    manager.Render();
+    GameSceneManager.Render();
     ECS.FlushECS();
 }
 

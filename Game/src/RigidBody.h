@@ -15,7 +15,10 @@
 #include "Shape.h"
 #include "Transform.h"
 #include "AABB.h"
+#include "ColliderCategory.h"
+#include "ECSManager.h"
 
+class Collider;
 
 class RigidBody
 {
@@ -43,10 +46,15 @@ public:
     RigidBody(std::vector<Vec2> polygons);
 
     /**
-     * \brief Setting the body to infinite mass
-     * \param isStatic 
+     * \brief Sets a collider callback 
+     * \param collider 
      */
-    void SetStatic(bool isStatic);
+    void SetCollider(std::shared_ptr<Collider> collider);
+
+    /**
+     * \brief Setting the body to infinite mass
+     */
+    void SetStatic();
 
     void SyncTransform(Transform& transform, SlicePlane plane);
 
@@ -69,10 +77,10 @@ public:
     float Restitution() const;
 
     // use to sync rigid body with their transform
-    bool Initialized{};
-    // specify if rigid body is a player or controlled by a script
-    bool Controlled{};
-    unsigned int BitMaskLayers{};
+    bool Initialized = false;
+    // specify if a rigid body is collidable
+    bool Collidable = true;
+    ColliderCategory Category = Default;
     // used for debugging
     Vec3 Color{};
     // mutable states
@@ -84,6 +92,8 @@ public:
     float Angular{};
     float AngularVelocity{};
     float AngularDelta{};
+    float StaticFriction;
+    float DynamicFriction;
 
 private:
     // immutable states
@@ -91,7 +101,30 @@ private:
     float m_InvMass{};
     float m_Restitution{};
 
+    static constexpr float DEFAULT_STATIC_FRICTION = 0.6f;
+    static constexpr float DEFAULT_DYNAMIC_FRICTION = 0.4f;
     static constexpr float DEFAULT_DENSITY = 1.0f;
     static constexpr float DEFAULT_RESTITUTION = 0.5f;
 
+};
+
+class Collider
+{
+public:
+    Collider(ColliderCategory A, ColliderCategory B) : m_Pair({A, B}) {}
+
+    virtual ~Collider() = default;
+
+    virtual void OnCollide(
+        Entity self,
+        Entity other,
+        RigidBody& selfRB,
+        RigidBody& otherRB
+    ) = 0;
+
+
+    CollisionPair GetCollisionPair() const { return m_Pair; }
+
+private:
+    CollisionPair m_Pair;
 };

@@ -42,6 +42,16 @@ Transform::Transform(const Vec3& pos, const Quat& rot) : Position(pos), Rotation
     Inverse = Affine.AffineInverse();
 }
 
+
+void Transform::Scale(float scale)
+{
+    Affine.Rows[0] = { scale * Affine.Rows[0][0], scale * Affine.Rows[0][1], scale * Affine.Rows[0][2], Position.X };
+    Affine.Rows[1] = { scale * Affine.Rows[1][0], scale * Affine.Rows[1][1], scale * Affine.Rows[1][2], Position.Y };
+    Affine.Rows[2] = { scale * Affine.Rows[2][0], scale * Affine.Rows[2][1], scale * Affine.Rows[2][2], Position.Z };
+    Affine.Rows[3] = { 0.0, 0.0, 0.0, 1.0 };
+    Inverse = Affine.AffineInverse();
+}
+
 Transform::Transform(const Vec3& pos, const Vec3& target, const Vec3& up)
 {
     Vec3 forward = (target - pos).Normalize() * -1;
@@ -58,6 +68,11 @@ Transform::Transform(const Vec3& pos, const Vec3& target, const Vec3& up)
     Affine.Rows[2] = {right.Z, camUp.Z, forward.Z, pos.Z};
     Affine.Rows[3] = {0.0, 0.0, 0.0, 1.0};
     Inverse = Affine.AffineInverse();
+}
+
+Vec3 Transform::GetForward()
+{
+    return {Affine[0][2], Affine[1][2], Affine[2][2]};
 }
 
 void Transform::SetPosition(const Vec3& pos)
@@ -125,7 +140,7 @@ void Transform::UpdatePitch(float pitch)
 
 void Transform::UpdateYaw(float yaw)
 {
-    Quat q = Quat(Vec3(0, 0, 1), yaw);
+    Quat q = Quat(Vec3(0.0f, 0.0f, 1.0), yaw);
     Rotation *= q;
     Mat3 newrot = Mat3::FromQuat(Rotation);
     Affine.Rows[0] = { newrot[0][0], newrot[0][1], newrot[0][2], Position.X };

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cassert>
 
+#include "Utils.h"
+
 
 void Camera::SetPosition(Vec3 camPos, Vec3 camTarget, Vec3 camUp)
 {
@@ -26,8 +28,10 @@ void Camera::ToRasterSpace(Vec4& point)
 {
     point.X = static_cast<int>((point.X + 1) * 0.5 * ScreenWidth);
     point.Y = static_cast<int>((point.Y + 1) * 0.5 * ScreenHeight);
-    assert(0 <= point.X && point.X <= ScreenWidth);
-    assert(0 <= point.Y && point.Y <= ScreenHeight);
+    point.X = Utils::Clamp(point.X, 0, ScreenWidth);
+    point.Y = Utils::Clamp(point.Y, 0, ScreenHeight);
+    // assert(0 <= point.X && point.X <= ScreenWidth);
+    // assert(0 <= point.Y && point.Y <= ScreenHeight);
 }
 
 void Camera::ToRasterSpaceDebug(Vec4& point)
@@ -96,3 +100,14 @@ Vec3 Camera::ScreenSpaceToWorldPoint(float x, float y, Vec3& planePt, Vec3& plan
 
     return RayCastPlane(Position, cameraRayDir, planePt, planeNormal);
 }
+
+Vec2 Camera::WorldPointToScreenSpace(Vec3 point)
+{
+    Vec4 projected = Proj * Vec4(CamTransform.Inverse * point);
+    // perspective division
+    float InverseW = 1 / projected.W;
+    projected *= InverseW;
+    ToRasterSpace(projected);
+    return {projected.X, projected.Y};
+}
+

@@ -61,6 +61,13 @@ struct Transform
      */
     Transform(const Vec3& pos, const Quat& rot);
 
+
+    /**
+     * \brief Scale transform uniformly in all direction
+     * \param scale 
+     */
+    void Scale(float scale);
+
     /**
      * \brief Constructor a transform based on a Camera oriented approach
      *        where we specify a target vector to point the transform to  
@@ -70,6 +77,11 @@ struct Transform
      */
     Transform(const Vec3& pos, const Vec3& target, const Vec3& up);
 
+
+    /**
+     * \brief Get Forward pointing direction for a transform
+     */
+    Vec3 GetForward();
 
     /**
      * \brief Set position of the transform while retaining rotation

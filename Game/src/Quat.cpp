@@ -105,8 +105,8 @@ float Quat::GetMagnitude() const
 Vec3 Quat::RotatePoint(const Vec3& rhs) const
 {
     Quat vector(rhs.X, rhs.Y, rhs.Z, 0.0f);
-    Quat final = *this * vector * Inverse();
-    return Vec3(final.X, final.Y, final.Z);
+    Quat finalQuat = *this * vector * Inverse();
+    return Vec3(finalQuat.X, finalQuat.Y, finalQuat.Z);
 }
 
 Mat3 Quat::RotateMatrix(const Mat3& rhs) const

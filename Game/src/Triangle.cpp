@@ -11,6 +11,11 @@ void Triangle::PerspectiveDivision()
 
 bool Triangle::Setup(int id, int index)
 {
+    // All of this might seem confusing but
+    // all this function is doing is determining which corners
+    // of the tile to trivially reject and accept a triangle
+    // in a tile
+    // more on this here: https://www.cs.cmu.edu/afs/cs/academic/class/15869-f11/www/readings/abrash09_lrbrast.pdf
     BinIndex = index;
     BinID = id;
 

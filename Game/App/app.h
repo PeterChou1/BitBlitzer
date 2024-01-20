@@ -40,7 +40,7 @@ namespace App
     //-------------------------------------------------------------------------------------------
     // Draw a 2D Circle at sx, sy using Color r = red, g = green, b=blue.
     //-------------------------------------------------------------------------------------------
-    void DrawDot(float sx, float sy, float radius, float r = 1.0f, float g = 1.0f, float b = 1.0f);
+    void DrawCircle(float sx, float sy, float radius, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 
 
     //*******************************************************************************************

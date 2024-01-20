@@ -72,8 +72,6 @@ public:
 
 
     float Radius{};
-    float Width{};
-    float Height{};
     std::vector<Vec2> PolygonPoints;
     std::vector<Vec2> EdgeNormals;
     std::vector<Vec2> LocalSpacePoints;

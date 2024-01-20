@@ -104,20 +104,16 @@ private:
     {
         switch (asset)
         {
+        case SlingShot:
+            return "./Assets/SlingShot.obj";
         case Spot:
             return "./Assets/spotWithTextures.obj";
-        case Furina:
-            return "./Assets/furina.obj";
-        case Maze:
-            return "./Assets/MazeTriangulated.obj";
-        case Pinball:
-            return "./Assets/NoNormalsPinball.obj";
-        case Pacman:
-            return "./Assets/PacmanModel.obj";
-        case Box:
-            return "./Assets/BoxTest.obj";
+        case Robot:
+            return "./Assets/RobotModel.obj";
+        default:
+            assert(false && "not possible");
         }
-        assert(false && "not possible");
+        return "";
     }
 
     SIMDShader* LookUpShader(ShaderAsset asset)
@@ -137,9 +133,11 @@ private:
             return &ToonShaderInstance;
         case UnlitShader:
             return &UnlitShaderInstance;
+        default:
+            assert(false && "not possible");
         }
+        return nullptr;
 
-        assert(false && "not possible");
     }
 
 

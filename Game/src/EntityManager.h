@@ -39,8 +39,8 @@ public:
     void DestroyEntity(Entity entity)
     {
         assert(entity < MAX_ENTITIES && "Entity out of range.");
-
         m_Signatures[entity].reset();
+        m_RecentlyDeleted.push_back(entity);
         m_AvailableEntities.push(entity);
         --m_LivingEntityCount;
     }
@@ -74,6 +74,7 @@ public:
         return entities;
     }
 
+
     void Clear()
     {
         //clear queue
@@ -88,7 +89,14 @@ public:
         m_LivingEntityCount = 0;
     }
 
+
+    void FlushRecentlyDeleted()
+    {
+        m_RecentlyDeleted.clear();
+    }
+
 private:
+    std::vector<Entity> m_RecentlyDeleted;
     std::queue<Entity> m_AvailableEntities{};
     std::array<Signature, MAX_ENTITIES> m_Signatures{};
     uint32_t m_LivingEntityCount{};
