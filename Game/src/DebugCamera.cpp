@@ -14,7 +14,7 @@ DebugCamera::DebugCamera()
     m_Cam = ECS.GetResource<Camera>();
 }
 
-void DebugCamera::Move(float deltaTime)
+void DebugCamera::Update(float deltaTime)
 {
     Vec3 delta = Vec3(0, 0, 0);
     Quat r = Quat(m_Cam->Up, 0);

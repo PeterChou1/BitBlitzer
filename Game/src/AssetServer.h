@@ -111,6 +111,12 @@ private:
             return "./Assets/spotFlipped.obj";
         case Robot:
             return "./Assets/RobotModel.obj";
+        case Dirt:
+            return "./Assets/Dirt.obj";
+        case WoodCube:
+            return "./Assets/UnitCube.obj";
+        case Grass:
+            return "./Assets/Grass.obj";
         default:
             assert(false && "not possible");
         }

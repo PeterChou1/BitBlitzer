@@ -36,6 +36,8 @@ private:
 
     void AddMesh(Entity entity, Mesh mesh, Transform& transform, ShaderAsset shaderID);
 
+    void AddMeshRigidBody(Entity entity, Mesh mesh, Transform& transform, ShaderAsset shaderID);
+
     std::shared_ptr<IndexBuffer> m_IndexBuffer;
     std::shared_ptr<VertexBuffer> m_VertexBuffer;
     std::shared_ptr<RenderConstants> m_RenderConstants;

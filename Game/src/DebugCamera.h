@@ -13,7 +13,7 @@ class DebugCamera
 public:
     DebugCamera();
 
-    void Move(float deltaTime);
+    void Update(float deltaTime);
     void Render();
 
 private:

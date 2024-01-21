@@ -56,9 +56,9 @@ public:
      */
     void SetStatic();
 
-    void SyncTransform(Transform& transform, SlicePlane plane);
+    void SyncTransform(Transform& transform);
 
-    void ForwardTransform(Transform& transform, SlicePlane plane) const;
+    void ForwardTransform(Transform& transform) const;
 
     void RecomputeAABB();
 

@@ -1445,3 +1445,13 @@ void CreateMaze(int width, int height, float blockSize, const ObjAsset& wallAsse
         glEnd();
         glBindTexture(GL_TEXTURE_2D, 0);
     }
+
+        //*******************************************************************************************
+    // Display Calls.
+    //*******************************************************************************************
+    //-------------------------------------------------------------------------------------------
+    // void DrawDot(float sx, float sy, float radius, float r = 1.0f, float g = 1.0f, float b = 1.0f)
+    //-------------------------------------------------------------------------------------------
+    // Draw a 2D Circle at sx, sy using Color r = red, g = green, b=blue.
+    //-------------------------------------------------------------------------------------------
+    void DrawCircle(float sx, float sy, float radius, float r = 1.0f, float g = 1.0f, float b = 1.0f);

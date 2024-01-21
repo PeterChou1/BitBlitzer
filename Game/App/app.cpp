@@ -15,50 +15,6 @@
 
 namespace App
 {
-    void DrawTriangle(float ax, float ay, float bx, float by, float cx, float cy, float r, float g, float b)
-    {
-#if APP_USE_VIRTUAL_RES
-        APP_VIRTUAL_TO_NATIVE_COORDS(ax, ay);
-        APP_VIRTUAL_TO_NATIVE_COORDS(bx, by);
-        APP_VIRTUAL_TO_NATIVE_COORDS(cx, cy);
-#endif
-        glBegin(GL_TRIANGLES);
-        glColor3f(r, g, b); // Yellow
-        glVertex2f(ax, ay);
-        glVertex2f(bx, by);
-        glVertex2f(cx, cy);
-        glEnd();
-    }
-
-    void DrawPoint(float sx, float sy, float r, float g, float b)
-    {
-#if APP_USE_VIRTUAL_RES
-        APP_VIRTUAL_TO_NATIVE_COORDS(sx, sy);
-#endif
-        glBegin(GL_POINTS);
-        glColor3f(r, g, b); // Yellow
-        glVertex2f(sx, sy);
-        glEnd();
-    }
-
-    void DrawCircle(float sx, float sy, float radius, float r, float g, float b)
-    {
-#if APP_USE_VIRTUAL_RES
-        APP_VIRTUAL_TO_NATIVE_COORDS(sx, sy);
-#endif
-
-        int num_segments = 32;
-
-        glBegin(GL_POLYGON);
-        for (int i = 0; i < num_segments; i++) {
-            float theta = 2.0f * 3.1415926f * float(i) / float(num_segments); // get the current angle 
-            float x = radius * cosf(theta); // calculate the x component 
-            float y = radius * sinf(theta); // calculate the y component
-            glColor3f(r, g, b);
-            glVertex2f(x + sx, y + sy); // output vertex 
-        }
-        glEnd();
-    }
 
 
     void DrawLine(float sx, float sy, float ex, float ey, float r, float g, float b)

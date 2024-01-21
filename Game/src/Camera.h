@@ -26,7 +26,7 @@ public:
     Vec3 Up{};
     // -- Default camera values used to construct OpenGL matrix --
     float Nearplane = 0.1f;
-    float Farplane = 100.0f;
+    float Farplane = 200.0f;
     float Fov = 90.0;
     float ScreenHeight = APP_VIRTUAL_HEIGHT;
     float ScreenWidth = APP_VIRTUAL_WIDTH;

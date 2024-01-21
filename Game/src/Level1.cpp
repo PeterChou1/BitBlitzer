@@ -23,6 +23,7 @@ void CreateRigidBodyRect(
     float width, float height,
     float rotation, bool isStatic,
     bool collidable,
+    bool addMesh,
     ColliderCategory category
 )
 {
@@ -37,13 +38,15 @@ void CreateRigidBodyRect(
     rigidbody.Category = category;
     rigidbody.Collidable = collidable;
     ECS.AddComponent<RigidBody>(entity, rigidbody);
+
+    if (addMesh)
+        ECS.AddComponent<Mesh>(entity, Mesh(WoodCube));
 }
 
-void CreateLevelGeometry(Vec3 location, float scale, float angleDegree, ObjAsset asset)
+void CreateLevelGeometry(Vec3 location, Quat rotation, float scale, ObjAsset asset)
 {
     Entity meshEntity = ECS.CreateEntity();
-    float radian = angleDegree * 3.141 / 180.0f;
-    Transform transform = Transform(location, Quat(Vec3(0.0, 1.0, 0.0), radian));
+    Transform transform = Transform(location, rotation);
     transform.Scale(scale);
     ECS.AddComponent(meshEntity, transform);
     ECS.AddComponent(meshEntity, Mesh(asset));
@@ -66,11 +69,11 @@ void CreateCows(float x, float y, Owner owner)
 void SetupStructure(float x, float y, Owner owner)
 {
     // Left Leg
-    CreateRigidBodyRect(x, y, 1.0f, 6.0, 0.0f, false, true, Obstacle);
+    CreateRigidBodyRect(x, y, 1.0f, 6.0, 0.0f, false, true, true, Obstacle);
     // Right Leg
-    CreateRigidBodyRect(x + 5.0f, y + 0.0f, 1.0f, 6.0, 0.0, false, true, Obstacle);
+    CreateRigidBodyRect(x + 5.0f, y + 0.0f, 1.0f, 6.0, 0.0, false, true, true, Obstacle);
     // Top Cover
-    CreateRigidBodyRect(x + 2.5f, y + 3.5, 10.0f, 1.0f, 0.0, false, true, Obstacle);
+    CreateRigidBodyRect(x + 2.5f, y + 3.5, 10.0f, 1.0f, 0.0, false, true, true, Obstacle);
     // Player Owned Cow
     CreateCows(x + 2.5f, y + 6.0, owner);
 }
@@ -78,14 +81,14 @@ void SetupStructure(float x, float y, Owner owner)
 
 void SetupPhysicsBodies()
 {
-    CreateRigidBodyRect(0.0f, -6.5f, 500.0f, 2.0f, 0.0f, true, true, Obstacle);
+    CreateRigidBodyRect(0.0f, -6.5f, 500.0f, 2.0f, 0.0f, true, true, false, Obstacle);
     SetupStructure(-60.0, -2.5, Player1);
     SetupStructure(60.0, -2.5, Player2);
     SetupStructure(60.0, 3.5, Player2);
 
     // Kill box destroys anything out of bounds
-    CreateRigidBodyRect(-150.0f, 0.0f, 100.0f, 1000.0f, 0.0f, true, false, KillBox);
-    CreateRigidBodyRect(150.0f, 0.0f, 100.0f, 1000.0f, 0.0f, true, false, KillBox);
+    CreateRigidBodyRect(-150.0f, 0.0f, 100.0f, 1000.0f, 0.0f, true, false, false, KillBox);
+    CreateRigidBodyRect(150.0f, 0.0f, 100.0f, 1000.0f, 0.0f, true, false, false, KillBox);
 }
 
 void Level1::Start()
@@ -102,9 +105,9 @@ void Level1::Start()
 void Level1::Setup()
 {
     // Load level asset
-    // ECS.GetResource<CubeMap>()->LoadCubeMap(SkyBox);
+    ECS.GetResource<CubeMap>()->LoadCubeMap(SkyBox);
     auto& server = AssetServer::GetInstance();
-    server.LoadLevelAssets({ SpotFlipped, Spot, SlingShot});
+    server.LoadLevelAssets({ SpotFlipped, Spot, SlingShot, Dirt, WoodCube, Grass});
 
     // Set Up Systems
     m_CamController->Setup(Vec3(0.0f, 0.0f, 50.0f));
@@ -128,10 +131,7 @@ void Level1::Setup()
     m_LaunchController->Player2LaunchPoint = Vec3(40.0, 2.0f, 0.0f);
 
     // Add level geometry
-    Vec3 Player1SlingShot = m_LaunchController->Player1LaunchPoint - Vec3(0.0, 7.0, 0.0);
-    CreateLevelGeometry(Player1SlingShot, 20.0, -40.0f, SlingShot);
-    Vec3 Player2SlingShot = m_LaunchController->Player2LaunchPoint - Vec3(0.0, 7.0, 0.0);
-    CreateLevelGeometry(Player2SlingShot, 20.0, 40.0f, SlingShot);
+    DecorateScene();
 
     // Register collider callbacks
     m_ColliderCallback->RegisterCallback(std::make_shared<ProjectileCowCollider>());
@@ -153,4 +153,23 @@ void Level1::Render()
 {
     m_LaunchController->Render();
     m_UISystem->Render();
+}
+
+void Level1::DecorateScene()
+{
+    // Add level geometry
+
+    // Sling Shot
+    Vec3 Player1SlingShot = m_LaunchController->Player1LaunchPoint - Vec3(0.0, 7.0, 0.0);
+    Quat rotation1 = Quat(Vec3(0, 1, 0), -40.0f * 3.141 / 180.0f);
+    CreateLevelGeometry(Player1SlingShot, rotation1, 20.0, SlingShot);
+
+    Vec3 Player2SlingShot = m_LaunchController->Player2LaunchPoint - Vec3(0.0, 7.0, 0.0);
+    Quat rotation2 = Quat(Vec3(0, 1, 0), 40.0f * 3.141 / 180.0f);
+    CreateLevelGeometry(Player2SlingShot, rotation2, 20.0, SlingShot);
+
+    // Environment
+    CreateLevelGeometry(Vec3(0, -205.5, 0), Quat(), 200.0, Dirt);
+    CreateLevelGeometry(Vec3(0, -5.0, 0), Quat(), 200, Grass);
+
 }

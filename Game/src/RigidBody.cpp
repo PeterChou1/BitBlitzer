@@ -44,43 +44,39 @@ void RigidBody::SetStatic()
     m_InvInertia = 0.0f;
 }
 
-void RigidBody::SyncTransform(Transform& transform, SlicePlane plane)
+void RigidBody::SyncTransform(Transform& transform)
 {
+    Position.X = transform.Position.X;
+    Position.Y = transform.Position.Y;
     float roll, pitch, yaw;
     transform.Rotation.GetEulerAngles(roll, pitch, yaw);
-    switch (plane)
+    switch (transform.Plane)
     {
     case YZ:
-        Position.X = transform.Position.Y;
-        Position.Y = transform.Position.Z;
-        Angular = yaw;
+        Angular = roll;
         break;
     case XZ:
-        Position.X = transform.Position.X;
-        Position.Y = transform.Position.Z;
         Angular = pitch;
         break;
     case XY:
-        Position.X = transform.Position.X;
-        Position.Y = transform.Position.Y;
-        Angular = roll;
+        Angular = yaw;
         break;
     }
 }
 
-void RigidBody::ForwardTransform(Transform& transform, SlicePlane plane) const
+void RigidBody::ForwardTransform(Transform& transform) const
 {
-    transform.SetPosition2D(Position, plane);
-    switch (plane)
+    transform.SetPosition2D(Position);
+    switch (transform.Plane)
     {
     case YZ:
-        transform.UpdateYaw(AngularDelta);
+        transform.UpdateRow(AngularDelta);
         break;
     case XZ:
         transform.UpdatePitch(AngularDelta);
         break;
     case XY:
-        transform.UpdateRow(AngularDelta);
+        transform.UpdateYaw(AngularDelta);
     }
 }
 

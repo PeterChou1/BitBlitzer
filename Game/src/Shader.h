@@ -13,4 +13,8 @@
 struct Shader
 {
     ShaderAsset ShaderId;
+
+    Shader() : ShaderId(DefaultShader) {}
+
+    Shader(ShaderAsset ShaderId) : ShaderId(ShaderId) {}
 };

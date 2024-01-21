@@ -6,6 +6,7 @@
 #include "ECSManager.h"
 #include "Mesh.h"
 #include "RigidBody.h"
+#include "Shader.h"
 #include "Transform.h"
 #include "Vertex.h"
 #include "../App/app.h"
@@ -122,20 +123,19 @@ void DebugPhysicsRenderer::Update(float deltaTime)
 
     if (accumulate > 0.100)
     {
-        if (App::IsKeyPressed('M'))
-        {
-            float x = 0.0f, y = 0.0f;
-            App::GetMousePos(x, y);
-            Vec3 planePoint = Vec3(0, 0, 0);
-            Vec3 planeNormal = Vec3(0, 0, -1);
-            Vec3 point = m_Cam->ScreenSpaceToWorldPoint(x, y, planePoint, planeNormal);
-            Entity meshEntity = ECS.CreateEntity();
-            auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
-            ECS.AddComponent<Transform>(meshEntity, modelTransform);
-            ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f));
-            accumulate = 0.0f;
-        }
-
+        // if (App::IsKeyPressed('M'))
+        // {
+        //     float x = 0.0f, y = 0.0f;
+        //     App::GetMousePos(x, y);
+        //     Vec3 planePoint = Vec3(0, 0, 0);
+        //     Vec3 planeNormal = Vec3(0, 0, -1);
+        //     Vec3 point = m_Cam->ScreenSpaceToWorldPoint(x, y, planePoint, planeNormal);
+        //     Entity meshEntity = ECS.CreateEntity();
+        //     auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
+        //     ECS.AddComponent<Transform>(meshEntity, modelTransform);
+        //     ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f));
+        //     accumulate = 0.0f;
+        // }
         if (App::IsKeyPressed('N'))
         {
             float x = 0.0f, y = 0.0f;
@@ -146,7 +146,10 @@ void DebugPhysicsRenderer::Update(float deltaTime)
             Entity meshEntity = ECS.CreateEntity();
             auto modelTransform = Transform(point, Quat(Vec3(0, 0, 1), 0.0));
             ECS.AddComponent<Transform>(meshEntity, modelTransform);
-            ECS.AddComponent<RigidBody>(meshEntity, RigidBody(1.0f, 1.0f));
+            ECS.AddComponent<RigidBody>(meshEntity, RigidBody(6.0f, 1.0f));
+            ECS.AddComponent<Mesh>(meshEntity, Mesh(WoodCube));
+            ECS.AddComponent<Shader>(meshEntity, Shader(UnlitShader));
+
             accumulate = 0.0f;
         }
     } 
@@ -217,17 +220,4 @@ void DebugPhysicsRenderer::Render()
         App::DrawLine(startX, startY, endX, endY, color.X, color.Y, color.Z);
 
     }
-
-    Concurrent::ForEach(debugPoints.begin(), debugPoints.end(), [&](Vertex& v)
-    {
-        v.Projection = m_Cam->Proj * Vec4(m_Cam->WorldToCamera(v.Position));
-    });
-
-    for (Vertex& v : debugPoints) 
-    {
-        v.PerspectiveDivision();
-        m_Cam->ToRasterSpaceDebug(v.Projection);
-        App::DrawCircle(v.Projection.X, v.Projection.Y, 0.01, 1.0, 0.0, 0.0);
-    }
-
 }

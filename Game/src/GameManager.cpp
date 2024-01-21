@@ -53,11 +53,11 @@ void GameManager::Setup()
 void GameManager::Update(float deltaTime)
 {
     assert(m_SceneMap.count(m_ActiveScene) > 0 && "Active Scene Name Not registered");
-    // m_DebugCamera->Move(deltaTime);
+    // m_DebugCamera->Update(deltaTime);
     // m_DebugMesh->Update(deltaTime);
     m_TimerSystem->Update(deltaTime);
     m_PhysicsSystem->Update(deltaTime);
-    m_DebugPhysicsRender->Update(deltaTime);
+    //m_DebugPhysicsRender->Update(deltaTime);
     m_SceneMap[m_ActiveScene]->Update(deltaTime);
     m_MeshHandler->Update();
 }
@@ -72,7 +72,7 @@ void GameManager::Render()
     m_FragmentShader->Shade();
     // Debug Stuff
     // m_DebugCamera->Render();
-    m_DebugPhysicsRender->Render();
+    //m_DebugPhysicsRender->Render();
     // Rendering for the active scene
     m_SceneMap[m_ActiveScene]->Render();
     // Clear Render Pipeline to get ready for next render pass

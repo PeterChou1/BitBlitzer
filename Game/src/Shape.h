@@ -67,10 +67,13 @@ public:
         collider.LocalSpacePoints.push_back(Vec2(-width / 2.0f, height / 2.0f));
         collider.PolygonPoints = collider.LocalSpacePoints;
         collider.m_ShapeEnum = PolygonShape;
+        collider.Width = width;
+        collider.Height = height;
         return collider;
     }
 
-
+    float Width{};
+    float Height{};
     float Radius{};
     std::vector<Vec2> PolygonPoints;
     std::vector<Vec2> EdgeNormals;

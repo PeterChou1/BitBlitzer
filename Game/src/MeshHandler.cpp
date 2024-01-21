@@ -3,6 +3,7 @@
 
 #include "AssetServer.h"
 #include "ECSManager.h"
+#include "RigidBody.h"
 #include "Shader.h"
 #include "Transform.h"
 #include "Utils.h"
@@ -54,7 +55,14 @@ void MeshHandler::Update()
 
         if (!mesh.Loaded)
         {
-            AddMesh(e, mesh, transform, shaderID);
+            if (mesh.MeshType == WoodCube && ECS.HasComponent<RigidBody>(e))
+            {
+                AddMeshRigidBody(e, mesh, transform, shaderID);
+            }
+            else
+            {
+                AddMesh(e, mesh, transform, shaderID);
+            }
             mesh.Loaded = true;
         }
         else if (transform.IsDirty)
@@ -217,6 +225,57 @@ void MeshHandler::AddMesh(Entity entity, Mesh mesh, Transform& transform, Shader
     {
         m_IndexBuffer->Buffer.push_back(offsetVertex + id);
     }
+
+    m_RenderConstants->TriangleCount = m_IndexBuffer->Buffer.size() / 3;
+    unsigned int CoreCount = m_RenderConstants->CoreCount;
+    m_RenderConstants->CoreInterval = (m_RenderConstants->TriangleCount + CoreCount - 1) / CoreCount;
+}
+
+void MeshHandler::AddMeshRigidBody(Entity entity, Mesh mesh, Transform& transform, ShaderAsset shaderID)
+{
+    auto& EntityToVertexRange = m_RenderConstants->EntityToVertexRange;
+    auto& EntityToIndexRange = m_RenderConstants->EntityToIndexRange;
+    auto& EntityToShaderAsset = m_RenderConstants->EntityToShaderAsset;
+
+    MeshInstance instance = AssetServer::GetInstance().GetObj(mesh.MeshType);
+    RigidBody& rb = ECS.GetComponent<RigidBody>(entity);
+
+    std::vector<MeshInstance> instanceList;
+    float maxY = rb.Shape.Height / 2.0f;
+    float maxX = rb.Shape.Width / 2.0f;
+    for (float x = -maxX; x < maxX; x++)
+    {
+        for (float y = -maxY; y < maxY; y++)
+        {
+            MeshInstance copyInstance = instance;
+            Vec3 offset = Vec3(x + 0.5f, y + 0.5f, 0.0);
+            copyInstance.offsetPosition(offset);
+            copyInstance.transform(transform);
+            instanceList.push_back(copyInstance);
+        }
+    }
+
+    int offsetIndices = m_IndexBuffer->Buffer.size();
+    int offsetVertex = m_VertexBuffer->Buffer.size();
+    int offset = m_VertexBuffer->Buffer.size();
+
+    for (MeshInstance& copy : instanceList)
+    {
+        for (auto& vertex : copy.vertices)
+        {
+            vertex.ShaderID = shaderID;
+            m_VertexBuffer->Buffer.push_back(vertex);
+        }
+        for (const auto id : copy.indices)
+        {
+            m_IndexBuffer->Buffer.push_back(offset + id);
+        }
+        offset = m_VertexBuffer->Buffer.size();
+    }
+
+    EntityToVertexRange[entity] = { offsetVertex, m_VertexBuffer->Buffer.size() };
+    EntityToIndexRange[entity] = { offsetIndices, m_IndexBuffer->Buffer.size() };
+    EntityToShaderAsset[entity] = shaderID;
 
     m_RenderConstants->TriangleCount = m_IndexBuffer->Buffer.size() / 3;
     unsigned int CoreCount = m_RenderConstants->CoreCount;

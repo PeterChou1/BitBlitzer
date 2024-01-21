@@ -33,6 +33,7 @@ struct Transform
     float TransformScale;
     Mat4 Affine;
     Mat4 Inverse;
+    SlicePlane Plane = XY;
     bool IsDirty{};
 
     /**
@@ -93,9 +94,8 @@ struct Transform
     /**
      * \brief Set position with a 2d vector 
      * \param pos
-     * \parap plane used to specify which planes to set position
      */
-    void SetPosition2D(const Vec2& pos, SlicePlane plane);
+    void SetPosition2D(const Vec2& pos);
 
     /**
      * \brief Update Rotation around the X-Axis

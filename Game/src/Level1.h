@@ -27,6 +27,9 @@ public:
 
 
 private:
+    /// I spent alot of time writing the 3d render I'm of course gonna use it :)
+    void DecorateScene();
+
     std::shared_ptr<GameState> m_GameState;
     std::shared_ptr<ColliderCallbackSystem> m_ColliderCallback;
     std::unique_ptr<UISystem> m_UISystem;

@@ -59,8 +59,6 @@ public:
 
     void DebugDraw(float r, float g, float b) const
     {
-        App::DrawTriangle(m_MinRaster.X, m_MinRaster.Y, m_MaxRaster.X, m_MaxRaster.Y, m_MinRaster.X, m_MaxRaster.Y, r, g, b);
-        App::DrawTriangle(m_MinRaster.X, m_MinRaster.Y, m_MaxRaster.X, m_MaxRaster.Y, m_MaxRaster.X, m_MinRaster.Y, r, g, b);
         App::DrawLine(m_MinRaster.X, m_MinRaster.Y, m_MinRaster.X, m_MaxRaster.Y);
         App::DrawLine(m_MaxRaster.X, m_MaxRaster.Y, m_MinRaster.X, m_MaxRaster.Y);
     }

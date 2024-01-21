@@ -37,7 +37,7 @@ void PhysicsSystem::SyncData()
         if (!rigidbody.Initialized)
         {
             Transform& transform = ECS.GetComponent<Transform>(e);
-            rigidbody.SyncTransform(transform, XY);
+            rigidbody.SyncTransform(transform);
             rigidbody.RecomputeAABB();
             rigidbody.Shape.RecomputePoints(rigidbody.Angular, rigidbody.Position);
             if (!rigidbody.Initialized) rigidbody.Initialized = true;
@@ -52,7 +52,7 @@ void PhysicsSystem::ForwardTransform()
         RigidBody& rigidbody = ECS.GetComponent<RigidBody>(e);
         // don't bother updating masses with infinite mass
         Transform& transform = ECS.GetComponent<Transform>(e);
-        rigidbody.ForwardTransform(transform, XY);
+        rigidbody.ForwardTransform(transform);
     }
 }
 

@@ -63,13 +63,14 @@ void LaunchController::Update()
         Vec3 PlaneNormal = Vec3(0, 0, -1);
         Vec3 PullBack = m_Cam->ScreenSpaceToWorldPoint(m_LaunchRenderPoint.X, m_LaunchRenderPoint.Y, PlanePt, PlaneNormal);
         Vec3 TrueLaunchPoint = m_LaunchPoint - (PullBack - m_LaunchPoint) * 0.25;
+
         Transform& LaunchTransform = ECS.GetComponent<Transform>(m_LaunchEntity);
 
         Quat LaunchRotation= Quat(Vec3(0.0f, 1.0f, 0.0f), -90.0f * 3.141f / 180.0f);
         LaunchRotation *= Quat(Vec3(1.0, 0.0, 0.0), m_LaunchAngle);
         LaunchTransform = Transform(TrueLaunchPoint, LaunchRotation);
         LaunchTransform.Scale(2.0f);
-
+        LaunchTransform.Plane = YZ;
     }
 
 

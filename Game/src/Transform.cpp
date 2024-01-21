@@ -92,29 +92,12 @@ void Transform::SetPosition(const Vec3& pos)
     IsDirty = true;
 }
 
-void Transform::SetPosition2D(const Vec2& pos, SlicePlane plane)
+void Transform::SetPosition2D(const Vec2& pos)
 {
-    switch (plane)
-    {
-    case XY:
-        Position.X = pos.X;
-        Position.Y = pos.Y;
-        Affine.Rows[0][3] = Position.X;
-        Affine.Rows[1][3] = Position.Y;
-        break;
-    case XZ:
-        Position.X = pos.X;
-        Position.Z = pos.Y;
-        Affine.Rows[0][3] = Position.X;
-        Affine.Rows[2][3] = Position.Y;
-        break;
-    case YZ:
-        Position.Y = pos.X;
-        Position.Z = pos.Y;
-        Affine.Rows[1][3] = Position.X;
-        Affine.Rows[2][3] = Position.Y;
-        break;
-    }
+    Position.X = pos.X;
+    Position.Y = pos.Y;
+    Affine.Rows[0][3] = Position.X;
+    Affine.Rows[1][3] = Position.Y;
     Inverse = Affine.AffineInverse();
     IsDirty = true;
 }

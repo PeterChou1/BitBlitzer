@@ -12,7 +12,10 @@ enum ObjAsset
     SlingShot,
     Spot,
     SpotFlipped,
-    Robot
+    Robot,
+    Dirt,
+    Grass,
+    WoodCube
 };
 
 // Shaders -> See SIMDShader.h for more details
