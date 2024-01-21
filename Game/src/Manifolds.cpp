@@ -28,6 +28,9 @@ Manifold::Manifold(Entity idA, Entity idB, RigidBody& A, RigidBody& B) : idA(idA
 
 void Manifold::ResolveCollision()
 {
+    if (!A.Collidable || !B.Collidable)
+        return;
+
     assert(std::abs(Normal.GetMagnitude() - 1.0) < 0.01);
 
     float invMassSum = A.InvMass() + B.InvMass();
@@ -56,6 +59,9 @@ void Manifold::ResolveCollision()
 
 void Manifold::ResolveCollisionAngular()
 {
+    if (!A.Collidable || !B.Collidable)
+        return;
+
     assert(std::abs(Normal.GetMagnitude() - 1.0) < 0.01);
 
     float e = (std::min)(A.Restitution(), B.Restitution());
@@ -181,6 +187,9 @@ void Manifold::ResolveCollisionAngular()
 
 void Manifold::PositionCorrection()
 {
+    if (!A.Collidable || !B.Collidable)
+        return;
+
     const float percent = 0.8f;
     const float slop = 0.01;
     Vec2 correction = Normal * std::max(Penetration - slop, 0.0f) / (A.InvMass() + B.InvMass()) * percent;

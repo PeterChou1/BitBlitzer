@@ -19,7 +19,7 @@ class EntityManager
 public:
     EntityManager()
     {
-        for (Entity entity = 0; entity < MAX_ENTITIES; ++entity)
+        for (Entity entity = 1; entity < MAX_ENTITIES; ++entity)
         {
             m_AvailableEntities.push(entity);
         }
@@ -78,7 +78,7 @@ public:
     void Clear()
     {
         //clear queue
-        for (Entity entity = 0; entity < MAX_ENTITIES; ++entity)
+        for (Entity entity = 1; entity < MAX_ENTITIES; ++entity)
         {
             m_AvailableEntities.push(entity);
         }

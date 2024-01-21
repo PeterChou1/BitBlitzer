@@ -1,7 +1,16 @@
 #pragma once
 
-
-struct Cows
+enum Owner
 {
-    float health;
+    Player1,
+    Player2
+};
+
+struct PlayerOwnedCow
+{
+    Owner owner = Player1;
+
+    PlayerOwnedCow() = default;
+    PlayerOwnedCow(Owner owner) : owner(owner) {}
+
 };

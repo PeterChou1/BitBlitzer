@@ -53,7 +53,7 @@ void RigidBody::SyncTransform(Transform& transform, SlicePlane plane)
     case YZ:
         Position.X = transform.Position.Y;
         Position.Y = transform.Position.Z;
-        Angular = roll;
+        Angular = yaw;
         break;
     case XZ:
         Position.X = transform.Position.X;
@@ -63,7 +63,7 @@ void RigidBody::SyncTransform(Transform& transform, SlicePlane plane)
     case XY:
         Position.X = transform.Position.X;
         Position.Y = transform.Position.Y;
-        Angular = yaw;
+        Angular = roll;
         break;
     }
 }

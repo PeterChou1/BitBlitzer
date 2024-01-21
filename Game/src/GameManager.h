@@ -19,6 +19,7 @@
 #include "PhysicsSystem.h"
 #include "Rasterizer.h"
 #include "Scene.h"
+#include "TimerSystem.h"
 #include "VertexShader.h"
 
 class GameManager
@@ -66,4 +67,5 @@ private:
     std::unique_ptr<DebugMesh> m_DebugMesh;
     std::unique_ptr<PhysicsSystem> m_PhysicsSystem;
     std::unique_ptr<DebugPhysicsRenderer> m_DebugPhysicsRender;
+    std::unique_ptr<TimerSystem> m_TimerSystem;
 };

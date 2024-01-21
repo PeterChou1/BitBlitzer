@@ -2,13 +2,13 @@
 #include "RigidBody.h"
 #include "ColliderCategory.h"
 
-class ProjectileCowCollider : public Collider
+class ProjectileKillBoxCollider : public Collider
 {
 public:
 
-    ProjectileCowCollider() : Collider(Projectile, Cow) {}
+    ProjectileKillBoxCollider() : Collider(Projectile, KillBox) {}
 
-    ~ProjectileCowCollider() override = default;
+    ~ProjectileKillBoxCollider() override = default;
 
     void OnCollide(Entity self, Entity other, RigidBody& selfRB, RigidBody& otherRB) override;
 

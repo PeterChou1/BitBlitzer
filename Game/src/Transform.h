@@ -30,6 +30,7 @@ struct Transform
 {
     Vec3 Position;
     Quat Rotation;
+    float TransformScale;
     Mat4 Affine;
     Mat4 Inverse;
     bool IsDirty{};

@@ -9,6 +9,7 @@ Transform::Transform() : Position(Vec3(0, 0, 0)), Rotation(Quat(0, 0, 0, 1))
     Affine.Rows[1] = {0, 1, 0, 0};
     Affine.Rows[2] = {0, 0, 1, 0};
     Affine.Rows[3] = {0, 0, 0, 1};
+    TransformScale = 1.0;
     Inverse = Affine.AffineInverse();
 }
 
@@ -20,6 +21,7 @@ Transform::Transform(const Mat4& a) : Affine(a)
     r.Rows[1] = {a[1][0], a[1][1], a[1][2]};
     r.Rows[2] = {a[2][0], a[2][1], a[2][2]};
     Rotation = Quat::FromRotationMatrix(r);
+    TransformScale = 1.0;
     Inverse = Affine.AffineInverse();
 }
 
@@ -29,6 +31,7 @@ Transform::Transform(const Vec3& pos) : Position(pos), Rotation(Quat(0, 0, 0, 1)
     Affine.Rows[1] = {0, 1, 0, pos.Y};
     Affine.Rows[2] = {0, 0, 1, pos.Z};
     Affine.Rows[3] = {0, 0, 0, 1};
+    TransformScale = 1.0;
     Inverse = Affine.AffineInverse();
 }
 
@@ -39,6 +42,7 @@ Transform::Transform(const Vec3& pos, const Quat& rot) : Position(pos), Rotation
     Affine.Rows[1] = {r[1][0], r[1][1], r[1][2], pos.Y};
     Affine.Rows[2] = {r[2][0], r[2][1], r[2][2], pos.Z};
     Affine.Rows[3] = {0.0, 0.0, 0.0, 1.0};
+    TransformScale = 1.0;
     Inverse = Affine.AffineInverse();
 }
 
@@ -50,6 +54,8 @@ void Transform::Scale(float scale)
     Affine.Rows[2] = { scale * Affine.Rows[2][0], scale * Affine.Rows[2][1], scale * Affine.Rows[2][2], Position.Z };
     Affine.Rows[3] = { 0.0, 0.0, 0.0, 1.0 };
     Inverse = Affine.AffineInverse();
+    IsDirty = true;
+    TransformScale *= scale;
 }
 
 Transform::Transform(const Vec3& pos, const Vec3& target, const Vec3& up)
@@ -67,6 +73,7 @@ Transform::Transform(const Vec3& pos, const Vec3& target, const Vec3& up)
     Affine.Rows[1] = {right.Y, camUp.Y, forward.Y, pos.Y};
     Affine.Rows[2] = {right.Z, camUp.Z, forward.Z, pos.Z};
     Affine.Rows[3] = {0.0, 0.0, 0.0, 1.0};
+    TransformScale = 1.0;
     Inverse = Affine.AffineInverse();
 }
 
@@ -117,9 +124,9 @@ void Transform::UpdateRow(float row)
     Quat q = Quat(Vec3(1, 0, 0), row);
     Rotation *= q;
     Mat3 newrot = Mat3::FromQuat(Rotation);
-    Affine.Rows[0] = { newrot[0][0], newrot[0][1], newrot[0][2], Position.X };
-    Affine.Rows[1] = { newrot[1][0], newrot[1][1], newrot[1][2], Position.Y };
-    Affine.Rows[2] = { newrot[2][0], newrot[2][1], newrot[2][2], Position.Z };
+    Affine.Rows[0] = { TransformScale * newrot[0][0], TransformScale * newrot[0][1], TransformScale * newrot[0][2], Position.X };
+    Affine.Rows[1] = { TransformScale * newrot[1][0], TransformScale * newrot[1][1], TransformScale * newrot[1][2], Position.Y };
+    Affine.Rows[2] = { TransformScale * newrot[2][0], TransformScale * newrot[2][1], TransformScale * newrot[2][2], Position.Z };
     Affine.Rows[3] = { 0.0, 0.0, 0.0, 1.0 };
     Inverse = Affine.AffineInverse();
     IsDirty = true;
@@ -130,9 +137,9 @@ void Transform::UpdatePitch(float pitch)
     Quat q = Quat(Vec3(0, 1, 0), pitch);
     Rotation *= q;
     Mat3 newrot = Mat3::FromQuat(Rotation);
-    Affine.Rows[0] = { newrot[0][0], newrot[0][1], newrot[0][2], Position.X };
-    Affine.Rows[1] = { newrot[1][0], newrot[1][1], newrot[1][2], Position.Y };
-    Affine.Rows[2] = { newrot[2][0], newrot[2][1], newrot[2][2], Position.Z };
+    Affine.Rows[0] = { TransformScale * newrot[0][0], TransformScale * newrot[0][1], TransformScale * newrot[0][2], Position.X };
+    Affine.Rows[1] = { TransformScale * newrot[1][0], TransformScale * newrot[1][1], TransformScale * newrot[1][2], Position.Y };
+    Affine.Rows[2] = { TransformScale * newrot[2][0], TransformScale * newrot[2][1], TransformScale * newrot[2][2], Position.Z };
     Affine.Rows[3] = { 0.0, 0.0, 0.0, 1.0 };
     Inverse = Affine.AffineInverse();
     IsDirty = true;
@@ -143,9 +150,9 @@ void Transform::UpdateYaw(float yaw)
     Quat q = Quat(Vec3(0.0f, 0.0f, 1.0), yaw);
     Rotation *= q;
     Mat3 newrot = Mat3::FromQuat(Rotation);
-    Affine.Rows[0] = { newrot[0][0], newrot[0][1], newrot[0][2], Position.X };
-    Affine.Rows[1] = { newrot[1][0], newrot[1][1], newrot[1][2], Position.Y };
-    Affine.Rows[2] = { newrot[2][0], newrot[2][1], newrot[2][2], Position.Z };
+    Affine.Rows[0] = { TransformScale * newrot[0][0], TransformScale * newrot[0][1], TransformScale * newrot[0][2], Position.X };
+    Affine.Rows[1] = { TransformScale * newrot[1][0], TransformScale * newrot[1][1], TransformScale * newrot[1][2], Position.Y };
+    Affine.Rows[2] = { TransformScale * newrot[2][0], TransformScale * newrot[2][1], TransformScale * newrot[2][2], Position.Z };
     Affine.Rows[3] = { 0.0, 0.0, 0.0, 1.0 };
     Inverse = Affine.AffineInverse();
     IsDirty = true;
@@ -156,9 +163,9 @@ void Transform::Update(const Vec3& delta, const Quat& rot)
     Rotation = Rotation * rot;
     Position = Position + delta;
     Mat3 newrot = Mat3::FromQuat(Rotation);
-    Affine.Rows[0] = {newrot[0][0], newrot[0][1], newrot[0][2], Position.X};
-    Affine.Rows[1] = {newrot[1][0], newrot[1][1], newrot[1][2], Position.Y};
-    Affine.Rows[2] = {newrot[2][0], newrot[2][1], newrot[2][2], Position.Z};
+    Affine.Rows[0] = { TransformScale * newrot[0][0], TransformScale * newrot[0][1], TransformScale * newrot[0][2], Position.X };
+    Affine.Rows[1] = { TransformScale * newrot[1][0], TransformScale * newrot[1][1], TransformScale * newrot[1][2], Position.Y };
+    Affine.Rows[2] = { TransformScale * newrot[2][0], TransformScale * newrot[2][1], TransformScale * newrot[2][2], Position.Z };
     Affine.Rows[3] = {0.0, 0.0, 0.0, 1.0};
     Inverse = Affine.AffineInverse();
     IsDirty = true;

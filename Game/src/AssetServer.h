@@ -89,7 +89,6 @@ public:
      * \brief Returns a Mesh Obj given its ID
      *        NOTE: this objID must be loaded with LoadLevelAssets
      *              or else it will throw an error
-     * \param shaderID
      * \return
      */
     MeshInstance& GetObj(ObjAsset objID)
@@ -108,6 +107,8 @@ private:
             return "./Assets/SlingShot.obj";
         case Spot:
             return "./Assets/spotWithTextures.obj";
+        case SpotFlipped:
+            return "./Assets/spotFlipped.obj";
         case Robot:
             return "./Assets/RobotModel.obj";
         default:

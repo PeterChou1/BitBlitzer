@@ -6,21 +6,25 @@
 #include "Utils.h"
 
 
-void Camera::SetPosition(Vec3 camPos, Vec3 camTarget, Vec3 camUp)
+void Camera::SetPositionAndOrientation(Vec3 camPos, Vec3 camTarget, Vec3 camUp)
 {
     Position = camPos;
-    Target = camTarget;
     Up = camUp;
-    Backward = (Target - Position).Normalize() * -1;
-    CamTransform = Transform(Position, Target, Up);
+    Backward = (camTarget - Position).Normalize() * -1;
+    CamTransform = Transform(Position, camTarget, Up);
     Proj.PerspectiveOpenGL(Fov, AspectRatio, Nearplane, Farplane);
+}
+
+void Camera::SetPosition(Vec3 camPos)
+{
+    Position = camPos;
+    CamTransform.SetPosition(Position);
 }
 
 void Camera::UpdatePos(const Vec3& delta, const Quat& rot)
 {
     Backward = rot.RotatePoint(Backward);
     Position += delta;
-    Target = Position - Backward;
     CamTransform.Update(delta, rot);
 }
 

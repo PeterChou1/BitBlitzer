@@ -34,5 +34,5 @@ private:
     std::vector<Manifold> m_Collisions;
     // How much times the physics iteration is run per time step
     // increase for more accuracy at the cost performance
-    constexpr static float STEP_ITERATION = 6;
+    constexpr static float STEP_ITERATION = 10;
 };

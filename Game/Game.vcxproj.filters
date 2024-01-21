@@ -139,6 +139,21 @@
     <ClCompile Include="src\ProjectileCowCollider.cpp">
       <Filter>src\GameLogic\Colliders</Filter>
     </ClCompile>
+    <ClCompile Include="src\TimerSystem.cpp">
+      <Filter>src\Engine\CoreSystems\Utilies</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ProjectileKillBoxCollider.cpp">
+      <Filter>src\GameLogic\Colliders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ProjectileObstaclesCollider.cpp">
+      <Filter>src\GameLogic\Colliders</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UISystem.cpp">
+      <Filter>src\GameLogic\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WinConditionChecker.cpp">
+      <Filter>src\GameLogic\Systems</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\app.h">
@@ -384,6 +399,24 @@
     <ClInclude Include="src\ProjectileCowCollider.h">
       <Filter>src\GameLogic\Colliders</Filter>
     </ClInclude>
+    <ClInclude Include="src\UISystem.h">
+      <Filter>src\GameLogic\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Timer.h">
+      <Filter>src\Engine\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TimerSystem.h">
+      <Filter>src\Engine\CoreSystems\Utilies</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProjectileKillBoxCollider.h">
+      <Filter>src\GameLogic\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ProjectileObstaclesCollider.h">
+      <Filter>src\GameLogic\Colliders</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WinConditionChecker.h">
+      <Filter>src\GameLogic\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -469,6 +502,9 @@
     </Filter>
     <Filter Include="src\GameLogic\Colliders">
       <UniqueIdentifier>{1a2237ab-d70e-4af4-86bd-d9151d2f455c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Engine\CoreSystems\Utilies">
+      <UniqueIdentifier>{479201bf-faad-4c25-ad2c-de638b151b21}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -90,9 +90,11 @@ void FragmentShader::Shade()
         }
     });
 
-    // Render to OpenGL Texture
-    // App::RenderTexture(m_ColorBuffer->GetBuffer());
     // This does not work using multithreading
+    // This is very hacky way to get around the fact that the API only supports
+    // lines we draw tons of tiny lines
+    // this enormously inefficient if we were able to render directly to an opengl
+    // texture we be able to save 30ms
     for (int y = 0; y < APP_VIRTUAL_HEIGHT; y++)
     {
         for (int x = 0; x < APP_VIRTUAL_WIDTH; x++)

@@ -12,6 +12,8 @@
 
 // Id used to Identify an Entity Essentially an Index into the Entity Array Managed by the Entity Manager
 using Entity = std::uint32_t;
+// No Entity can have the null entity ID
+constexpr Entity NULL_ENTITY = 0;
 // Max Amount of Components that can registered at once defines the size
 // of arrays of Entity Tracked by EntityManager
 constexpr Entity MAX_ENTITIES = 5000;

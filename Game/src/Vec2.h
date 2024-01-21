@@ -58,6 +58,28 @@ public:
         return &X;
     }
 
+
+    static float GetAngleBetween(const Vec2& a, const Vec2& b)
+    {
+        float dot = a.Dot(b);
+        float magA = a.GetMagnitude();
+        float magB = b.GetMagnitude();
+
+        // Calculate the cosine of the angle
+        float cosTheta = dot / (magA * magB);
+
+        // Calculate the angle in radians
+        float angle = acos(cosTheta);
+
+        if (a.Cross(b) < 0)
+        {
+            angle = 2 * 3.141 - angle; 
+        }
+
+        return angle; // Return the angle in radians
+    }
+
+
     float X;
     float Y;
 };

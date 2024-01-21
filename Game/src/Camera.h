@@ -20,8 +20,6 @@ public:
     // Camera Position and Orientation
     Transform CamTransform{};
     Vec3 Position{};
-    // Vector indicating where camera is pointing
-    Vec3 Target{};
     // Backward Vector pointing away from where the camera is pointing
     Vec3 Backward{};
     // Up Vector pointing up in the camera current orientation
@@ -42,7 +40,15 @@ public:
      * \param camTarget postion of where the camera is looking at
      * \param camUp what the camera considers is "up"
      */
-    void SetPosition(Vec3 camPos, Vec3 camTarget, Vec3 camUp);
+    void SetPositionAndOrientation(Vec3 camPos, Vec3 camTarget, Vec3 camUp);
+
+
+    /**
+     * \brief Just set the camera position
+     * \param camPos 
+     */
+    void SetPosition(Vec3 camPos);
+
 
     /**
      * \brief Updates Camera by position by delta and rotation by rot

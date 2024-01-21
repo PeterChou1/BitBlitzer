@@ -64,6 +64,8 @@ public:
 
     std::string ToString() const;
 
+    static Vec3 Lerp(const Vec3& a, const Vec3& b, float t);
+
     float X;
     float Y;
     float Z;

@@ -230,7 +230,4 @@ void DebugPhysicsRenderer::Render()
         App::DrawCircle(v.Projection.X, v.Projection.Y, 0.01, 1.0, 0.0, 0.0);
     }
 
-    std::string rSize = "Amount of RigidBodies: " + std::to_string(ECS.Visit<RigidBody>().size());
-    App::Print(100, 150, rSize.c_str());
-
 }

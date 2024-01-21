@@ -200,6 +200,8 @@
     <ClInclude Include="src\Cows.h" />
     <ClInclude Include="src\LaunchController.h" />
     <ClInclude Include="src\ProjectileCowCollider.h" />
+    <ClInclude Include="src\ProjectileKillBoxCollider.h" />
+    <ClInclude Include="src\ProjectileObstaclesCollider.h" />
     <ClInclude Include="src\SAT.h" />
     <ClInclude Include="src\Shape.h" />
     <ClInclude Include="src\DebugPhysicsRenderer.h" />
@@ -215,6 +217,8 @@
     <ClInclude Include="src\RigidBody.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Tiles.h" />
+    <ClInclude Include="src\Timer.h" />
+    <ClInclude Include="src\TimerSystem.h" />
     <ClInclude Include="src\ToonShaderSIMD.h" />
     <ClInclude Include="src\TypeID.h" />
     <ClInclude Include="src\DebugMesh.h" />
@@ -241,6 +245,7 @@
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Tile.h" />
     <ClInclude Include="src\Triangle.h" />
+    <ClInclude Include="src\UISystem.h" />
     <ClInclude Include="src\UnlitSIMD.h" />
     <ClInclude Include="src\Vertex.h" />
     <ClInclude Include="src\VertexBuffer.h" />
@@ -259,6 +264,7 @@
     <ClInclude Include="src\Vec3.h" />
     <ClInclude Include="src\Vec4.h" />
     <ClInclude Include="src\Visitor.h" />
+    <ClInclude Include="src\WinConditionChecker.h" />
     <ClInclude Include="stb_image\stb_image.h" />
     <ClInclude Include="tests\MathTest.h" />
   </ItemGroup>
@@ -284,6 +290,8 @@
     <ClCompile Include="src\MeshHandler.cpp" />
     <ClCompile Include="src\PhysicsSystem.cpp" />
     <ClCompile Include="src\ProjectileCowCollider.cpp" />
+    <ClCompile Include="src\ProjectileKillBoxCollider.cpp" />
+    <ClCompile Include="src\ProjectileObstaclesCollider.cpp" />
     <ClCompile Include="src\Rasterizer.cpp" />
     <ClCompile Include="src\GameManager.cpp" />
     <ClCompile Include="src\RigidBody.cpp" />
@@ -293,6 +301,7 @@
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\Tiles.cpp" />
+    <ClCompile Include="src\TimerSystem.cpp" />
     <ClCompile Include="src\ToonShaderSIMD.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -307,12 +316,14 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Triangle.cpp" />
+    <ClCompile Include="src\UISystem.cpp" />
     <ClCompile Include="src\UnlitSIMD.cpp" />
     <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\Vec2.cpp" />
     <ClCompile Include="src\Vec3.cpp" />
     <ClCompile Include="src\Vec4.cpp" />
     <ClCompile Include="src\VertexShader.cpp" />
+    <ClCompile Include="src\WinConditionChecker.cpp" />
     <ClCompile Include="stb_image\stb_image.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

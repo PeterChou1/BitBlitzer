@@ -5,7 +5,6 @@
 #include "PhysicsSystem.h"
 #include "ECSManager.h"
 #include "Manifolds.h"
-#include "Mesh.h"
 #include "RigidBody.h"
 #include "Transform.h"
 
@@ -41,7 +40,6 @@ void PhysicsSystem::SyncData()
             rigidbody.SyncTransform(transform, XY);
             rigidbody.RecomputeAABB();
             rigidbody.Shape.RecomputePoints(rigidbody.Angular, rigidbody.Position);
-
             if (!rigidbody.Initialized) rigidbody.Initialized = true;
         }
     }
@@ -135,10 +133,7 @@ void PhysicsSystem::Step()
     // Resolve Collision
     for (auto& manifold : m_Collisions)
     {
-        if (manifold.A.Collidable && manifold.B.Collidable) 
-        {
-            manifold.ResolveCollisionAngular();
-        }
+        manifold.ResolveCollisionAngular();
     }
 
     // Integrate Velocity

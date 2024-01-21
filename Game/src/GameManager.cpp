@@ -42,6 +42,8 @@ void GameManager::Setup()
     m_FragmentShader = std::make_unique<FragmentShader>();
     m_MeshHandler = std::make_unique<MeshHandler>();
     m_PhysicsSystem = std::make_unique<PhysicsSystem>();
+    m_TimerSystem = std::make_unique<TimerSystem>();
+
     // Debug Systems 
     m_DebugCamera = std::make_unique<DebugCamera>();
     m_DebugMesh = std::make_unique<DebugMesh>();
@@ -52,11 +54,12 @@ void GameManager::Update(float deltaTime)
 {
     assert(m_SceneMap.count(m_ActiveScene) > 0 && "Active Scene Name Not registered");
     // m_DebugCamera->Move(deltaTime);
-    m_DebugMesh->Update(deltaTime);
+    // m_DebugMesh->Update(deltaTime);
+    m_TimerSystem->Update(deltaTime);
     m_PhysicsSystem->Update(deltaTime);
-    m_MeshHandler->Update();
     m_DebugPhysicsRender->Update(deltaTime);
     m_SceneMap[m_ActiveScene]->Update(deltaTime);
+    m_MeshHandler->Update();
 }
 
 void GameManager::Render()
@@ -68,7 +71,7 @@ void GameManager::Render()
     m_Rasterizer->Rasterize();
     m_FragmentShader->Shade();
     // Debug Stuff
-    m_DebugCamera->Render();
+    // m_DebugCamera->Render();
     m_DebugPhysicsRender->Render();
     // Rendering for the active scene
     m_SceneMap[m_ActiveScene]->Render();

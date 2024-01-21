@@ -1,8 +1,9 @@
 #include "stdafx.h"
-#include "Vec3.h"
-#include "MeshInstance.h"
-#include <math.h>
+
 #include <cassert>
+
+#include "Vec3.h"
+
 
 Vec3::Vec3() :
     X(0),
@@ -232,5 +233,15 @@ void Vec3::GetOrtho(Vec3& u, Vec3& v) const
 std::string Vec3::ToString() const
 {
     return "{" + std::to_string(X) + "," + std::to_string(Y) + "," + std::to_string(Z) + "}";
+}
+
+Vec3 Vec3::Lerp(const Vec3& a, const Vec3& b, float t)
+{
+    // Ensure the interpolation factor is clamped between 0 and 1
+    if (t < 0.0f) t = 0.0f;
+    if (t > 1.0f) t = 1.0f;
+
+    // Perform the linear interpolation
+    return a + (b - a) * t;
 }
 
