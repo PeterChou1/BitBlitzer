@@ -154,6 +154,9 @@
     <ClCompile Include="src\WinConditionChecker.cpp">
       <Filter>src\GameLogic\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\TitleScreen.cpp">
+      <Filter>src\GameLogic\GameScenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\app.h">
@@ -416,6 +419,12 @@
     </ClInclude>
     <ClInclude Include="src\WinConditionChecker.h">
       <Filter>src\GameLogic\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TitleScreen.h">
+      <Filter>src\GameLogic\GameScenes</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Lighting.h">
+      <Filter>src\Engine\Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

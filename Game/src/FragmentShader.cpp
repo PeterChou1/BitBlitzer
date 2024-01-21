@@ -14,6 +14,7 @@ FragmentShader::FragmentShader()
     m_ColorBuffer = ECS.GetResource<ColorBuffer>();
     m_CubeMap = ECS.GetResource<CubeMap>();
     m_Cam = ECS.GetResource<Camera>();
+    m_Light = ECS.GetResource<Lighting>();
 }
 
 void FragmentShader::Shade()
@@ -22,8 +23,8 @@ void FragmentShader::Shade()
     std::vector<std::vector<Triangle>> ClippedTriangle = m_ClippedTriangle->Buffer;
 
     // No multiple light support for now 
-    std::vector<PointLight> m_Lights;
-    m_Lights.push_back({ Vec3(0, 25, 2.0), Vec3(1, 1, 1), 40.0 });
+    std::vector<PointLight> LightingList;
+    LightingList.push_back(m_Light->GetLight());
     
     Concurrent::ForEach(m_PixelBuffer->begin(), m_PixelBuffer->end(), [&](SIMDPixel& pixel)
     {
@@ -35,12 +36,12 @@ void FragmentShader::Shade()
         if (triangle.GetCubmapID() != NotACubeMap)
         {
             Material& texture = m_CubeMap->GetMaterial(triangle.GetCubmapID());
-            shader->Shade(pixel, m_Lights, texture, *m_Cam);
+            shader->Shade(pixel, LightingList, texture, *m_Cam);
         }
         else
         {
             Material& texture = loader.GetMaterial(triangle.GetTextureID());
-            shader->Shade(pixel, m_Lights, texture, *m_Cam);
+            shader->Shade(pixel, LightingList, texture, *m_Cam);
         }
 
         SIMDVec3 color = pixel.Color * 255.0;

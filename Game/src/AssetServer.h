@@ -117,6 +117,8 @@ private:
             return "./Assets/UnitCube.obj";
         case Grass:
             return "./Assets/Grass.obj";
+        case Tree:
+            return "./Assets/Tree1.obj";
         default:
             assert(false && "not possible");
         }

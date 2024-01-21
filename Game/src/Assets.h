@@ -15,7 +15,8 @@ enum ObjAsset
     Robot,
     Dirt,
     Grass,
-    WoodCube
+    WoodCube,
+    Tree
 };
 
 // Shaders -> See SIMDShader.h for more details

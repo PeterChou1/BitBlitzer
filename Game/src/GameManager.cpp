@@ -8,6 +8,7 @@
 #include "PixelBuffer.h"
 #include "ClippedTriangleBuffer.h"
 #include "GameState.h"
+#include "Lighting.h"
 #include "RenderConstants.h"
 #include "Tiles.h"
 #include "../App/AppSettings.h"
@@ -18,9 +19,6 @@ extern ECSManager ECS;
 
 void GameManager::Setup()
 {
-    // setup opengl rendering instance
-    // App::SetupGL();
-
     // Register Resources Required For Rendering
     ECS.RegisterResource(Camera());
     ECS.RegisterResource(VertexBuffer());
@@ -34,6 +32,7 @@ void GameManager::Setup()
     ECS.RegisterResource(CubeMap());
     ECS.RegisterResource(GameState());
     ECS.RegisterResource(ColliderCallbackSystem());
+    ECS.RegisterResource(Lighting());
 
     // Initialize Common Systems
     m_VertexShader = std::make_unique<VertexShader>();
@@ -57,7 +56,7 @@ void GameManager::Update(float deltaTime)
     // m_DebugMesh->Update(deltaTime);
     m_TimerSystem->Update(deltaTime);
     m_PhysicsSystem->Update(deltaTime);
-    //m_DebugPhysicsRender->Update(deltaTime);
+    // m_DebugPhysicsRender->Update(deltaTime);
     m_SceneMap[m_ActiveScene]->Update(deltaTime);
     m_MeshHandler->Update();
 }
@@ -72,7 +71,7 @@ void GameManager::Render()
     m_FragmentShader->Shade();
     // Debug Stuff
     // m_DebugCamera->Render();
-    //m_DebugPhysicsRender->Render();
+    // m_DebugPhysicsRender->Render();
     // Rendering for the active scene
     m_SceneMap[m_ActiveScene]->Render();
     // Clear Render Pipeline to get ready for next render pass

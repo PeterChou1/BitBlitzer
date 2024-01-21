@@ -199,6 +199,7 @@
     <ClInclude Include="src\Level1.h" />
     <ClInclude Include="src\Cows.h" />
     <ClInclude Include="src\LaunchController.h" />
+    <ClInclude Include="src\Lighting.h" />
     <ClInclude Include="src\ProjectileCowCollider.h" />
     <ClInclude Include="src\ProjectileKillBoxCollider.h" />
     <ClInclude Include="src\ProjectileObstaclesCollider.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="src\Tiles.h" />
     <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\TimerSystem.h" />
+    <ClInclude Include="src\TitleScreen.h" />
     <ClInclude Include="src\ToonShaderSIMD.h" />
     <ClInclude Include="src\TypeID.h" />
     <ClInclude Include="src\DebugMesh.h" />
@@ -302,6 +304,7 @@
     <ClCompile Include="src\Tile.cpp" />
     <ClCompile Include="src\Tiles.cpp" />
     <ClCompile Include="src\TimerSystem.cpp" />
+    <ClCompile Include="src\TitleScreen.cpp" />
     <ClCompile Include="src\ToonShaderSIMD.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\Game.cpp" />

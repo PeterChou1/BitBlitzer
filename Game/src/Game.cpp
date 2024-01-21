@@ -8,6 +8,7 @@
 #include "ECSManager.h"
 #include "GameManager.h"
 #include "Level1.h"
+#include "TitleScreen.h"
 //------------------------------------------------------------------------
 
 
@@ -23,8 +24,10 @@ void Init()
     ECS.Init();
     GameSceneManager.Setup();
     // Register all game scenes below
-    std::unique_ptr<Scene> Scene1 = std::make_unique<Level1>();
-    GameSceneManager.RegisterScene("Level1", std::move(Scene1));
+    std::unique_ptr<Scene> titleScreen = std::make_unique<TitleScreen>();
+    std::unique_ptr<Scene> level1 = std::make_unique<Level1>();
+    GameSceneManager.RegisterScene("Level1", std::move(level1));
+    GameSceneManager.RegisterScene("TitleScreen", std::move(titleScreen));
     GameSceneManager.SetActiveScene("Level1");
 }
 

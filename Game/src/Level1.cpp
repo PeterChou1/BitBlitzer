@@ -100,6 +100,7 @@ void Level1::Start()
     m_WinConditionChecker = std::make_unique<WinConditionChecker>();
     m_ColliderCallback = ECS.GetResource<ColliderCallbackSystem>();
     m_GameState = ECS.GetResource<GameState>();
+    m_Lights = ECS.GetResource<Lighting>();
 }
 
 void Level1::Setup()
@@ -107,7 +108,15 @@ void Level1::Setup()
     // Load level asset
     ECS.GetResource<CubeMap>()->LoadCubeMap(SkyBox);
     auto& server = AssetServer::GetInstance();
-    server.LoadLevelAssets({ SpotFlipped, Spot, SlingShot, Dirt, WoodCube, Grass});
+    server.LoadLevelAssets({ 
+        SpotFlipped, Spot,
+        SlingShot, Dirt,
+        WoodCube, Grass,
+        Tree
+    });
+
+    // Set Scene Light
+    m_Lights->SetLight(Vec3(0, 50, -20), Vec3(1, 1, 1), 40.0);
 
     // Set Up Systems
     m_CamController->Setup(Vec3(0.0f, 0.0f, 50.0f));
@@ -122,8 +131,10 @@ void Level1::Setup()
     m_CamController->Top = 10.0f;
     m_CamController->ZoomIn = 15.0f;
     m_CamController->ZoomOut = 50.0f;
+    // Set Positions Camera can lerp to
     m_CamController->Player1ViewArea = Vec3(-30.0, 10, 35);
     m_CamController->Player2ViewArea = Vec3(30.0, 10, 35);
+    // Set the follow distance when following a projectile
     m_CamController->FollowProjectileZoom = 20.0f;
 
     // Set up projectile launch controller
@@ -172,4 +183,14 @@ void Level1::DecorateScene()
     CreateLevelGeometry(Vec3(0, -205.5, 0), Quat(), 200.0, Dirt);
     CreateLevelGeometry(Vec3(0, -5.0, 0), Quat(), 200, Grass);
 
+    // Create some trees
+    for (int i = -150; i < 150; i += 20)
+    {
+        CreateLevelGeometry(Vec3(i + 0, -5.0, -10.0), Quat(), 2.0, Tree);
+        CreateLevelGeometry(Vec3(i + 2, -5.0, -10.0), Quat(), 1.0, Tree);
+        CreateLevelGeometry(Vec3(i + -5, -5.0, -10.0), Quat(), 1.0, Tree);
+        CreateLevelGeometry(Vec3(i + 8, -5.0, -10.0), Quat(), 3.0, Tree);
+        CreateLevelGeometry(Vec3(i + 6, -5.0, -10.0), Quat(), 1.5, Tree);
+        CreateLevelGeometry(Vec3(i + -5, -5.0, -10.0), Quat(), 1.2, Tree);
+    }
 }
