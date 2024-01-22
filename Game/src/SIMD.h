@@ -7,9 +7,6 @@
 //
 #pragma once
 
-#include <immintrin.h>
-#include <cmath>
-
 #include "Vec2.h"
 #include "Vec3.h"
 
@@ -17,7 +14,7 @@
 #define SIMD_AVAILABLE
 
 #ifdef SIMD_AVAILABLE
-
+#include <immintrin.h>
 /*
 * /brief Float based on avx2 please see the intel intrinsics 
 *        most methods here are self-explanatory
@@ -162,7 +159,7 @@ public:
     };
 };
 #else
-
+#include <cmath>
 // SIMDFloat polyfill
 class SIMDFloat
 {
