@@ -269,7 +269,6 @@
     <ClInclude Include="src\Visitor.h" />
     <ClInclude Include="src\WinConditionChecker.h" />
     <ClInclude Include="stb_image\stb_image.h" />
-    <ClInclude Include="tests\MathTest.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App\app.cpp" />

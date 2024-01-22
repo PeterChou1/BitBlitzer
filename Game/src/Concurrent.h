@@ -59,8 +59,6 @@ public:
         std::future<void> res = task->get_future();
         {
             std::unique_lock<std::mutex> lock(queue_mutex);
-
-            // don't allow enqueueing after stopping the pool
             if (stop)
                 throw std::runtime_error("enqueue on stopped ThreadPool");
 
@@ -93,7 +91,9 @@ private:
     bool stop;
 };
 
-
+/**
+ * \brief Wrapper around a for loop making it multithreaded
+ */
 class Concurrent final {
 public:
     template <class It, class Fn>

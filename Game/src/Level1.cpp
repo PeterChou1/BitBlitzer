@@ -141,14 +141,14 @@ void Level1::Setup()
     m_LaunchController->Player1LaunchPoint = Vec3(-40.0, 2.0f, 0.0f);
     m_LaunchController->Player2LaunchPoint = Vec3(40.0, 2.0f, 0.0f);
 
-    // Add level geometry
-    DecorateScene();
 
     // Register collider callbacks
     m_ColliderCallback->RegisterCallback(std::make_shared<ProjectileCowCollider>());
     m_ColliderCallback->RegisterCallback(std::make_shared<ProjectileKillBoxCollider>());
     m_ColliderCallback->RegisterCallback(std::make_shared<ProjectileObstaclesCollider>());
 
+    // Add level geometry
+    DecorateScene();
     // Register physics collider
     SetupPhysicsBodies();
 }

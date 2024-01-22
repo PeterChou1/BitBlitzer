@@ -369,9 +369,6 @@
     <ClInclude Include="src\ToonShaderSIMD.h">
       <Filter>src\Engine\Shader</Filter>
     </ClInclude>
-    <ClInclude Include="tests\MathTest.h">
-      <Filter>tests\MathTest</Filter>
-    </ClInclude>
     <ClInclude Include="src\SAT.h">
       <Filter>src\Engine\CoreSystems\Physics</Filter>
     </ClInclude>
@@ -442,18 +439,6 @@
     </Filter>
     <Filter Include="NextAPI">
       <UniqueIdentifier>{2053fc19-7e4a-40ae-b070-e199c6c3ba67}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="tests">
-      <UniqueIdentifier>{334cce93-a5f6-4b70-a06d-ddcf0b49ba12}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="tests\MathTest">
-      <UniqueIdentifier>{221c2370-20e8-40ca-9fb5-16bfaeb81f3a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="tests\ECSTest">
-      <UniqueIdentifier>{3f977be0-5c1e-4be2-8cab-51ec4c7b26b1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="tests\PhysicsTest">
-      <UniqueIdentifier>{810c59ae-e492-40e4-a5ac-c1383405f2f1}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Engine">
       <UniqueIdentifier>{852077aa-cf72-4e21-b4cc-96074df4f0d4}</UniqueIdentifier>
