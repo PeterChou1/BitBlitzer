@@ -28,9 +28,9 @@ void UISystem::Render() const
     std::string Player1Health = "Cow's Alive (p1): " + std::to_string(m_GameState->NumberOfCowsPlayer1);
     std::string Player2Health = "Cow's Alive (p2): " + std::to_string(m_GameState->NumberOfCowsPlayer2);
 
-    App::Print(100, 700, PlayerTurn.c_str());
-    App::Print(100, 680, Player1Health.c_str());
-    App::Print(100, 660, Player2Health.c_str());
+    App::Print(100, 700, PlayerTurn.c_str(), 1, 0, 0);
+    App::Print(100, 680, Player1Health.c_str(), 1, 0, 0);
+    App::Print(100, 660, Player2Health.c_str(), 1, 0, 0);
 
     if (m_GameState->State == FreeRoamMode)
     {
@@ -38,9 +38,9 @@ void UISystem::Render() const
         std::string ZoomInstruction = "QE to Zoom Out/In";
         std::string LaunchProjectileInstruction = "Press Space To Aim Projectile";
 
-        App::Print(600, 700, PanInstruction.c_str());
-        App::Print(600, 680, ZoomInstruction.c_str());
-        App::Print(600, 660, LaunchProjectileInstruction.c_str());
+        App::Print(600, 700, PanInstruction.c_str(), 1, 0, 0);
+        App::Print(600, 680, ZoomInstruction.c_str(), 1, 0, 0);
+        App::Print(600, 660, LaunchProjectileInstruction.c_str(), 1, 0, 0);
     }
 
     if (m_GameState->State == LaunchMode)
@@ -48,8 +48,8 @@ void UISystem::Render() const
         std::string AimInstruction = "Use Your Mouse To Aim!";
         std::string LaunchInstruction = "Press Space To Launch Your Cow";
 
-        App::Print(600, 700, AimInstruction.c_str());
-        App::Print(600, 680, LaunchInstruction.c_str());
+        App::Print(600, 700, AimInstruction.c_str(), 1, 0, 0);
+        App::Print(600, 680, LaunchInstruction.c_str(), 1, 0, 0);
     }
 
     if (m_GameState->State == WinnerMode)
@@ -67,8 +67,8 @@ void UISystem::Render() const
         if (m_GameState->NumberOfCowsPlayer2 == 0)
             WinText = "Player 1 Wins";
 
-        App::Print(width, height, WinText.c_str());
-        App::Print(width, height - 50, NewGameText.c_str());
+        App::Print(width, height, WinText.c_str(), 1, 1, 1);
+        App::Print(width, height - 50, NewGameText.c_str(), 1, 1, 1);
 
     }
 }

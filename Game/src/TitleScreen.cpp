@@ -61,6 +61,7 @@ void TitleScreen::Setup()
     SpawnSpot(Vec3(-3, 3, -5));
     SpawnSpot(Vec3(-3, -3, -5));
     SpawnSpot(Vec3(3, -3, -5));
+
 }
 
 void TitleScreen::Update(float deltaTime)

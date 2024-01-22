@@ -157,6 +157,9 @@
     <ClCompile Include="src\TitleScreen.cpp">
       <Filter>src\GameLogic\GameScenes</Filter>
     </ClCompile>
+    <ClCompile Include="src\ExtendedGraphics.cpp">
+      <Filter>src\Engine\Graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App\app.h">
@@ -425,6 +428,9 @@
     </ClInclude>
     <ClInclude Include="src\Lighting.h">
       <Filter>src\Engine\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ExtendedGraphics.h">
+      <Filter>src\Engine\Graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

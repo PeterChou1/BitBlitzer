@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "RigidBody.h"
 #include "Vec3.h"
+#include "ExtendedGraphics.h"
 #include "../App/app.h"
 
 extern ECSManager ECS;
@@ -91,10 +92,10 @@ void LaunchController::Render()
 {
     if (m_GameState->State == LaunchMode)
     {
-        App::DrawLine(
+        DrawArrow(
             m_ScreenPoint.X, m_ScreenPoint.Y,
             m_LaunchRenderPoint.X, m_LaunchRenderPoint.Y,
-            1.0, 0.0, 0.0
+            5.0, 1.0, 0.0, 0.0
         );
     }
 }

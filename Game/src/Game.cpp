@@ -28,7 +28,7 @@ void Init()
     std::unique_ptr<Scene> level1 = std::make_unique<Level1>();
     GameSceneManager.RegisterScene("Level1", std::move(level1));
     GameSceneManager.RegisterScene("TitleScreen", std::move(titleScreen));
-    GameSceneManager.SetActiveScene("Level1");
+    GameSceneManager.SetActiveScene("TitleScreen");
 }
 
 //------------------------------------------------------------------------

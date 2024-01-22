@@ -195,6 +195,7 @@
     <ClInclude Include="src\ColliderCategory.h" />
     <ClInclude Include="src\Collision.h" />
     <ClInclude Include="src\CubeMap.h" />
+    <ClInclude Include="src\ExtendedGraphics.h" />
     <ClInclude Include="src\GameState.h" />
     <ClInclude Include="src\Level1.h" />
     <ClInclude Include="src\Cows.h" />
@@ -285,6 +286,7 @@
     <ClCompile Include="src\DebugCamera.cpp" />
     <ClCompile Include="src\DebugMesh.cpp" />
     <ClCompile Include="src\DebugPhysicsRenderer.cpp" />
+    <ClCompile Include="src\ExtendedGraphics.cpp" />
     <ClCompile Include="src\FragmentShader.cpp" />
     <ClCompile Include="src\LaunchController.cpp" />
     <ClCompile Include="src\Level1.cpp" />
