@@ -507,7 +507,4 @@
       <UniqueIdentifier>{479201bf-faad-4c25-ad2c-de638b151b21}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="scratch.txt" />
-  </ItemGroup>
 </Project>
