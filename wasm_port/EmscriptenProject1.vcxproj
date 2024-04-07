@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Emscripten">
+      <Configuration>Debug</Configuration>
+      <Platform>Emscripten</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Emscripten">
+      <Configuration>Release</Configuration>
+      <Platform>Emscripten</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{719a98cb-f263-4634-9038-d06696dfa958}</ProjectGuid>
+    <RootNamespace>EmscriptenProject1</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
+    <ConfigurationType>HTMLPage</ConfigurationType>
+    <PlatformToolset>emcc</PlatformToolset>
+    <EmscriptenDir>$(EMSDK)\upstream\emscripten\</EmscriptenDir>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Emscripten'">
+    <ConfigurationType>HTMLPage</ConfigurationType>
+    <PlatformToolset>emcc</PlatformToolset>
+    <EmscriptenDir>$(EMSDK)\upstream\emscripten\</EmscriptenDir>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Emscripten'">
+    <Link>
+      <PreloadFile>Assets</PreloadFile>
+      <AdditionalOptions>--use-port=sdl2 --use-port=sdl2_image:formats=bmp,png,xpm,jpg --use-preload-plugins -sUSE_SDL -sUSE_SDL_IMAGE -sASSERTIONS -sALLOW_MEMORY_GROWTH  -s USE_SDL_TTF=2 -s USE_SDL_MIXER=2</AdditionalOptions>
+      <LinkerOptimizationLevel>O3</LinkerOptimizationLevel>
+      <GenerateDebugInformation>NoDebugInformation</GenerateDebugInformation>
+      <AdditionalLinkDirectories>
+      </AdditionalLinkDirectories>
+    </Link>
+    <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <GenerateDebugInformation>None</GenerateDebugInformation>
+      <OptimizationLevel>O3</OptimizationLevel>
+      <AdditionalOptions>-fexperimental-library -msimd128 -ftree-vectorize --use-port=sdl2  -s USE_SDL_MIXER=2</AdditionalOptions>
+      <EnableMicrosoftExtensions>true</EnableMicrosoftExtensions>
+      <EchoCommandLines>true</EchoCommandLines>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="app.cpp" />
+    <ClCompile Include="AssetServer.cpp" />
+    <ClCompile Include="BlingPhong.cpp" />
+    <ClCompile Include="BuildController.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CameraController.cpp" />
+    <ClCompile Include="Clipper.cpp" />
+    <ClCompile Include="ColliderCallbackSystem.cpp" />
+    <ClCompile Include="Collision.cpp" />
+    <ClCompile Include="CursorController.cpp" />
+    <ClCompile Include="DebugCamera.cpp" />
+    <ClCompile Include="DebugMesh.cpp" />
+    <ClCompile Include="DebugPhysicsRenderer.cpp" />
+    <ClCompile Include="ExtendedGraphics.cpp" />
+    <ClCompile Include="FragmentShader.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameManager.cpp" />
+    <ClCompile Include="LaunchController.cpp" />
+    <ClCompile Include="Level1.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Manifolds.cpp" />
+    <ClCompile Include="Mat2.cpp" />
+    <ClCompile Include="Mat3.cpp" />
+    <ClCompile Include="Mat4.cpp" />
+    <ClCompile Include="Material.cpp" />
+    <ClCompile Include="MeshHandler.cpp" />
+    <ClCompile Include="PhysicsSystem.cpp" />
+    <ClCompile Include="ProjectileCowCollider.cpp" />
+    <ClCompile Include="ProjectileKillBoxCollider.cpp" />
+    <ClCompile Include="ProjectileObstaclesCollider.cpp" />
+    <ClCompile Include="Quat.cpp" />
+    <ClCompile Include="Rasterizer.cpp" />
+    <ClCompile Include="RedShader.cpp" />
+    <ClCompile Include="RenderDirect.cpp" />
+    <ClCompile Include="RigidBody.cpp" />
+    <ClCompile Include="SAT.cpp" />
+    <ClCompile Include="SIMDPixel.cpp" />
+    <ClCompile Include="SIMDTriangle.cpp" />
+    <ClCompile Include="SpriteManager.cpp" />
+    <ClCompile Include="stb_image.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="Tiles.cpp" />
+    <ClCompile Include="TimerSystem.cpp" />
+    <ClCompile Include="TitleScreen.cpp" />
+    <ClCompile Include="ToonShaderSIMD.cpp" />
+    <ClCompile Include="Transform.cpp" />
+    <ClCompile Include="Triangle.cpp" />
+    <ClCompile Include="UISystem.cpp" />
+    <ClCompile Include="UnlitSIMD.cpp" />
+    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="Vec2.cpp" />
+    <ClCompile Include="Vec3.cpp" />
+    <ClCompile Include="Vec4.cpp" />
+    <ClCompile Include="VertexShader.cpp" />
+    <ClCompile Include="WinConditionChecker.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AABB.h" />
+    <ClInclude Include="app.h" />
+    <ClInclude Include="AppSettings.h" />
+    <ClInclude Include="Assets.h" />
+    <ClInclude Include="AssetServer.h" />
+    <ClInclude Include="BlingPhong.h" />
+    <ClInclude Include="BuildController.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="CameraController.h" />
+    <ClInclude Include="ClippedTriangleBuffer.h" />
+    <ClInclude Include="Clipper.h" />
+    <ClInclude Include="ColliderCallbackSystem.h" />
+    <ClInclude Include="ColliderCategory.h" />
+    <ClInclude Include="Collision.h" />
+    <ClInclude Include="ColorBuffer.h" />
+    <ClInclude Include="ComponentBuffer.h" />
+    <ClInclude Include="ComponentManager.h" />
+    <ClInclude Include="Concurrent.h" />
+    <ClInclude Include="CowProjectile.h" />
+    <ClInclude Include="Cows.h" />
+    <ClInclude Include="CubeMap.h" />
+    <ClInclude Include="CursorController.h" />
+    <ClInclude Include="Cursors.h" />
+    <ClInclude Include="DebugCamera.h" />
+    <ClInclude Include="DebugMesh.h" />
+    <ClInclude Include="DebugPhysicsRenderer.h" />
+    <ClInclude Include="DepthBuffer.h" />
+    <ClInclude Include="ECSManager.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="ExtendedGraphics.h" />
+    <ClInclude Include="FragmentShader.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameState.h" />
+    <ClInclude Include="IndexBuffer.h" />
+    <ClInclude Include="LaunchController.h" />
+    <ClInclude Include="Level1.h" />
+    <ClInclude Include="Lighting.h" />
+    <ClInclude Include="Lights.h" />
+    <ClInclude Include="Main.h" />
+    <ClInclude Include="Manifolds.h" />
+    <ClInclude Include="Mat2.h" />
+    <ClInclude Include="Mat3.h" />
+    <ClInclude Include="Mat4.h" />
+    <ClInclude Include="Material.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshHandler.h" />
+    <ClInclude Include="MeshInstance.h" />
+    <ClInclude Include="PhysicsSystem.h" />
+    <ClInclude Include="PixelBuffer.h" />
+    <ClInclude Include="ProjectileCowCollider.h" />
+    <ClInclude Include="ProjectileKillBoxCollider.h" />
+    <ClInclude Include="ProjectileObstaclesCollider.h" />
+    <ClInclude Include="Quat.h" />
+    <ClInclude Include="Rasterizer.h" />
+    <ClInclude Include="RedShaderSIMD.h" />
+    <ClInclude Include="RenderConstants.h" />
+    <ClInclude Include="RenderDirect.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="RigidBody.h" />
+    <ClInclude Include="SAT.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="Shape.h" />
+    <ClInclude Include="SIMD.h" />
+    <ClInclude Include="SIMDPixel.h" />
+    <ClInclude Include="SIMDShader.h" />
+    <ClInclude Include="SIMDTriangle.h" />
+    <ClInclude Include="SpriteAnimation.h" />
+    <ClInclude Include="SpriteManager.h" />
+    <ClInclude Include="stb_image.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Tile.h" />
+    <ClInclude Include="Tiles.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="TimerSystem.h" />
+    <ClInclude Include="TitleScreen.h" />
+    <ClInclude Include="ToonShaderSIMD.h" />
+    <ClInclude Include="Transform.h" />
+    <ClInclude Include="Triangle.h" />
+    <ClInclude Include="TypeID.h" />
+    <ClInclude Include="UISystem.h" />
+    <ClInclude Include="UnlitSIMD.h" />
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="Vec2.h" />
+    <ClInclude Include="Vec3.h" />
+    <ClInclude Include="Vec4.h" />
+    <ClInclude Include="Vertex.h" />
+    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexShader.h" />
+    <ClInclude Include="Visitor.h" />
+    <ClInclude Include="VisitorManager.h" />
+    <ClInclude Include="WinConditionChecker.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
