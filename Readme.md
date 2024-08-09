@@ -11,7 +11,7 @@ a processor with AVX2 support.
 - Open Game.sln
 - Hit Compile 
 
-Please read Documentation.pdf for the documentation of the source file of the project for more information
+Please read [Documentation.pdf](/Documentation.pdf) for the documentation of the source file of the project for more information
 
 
 # A WASM port of this project is avaliable here
