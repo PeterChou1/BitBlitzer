@@ -5,7 +5,7 @@ This project was originally written for a game contest. The underlying code cont
 
 # Compilation/Setup
 
-This project only works on windows you must have the visual studio 2022 developmenet environment installed on
+This project only works on windows you must have the visual studio 2022 development environment installed on
 a processor with AVX2 support. 
 
 - Open Game.sln
